@@ -1,0 +1,9 @@
+{
+    "name": "android_serv",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "mongoose": "4.6.1",
+        "crypto": "0.0.3"
+    }
+}
