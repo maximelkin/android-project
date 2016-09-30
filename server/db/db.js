@@ -30,6 +30,12 @@ function createUser(androidId, pass, callback){
     }, callback);
 }
 
+function deleteUser(androidId, callback){
+    if (typeof(androidId) != 'number')
+        return callback(new Error('dangerous data'));
+    user.remove({_id: androidId}, callback);
+}
+
 function checkPass(androidId, pass, callback){
     user.findOne({_id: androidId}, function(err, user){
         callback(err || user.pass != pass);
@@ -63,6 +69,7 @@ function pullQueue(id, callback){
 }
 
 db.exports.createUser = createUser;
+db.exports.deleteUser = deleteUser;
 db.exports.checkPass = checkPass;
 db.exports.clearUsers = clearUsers;
 db.exports.updateRate = updateRate;
