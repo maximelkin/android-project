@@ -1,4 +1,4 @@
-# Место для названия
+# LineBall
 
 ## Разработчики
 [Максим Елькин](https://github.com/maximelkin) (M3239), [Кирилл Карбушев](https://github.com/KiriosK) (M3238), [Глеб Рябчиков](https://github.com/glebvr) (M3238)
