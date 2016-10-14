@@ -8,7 +8,7 @@ var def_rate = 101;//throw out this file
 //two divisions
 var border = 100
 
-mongoose.connect('mongodb://localhost/local', { config: { autoIndex: false } });
+mongoose.connect('mongodb://localhost:2934/local', { config: { autoIndex: false } });
 var db = mongoose.connection;
 db.on('error', console.error.bind(
     console, 'connection error:'));
@@ -65,13 +65,13 @@ function addToQueue(socket, callback){
 }
 
 function pullQueue(id, callback){
-    findOneAndUpdate({_id: id}, {queue: []}, {new: false}, callback);
+    queue.findOneAndUpdate({_id: id}, {queue: []}, {new: false}, callback);
 }
 
-db.exports.createUser = createUser;
-db.exports.deleteUser = deleteUser;
-db.exports.checkPass = checkPass;
-db.exports.clearUsers = clearUsers;
-db.exports.updateRate = updateRate;
-db.exports.addToQueue = addToQueue;
-db.exports.pullQueue = pullQueue;
+module.exports.createUser = createUser;
+module.exports.deleteUser = deleteUser;
+module.exports.checkPass = checkPass;
+module.exports.clearUsers = clearUsers;
+module.exports.updateRate = updateRate;
+module.exports.addToQueue = addToQueue;
+module.exports.pullQueue = pullQueue;

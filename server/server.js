@@ -1,6 +1,7 @@
 
 var net = require('net');
 var db = require('./db/db');
+var openState = require('ws').OPEN;
 var WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({ port: 8080 });
 
@@ -80,11 +81,25 @@ function flushQueue(id) {
 
         while (s.length > 1) {
             var x1 = s.pop(),
-                x2 = s.pop();//add checking
+                x2 = null;
+            while (x1.readyState != openState && s.length > 0)
+                x1 = s.pop();
+            if (x1.readyState != openState)
+                break;
+            if (s.length == 0) {
+                s.push(x1);
+                break;
+            }
+            while (x2.readyState != openState && s.length > 0)
+                x2 = s.pop();
 
+            if (x2.readyState != openState) {
+                s.push(x1);
+                break;
+            }
             x1.send(x2._socket.remoteAddress);
-        }
             x2.send(x1._socket.remoteAddress);
+        }
         if (s.length == 1) {
             db.addToQueue(socket, function (err) {
                 if (err)
@@ -94,4 +109,4 @@ function flushQueue(id) {
     });
 }
 setInterval(flushQueue.bind(this, 1), 3000);
-setInterval(flushQueue.bind(this, 2), 5000);
+setInterval(flushQueue.bind(this, 2), 4000);
