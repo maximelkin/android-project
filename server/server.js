@@ -12,7 +12,7 @@ var server = net.createServer(function (ws) {
     ws.bufferSize = 0;
     console.log("CONNECTED");
     var accum = "";
-    console.log(ws.write('123321\0'));
+    ws.write('123321\0');
     ws.on('end', function () {
         console.log('out');
         ws.id = null;
@@ -20,7 +20,6 @@ var server = net.createServer(function (ws) {
     ws.on('data', function (mes) {
         //var message = mes; //mes.split(' ');
         accum += mes;
-        console.log(accum);
         if (accum.slice(-1) == '#') {
             var message = accum.slice(0, accum.length - 1).split(' ');
             accum = "";
@@ -67,11 +66,11 @@ var server = net.createServer(function (ws) {
                     break;
 
                 case "search":
-                    console.log('search1');
                     if (ws.verified)
                         db.addToQueue(ws, function (err) {
-                            if (err)
-                                ws.write('1')
+                            if (err){
+                                ws.write('1');
+                            }
                             else ws.write('0');
                         });
                     else

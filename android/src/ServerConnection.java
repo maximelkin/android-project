@@ -9,7 +9,7 @@ import java.net.Socket;
 public class ServerConnection implements ServerConnectionImpl {
     private static final String host = "localhost";
     private static final int port = 8080;
-    private static final String androidId = "233"; //Secure.ANDROID_ID;
+    private static final String androidId = "322"; //Secure.ANDROID_ID;
     private Socket socket;
     private InputStream inputStream;
     private DataOutputStream dataOutputStream;

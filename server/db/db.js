@@ -31,14 +31,14 @@ function createUser(androidId, pass, callback){
 }
 
 function deleteUser(androidId, callback){
-    if (typeof(androidId) != 'number')
+    if (typeof(androidId) != 'string')
         return callback(new Error('dangerous data'));
     user.remove({_id: androidId}, callback);
 }
 
 function checkPass(androidId, pass, callback){
     user.findOne({_id: androidId}, function(err, user){
-        callback(err || user.pass != pass);
+        callback(err || user.pass != hashing(pass));
     });
 }
 
@@ -50,7 +50,7 @@ function clearUsers(callback){
 
 function updateRate(androidId, ratingChange, callback){
     var change = ratingChange * 100 - 50
-    if (typeof(androidId) != 'number' || typeof(score) != 'number')
+    if (typeof(androidId) != 'string' || typeof(score) != 'number')
         return callback(new Error('dangerous data'));
     user.updateOne({_id: androidId}, {rate: {$inc: change}}, callback);
 }
@@ -58,10 +58,10 @@ function updateRate(androidId, ratingChange, callback){
 //------
 //queues
 function addToQueue(socket, callback){
-    if (typeof(androidId) != 'number')
+    if (typeof(socket.id) != 'string')
         return callback(new Error('dangerous data'));
 
-    queue.update({_id: (user.rate >= 100)}, {queue: {$addToSet: socket.id}}, callback);
+    queue.update({_id: (user.rate >= 100)}, {$push: {queue: socket.id}}, callback);
 }
 
 function pullQueue(id, callback){
