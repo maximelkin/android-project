@@ -1,34 +1,41 @@
-import android.provider.Settings.Secure;
+//import android.provider.Settings.Secure;
 
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 
 public class ServerConnection implements ServerConnectionImpl {
     private static final String host = "localhost";
     private static final int port = 8080;
-    private static final String androidId = Secure.ANDROID_ID;
+    private static final String androidId = "233"; //Secure.ANDROID_ID;
     private Socket socket;
-    private DataInputStream dataInputStream;
+    private InputStream inputStream;
     private DataOutputStream dataOutputStream;
 
     public ServerConnection() throws IOException {
         socket = new Socket(host, port);
         socket.setTcpNoDelay(true);
-        dataInputStream = new DataInputStream(socket.getInputStream());
+        inputStream = socket.getInputStream();
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        if (!send("connect " + androidId)) {
+        readStr();
+        if (!send("con " + androidId)) {
             throw new ConnectException();
         }
     }
 
+    private String readStr() throws IOException {
+        byte[] b = new byte[20];
+        int len = inputStream.read(b);
+        return new String(b, "UTF8").substring(0, len);
+    }
+
     private boolean send(String action) throws IOException {
-        dataOutputStream.writeBytes(action);
+        dataOutputStream.writeBytes(action  + "#");//# - delimiter
         dataOutputStream.flush();
-        int response = dataInputStream.readInt();
-        return (response == 0);
+        String response = readStr();
+        return Integer.parseInt(response) == 0;
     }
 
     public boolean verify(String password) throws IOException {
@@ -45,11 +52,11 @@ public class ServerConnection implements ServerConnectionImpl {
 
 
     public String search() throws Exception {
-        dataOutputStream.writeBytes("search");
+        dataOutputStream.writeBytes("search#");
         dataOutputStream.flush();
-        if (dataInputStream.readInt() == 1)
+        if (readStr().equals("1"))
             throw new Exception();
-        return dataInputStream.readUTF();
+        return readStr();
     }
 
     public boolean gameOver(String result) throws IOException {

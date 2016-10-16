@@ -21,7 +21,7 @@ function hashing(password) {
 
 
 function createUser(androidId, pass, callback){
-    if (typeof(androidId) != 'number' || pass != 'string')
+    if (typeof(androidId) != 'string' || typeof(pass) != 'string')
         return callback(new Error("dangerous data"));
     user.create({
         _id: androidId,
