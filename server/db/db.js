@@ -20,8 +20,8 @@ function hashing(password) {
 }
 
 
-function createUser(androidId, pass, callback){
-    if (typeof(androidId) != 'string' || typeof(pass) != 'string')
+function createUser(androidId, pass, callback) {
+    if (typeof (androidId) != 'string' || typeof (pass) != 'string')
         return callback(new Error("dangerous data"));
     user.create({
         _id: androidId,
@@ -30,48 +30,50 @@ function createUser(androidId, pass, callback){
     }, callback);
 }
 
-function deleteUser(androidId, callback){
-    if (typeof(androidId) != 'string')
+function deleteUser(androidId, callback) {
+    if (typeof (androidId) != 'string')
         return callback(new Error('dangerous data'));
-    user.remove({_id: androidId}, callback);
+    user.remove({ _id: androidId }, callback);
 }
 
-function checkPass(androidId, pass, callback){
-    user.findOne({_id: androidId}, function(err, user){
+function checkPass(androidId, pass, callback) {
+    user.findOne({ _id: androidId }, function (err, user) {
         callback(err || user.pass != hashing(pass));
     });
 }
 
 
-function clearUsers(callback){
-    user.update({}, {rate: def_rate}, callback);
+function clearUsers(callback) {
+    user.update({}, { rate: def_rate }, callback);
 }
 
 
-function updateRate(androidId, ratingChange, callback){
+function updateRate(androidId, ratingChange, callback) {
     var change = ratingChange * 100 - 50
-    if (typeof(androidId) != 'string' || typeof(score) != 'number')
+    if (typeof (androidId) != 'string' || typeof (score) != 'number')
         return callback(new Error('dangerous data'));
-    user.updateOne({_id: androidId}, {rate: {$inc: change}}, callback);
+    user.updateOne({ _id: androidId }, { rate: { $inc: change } }, callback);
 }
-
+/*
 //------
 //queues
-function addToQueue(socket, callback){
-    if (typeof(socket.id) != 'string')
-        return callback(new Error('dangerous data'));
-
-    queue.update({_id: (user.rate >= 100)}, {$push: {queue: socket.id}}, callback);
+function addToQueue(socket, callback) {
+    user.findOne({ _id: socket.id }, function (err, user) {
+        if (err)
+            return callback(err);
+        queue.update({ _id: (user.rate >= 100) }, { $push: { queue: socket } }, callback);
+    });
 }
 
-function pullQueue(id, callback){
-    queue.findOneAndUpdate({_id: id}, {queue: []}, {new: false}, callback);
-}
+function pullQueue(id, callback) {
+    queue.findOneAndUpdate({ _id: id }, { queue: [] }, { new: false }, callback);
+}*/
 
 module.exports.createUser = createUser;
 module.exports.deleteUser = deleteUser;
 module.exports.checkPass = checkPass;
 module.exports.clearUsers = clearUsers;
 module.exports.updateRate = updateRate;
+/*
 module.exports.addToQueue = addToQueue;
-module.exports.pullQueue = pullQueue;
+module.exports.pullQueue = pullQueue;*/

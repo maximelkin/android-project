@@ -2,9 +2,8 @@
 var net = require('net');
 var db = require('./db/db');
 var openState = require('ws').OPEN;
-//var WebSocketServer = require('ws').Server,
-//  wss = new WebSocketServer({ port: 8080 });
 
+var queue = [];
 
 //wss.on('connection', function (ws) {
 var server = net.createServer(function (ws) {
@@ -12,13 +11,13 @@ var server = net.createServer(function (ws) {
     ws.bufferSize = 0;
     console.log("CONNECTED");
     var accum = "";
-    ws.write('123321\0');
+    ws.write('hello');
+    console.log(ws.write);
     ws.on('end', function () {
         console.log('out');
         ws.id = null;
     });
     ws.on('data', function (mes) {
-        //var message = mes; //mes.split(' ');
         accum += mes;
         if (accum.slice(-1) == '#') {
             var message = accum.slice(0, accum.length - 1).split(' ');
@@ -67,18 +66,13 @@ var server = net.createServer(function (ws) {
 
                 case "search":
                     if (ws.verified)
-                        db.addToQueue(ws, function (err) {
-                            if (err){
-                                ws.write('1');
-                            }
-                            else ws.write('0');
-                        });
+                        queue.push(ws);
                     else
                         ws.write('1');
                     break;
 
                 case "gameov":
-                    if (ws.verified)
+                    if (ws.verified && ws.rival != null)
                         db.updateRate(ws.id, message[1] == 'win', function (err) {
                             if (err)
                                 ws.write('1')
@@ -86,6 +80,18 @@ var server = net.createServer(function (ws) {
                         });
                     else
                         ws.write('1');
+                    ws.rival = null;
+                    break;
+                case "wall":
+                    if (ws.rival == null) {
+                        ws.write('1');
+                        break;
+                    }
+                    if (ws.rival.readyState != openState) {
+                        ws.write('2');//rival leave
+                        break;
+                    }
+                    ws.rival.write(message[1]);
                     break;
             }
         }
@@ -94,37 +100,31 @@ var server = net.createServer(function (ws) {
 
 
 function flushQueue(id) {
-    db.pullQueue(id, function (err, queue) {
-        var s = queue.queue;
+    var s = queue;
 
-        while (s.length > 1) {
-            var x1 = s.pop(),
-                x2 = null;
-            while (x1.readyState != openState && s.length > 0)
-                x1 = s.pop();
-            if (x1.readyState != openState)
-                break;
-            if (s.length == 0) {
-                s.push(x1);
-                break;
-            }
-            while (x2.readyState != openState && s.length > 0)
-                x2 = s.pop();
+    while (s.length > 1) {
+        var x1 = s.pop(),
+            x2 = null;
+        while (x1.readyState != openState && s.length > 0)
+            x1 = s.pop();
+        if (x1.readyState != openState)
+            break;
+        if (s.length == 0) {
+            s.push(x1);
+            break;
+        }
+        while (x2.readyState != openState && s.length > 0)
+            x2 = s.pop();
 
-            if (x2.readyState != openState) {
-                s.push(x1);
-                break;
-            }
-            x1.send(x2._socket.remoteAddress);
-            x2.send(x1._socket.remoteAddress);
+        if (x2.readyState != openState) {
+            s.push(x1);
+            break;
         }
-        if (s.length == 1) {
-            db.addToQueue(socket, function (err) {
-                if (err)
-                    console.error("flushing fail");
-            });
-        }
-    });
+        x1.rival = x2;
+        x2.rival = x1;
+        x1.write("s");
+        x2.write("s");
+    }
 }
-setInterval(flushQueue.bind(this, 1), 3000);
-setInterval(flushQueue.bind(this, 2), 4000);
+setInterval(flushQueue, 3000);
+//setInterval(flushQueue.bind(this, 2), 4000);
