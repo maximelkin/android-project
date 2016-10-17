@@ -72,4 +72,7 @@ public class ServerConnection implements ServerConnectionImpl {
         return send(coordinates);
     }
 
+    public String getWall() throws IOException {
+        return readStr();
+    }
 }

@@ -17,4 +17,6 @@ public interface ServerConnectionImpl {
 
     //if game only
     boolean setWall(String coordinates);
+
+    String getWall() throws IOException;
 }
