@@ -1,4 +1,4 @@
-//import android.provider.Settings.Secure;
+//import android.provider.Settings.Secure; //uncomment this for android
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.net.Socket;
 public class ServerConnection implements ServerConnectionImpl {
     private static final String host = "localhost";
     private static final int port = 8080;
-    private static final String androidId = "322"; //Secure.ANDROID_ID;
+    private static final String androidId = "322"; //Secure.ANDROID_ID;// and this too
     private Socket socket;
     public InputStream inputStream;//???
     private DataOutputStream dataOutputStream;
@@ -56,12 +56,12 @@ public class ServerConnection implements ServerConnectionImpl {
     }
 
 
-    public String search() throws IOException, IllegalAccessException {
+    public boolean search() throws IOException, IllegalAccessException {
         dataOutputStream.writeBytes("search#");
         dataOutputStream.flush();
         if (readStr().equals("1"))
             throw new IllegalAccessException();
-        return readStr();
+        return readStr().equals("s");
     }
 
     public boolean gameOver(String result) {
@@ -74,5 +74,18 @@ public class ServerConnection implements ServerConnectionImpl {
 
     public String getWall() throws IOException {
         return readStr();
+    }
+
+    public boolean reconnect() {
+        try {
+            socket = new Socket(host, port);
+            inputStream = socket.getInputStream();
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            readStr();
+            return send("con " + androidId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
