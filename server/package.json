@@ -4,7 +4,6 @@
     "private": true,
     "dependencies": {
         "mongoose": "4.6.1",
-        "crypto": "0.0.3",
-        "ws": "1.1.1"
+        "crypto": "0.0.3"
     }
 }
