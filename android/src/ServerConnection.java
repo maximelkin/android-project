@@ -11,7 +11,7 @@ public class ServerConnection implements ServerConnectionImpl {
     private static final int port = 8080;
     private static final String androidId = "322"; //Secure.ANDROID_ID;// and this too
     private Socket socket;
-    public InputStream inputStream;//???
+    private InputStream inputStream;
     private DataOutputStream dataOutputStream;
 
     public ServerConnection() throws IOException {
@@ -19,7 +19,6 @@ public class ServerConnection implements ServerConnectionImpl {
         socket.setTcpNoDelay(true);
         inputStream = socket.getInputStream();
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        readStr();
         if (!send("con " + androidId)) {
             throw new ConnectException();
         }
