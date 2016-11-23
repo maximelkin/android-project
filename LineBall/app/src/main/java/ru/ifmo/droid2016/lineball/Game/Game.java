@@ -4,8 +4,8 @@ import android.support.v4.app.LoaderManager;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
 import android.view.View;
+
 import ru.ifmo.droid2016.lineball.Board.BoardInterface;
 import ru.ifmo.droid2016.lineball.Board.MoveFrom;
 import ru.ifmo.droid2016.lineball.Socket.ServerConnection;
@@ -13,7 +13,7 @@ import ru.ifmo.droid2016.lineball.Socket.ServerConnection;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Game implements LoaderManager.LoaderCallbacks<String>, View.OnTouchListener {
+public class Game implements LoaderManager.LoaderCallbacks<String> {
     private BoardInterface board;
     private static final long REDRAW_DELAY = 50;
     private final ServerConnection serverConnection;
@@ -28,6 +28,16 @@ public class Game implements LoaderManager.LoaderCallbacks<String>, View.OnTouch
     //write moves getter from user
 
     public void start() {
+        View view = new View(context);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO
+                //run setWall when you have coordinates
+            }
+        });
+        context.setContentView(view);
+
         Timer myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
             @Override
@@ -56,7 +66,7 @@ public class Game implements LoaderManager.LoaderCallbacks<String>, View.OnTouch
         switch (loader.getId()){
             case 1:
                 //got some move
-                board.setWall(data, MoveFrom.THIS_USER);
+                board.setWall(data, MoveFrom.RIVAL);
                 //rerun
                 context.getSupportLoaderManager().restartLoader(1, null, this);
                 break;
@@ -73,9 +83,11 @@ public class Game implements LoaderManager.LoaderCallbacks<String>, View.OnTouch
         //lol wtf
     }
 
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        //TODO:
-        return false;
+    private void setWall(String coordinates){
+        board.setWall(coordinates, MoveFrom.THIS_USER);
+        Bundle args = new Bundle();
+        args.putString("move", coordinates);
+        context.getSupportLoaderManager().initLoader(2, args, this).forceLoad();
     }
+
 }
