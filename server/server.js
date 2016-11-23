@@ -72,19 +72,22 @@ var server = net.createServer(function (socket) {
                         db.updateRate(socket.id, message[1] == 'win', function (err) {
                             if (err)
                                 socket.write('1')
-                            else socket.write('0');
+                            else socket.write('0'); //ok
                         });
                     else
-                        socket.write('1');
+                        socket.write('1'); //game not started
                     socket.rival = null;
                     break;
-                case "wall":
+                case "wall"://set wall
                     if (socket.rival == null) {
-                        socket.write('1');
+                        socket.write('1');//game not started
                     } else if (socket.rival.readyState != openState) {
                         socket.write('2');//rival leave
                     } else
-                        socket.rival.write(message[1]);
+                        socket.rival.write(message[1]);//ok
+                    break;
+                case "p"://ping
+                    socket.write((new Date()).getTime().toString());
                     break;
             }
         }
@@ -99,7 +102,7 @@ function flushQueue(id) {
         var x1 = s.pop();
         while (!x1.destroyed && s.length > 0)
             x1 = s.pop();
-        
+
         if (x1.destroyed)
             break;
         if (s.length == 0) {
