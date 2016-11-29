@@ -4,8 +4,11 @@ import android.support.v4.app.LoaderManager;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
+import ru.ifmo.droid2016.lineball.Board.Board;
 import ru.ifmo.droid2016.lineball.Board.BoardInterface;
 import ru.ifmo.droid2016.lineball.Board.MoveFrom;
 import ru.ifmo.droid2016.lineball.Socket.ServerConnection;
@@ -16,24 +19,30 @@ import java.util.TimerTask;
 public class Game implements LoaderManager.LoaderCallbacks<String> {
     private BoardInterface board;
     private static final long REDRAW_DELAY = 50;
+    private static final long BEFORE_DRAW_DELAY = 20;
+    private static final int GETTER_ID = 1;
+    private static final int SENDER_ID = 2;
+    private static final String TAG = "GAME";
     private final ServerConnection serverConnection;
     private final AppCompatActivity context;
 
-    public Game(ServerConnection serverConnection, AppCompatActivity context){
+    public Game(ServerConnection serverConnection, AppCompatActivity context) {
         this.serverConnection = serverConnection;
         this.context = context;
-        //board init
+        board = new Board();
     }
 
     //write moves getter from user
 
     public void start() {
         View view = new View(context);
-        view.setOnClickListener(new View.OnClickListener() {
+        view.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onTouch(View view, MotionEvent motionEvent) {
                 //TODO
-                //run setWall when you have coordinates
+                //use motionEvent.getEvent()
+                //run setWall(String)
+                return false;
             }
         });
         context.setContentView(view);
@@ -44,17 +53,20 @@ public class Game implements LoaderManager.LoaderCallbacks<String> {
             public void run() {
                 board.redraw();
             }
-        }, 20L, REDRAW_DELAY);
+        }, BEFORE_DRAW_DELAY, REDRAW_DELAY);
+
         //run moves getter
-        context.getSupportLoaderManager().initLoader(1, null, this).forceLoad();
+        Bundle bundle = new Bundle();
+        bundle.putInt("work_type", GETTER_ID);
+        context.getSupportLoaderManager().initLoader(GETTER_ID, bundle, this).forceLoad();
     }
 
     @Override
     public Loader<String> onCreateLoader(int i, Bundle bundle) {
-        switch (i){
-            case 1:
+        switch (bundle.getInt("work_type")) {
+            case GETTER_ID:
                 return new MoveGetter(context, serverConnection);
-            case 2:
+            case SENDER_ID:
                 return new MoveSender(context, serverConnection, bundle.getString("move"));
         }
 
@@ -63,31 +75,49 @@ public class Game implements LoaderManager.LoaderCallbacks<String> {
 
     @Override
     public void onLoadFinished(Loader<String> loader, String data) {
-        switch (loader.getId()){
-            case 1:
-                //got some move
-                board.setWall(data, MoveFrom.RIVAL);
-                //rerun
-                context.getSupportLoaderManager().restartLoader(1, null, this);
-                break;
-            case 2:
-                //move sent, ok
-                //nothing to do
-                //maybe
-                break;
+        if (data.equals("send success")) {
+            Log.d(TAG, data);
+            return;
         }
+        if (data.equals("send fail")) {
+            Log.e(TAG, data);
+            //TODO add connection troubles message
+            return;
+        }
+        if (data.equals("1")) {
+            Log.e(TAG, "game not started");
+            //TODO add app error message
+            return;
+        }
+        if (data.equals("2")) {
+            Log.d(TAG, "win because rival left");
+            //TODO add win message
+            return;
+        }
+        if (data.equals("connection fail")) {
+            Log.e(TAG, data);
+            //TODO add connection troubles message
+            return;
+        }
+        //got some move
+        board.setWall(data, MoveFrom.RIVAL);
+        //reload
+        Bundle bundle = new Bundle();
+        bundle.putInt("work_type", GETTER_ID);
+        context.getSupportLoaderManager().restartLoader(GETTER_ID, bundle, this);
     }
 
     @Override
     public void onLoaderReset(Loader<String> loader) {
-        //lol wtf
+
     }
 
-    private void setWall(String coordinates){
+    private void setWall(String coordinates) {
         board.setWall(coordinates, MoveFrom.THIS_USER);
         Bundle args = new Bundle();
+        args.putInt("work_type", SENDER_ID);
         args.putString("move", coordinates);
-        context.getSupportLoaderManager().initLoader(2, args, this).forceLoad();
+        context.getSupportLoaderManager().initLoader(SENDER_ID, args, this).forceLoad();
     }
 
 }

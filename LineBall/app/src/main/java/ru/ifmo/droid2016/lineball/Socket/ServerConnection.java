@@ -1,4 +1,5 @@
-package ru.ifmo.droid2016.lineball.Socket;//import android.provider.Settings.Secure; //uncomment this for android
+package ru.ifmo.droid2016.lineball.Socket;
+import android.support.annotation.NonNull;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,15 +11,13 @@ import java.util.Date;
 public class ServerConnection implements ServerConnectionImpl {
     private static final String host = "localhost";
     private static final int port = 8080;
-    private final String androidId; //Secure.ANDROID_ID;// and this too
-    private Socket socket;
+    private final Socket socket;
     private InputStream inputStream;
     private DataOutputStream dataOutputStream;
 
     public ServerConnection(String androidId) throws IOException {
         socket = new Socket(host, port);
         socket.setTcpNoDelay(true);
-        this.androidId = androidId;
         inputStream = socket.getInputStream();
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
         if (!send("con " + androidId)) {
@@ -26,6 +25,7 @@ public class ServerConnection implements ServerConnectionImpl {
         }
     }
 
+    @NonNull
     private String readStr() throws IOException {
         byte[] b = new byte[20];
         int len = inputStream.read(b);

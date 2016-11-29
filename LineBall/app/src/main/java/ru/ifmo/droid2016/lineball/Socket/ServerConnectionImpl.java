@@ -3,7 +3,7 @@ package ru.ifmo.droid2016.lineball.Socket;
 import java.io.IOException;
 
 //all bool - is success
-public interface ServerConnectionImpl {
+interface ServerConnectionImpl {
 
     //verify user for this session
     boolean verify(String password);
@@ -17,7 +17,7 @@ public interface ServerConnectionImpl {
     //return true when game starts
     boolean search() throws IOException, IllegalAccessException;
 
-    //send result of last game, result should be "win" or smth else
+    //send result of last game, result should be "win" or something else
     boolean gameOver(String result);
 
     //if game only

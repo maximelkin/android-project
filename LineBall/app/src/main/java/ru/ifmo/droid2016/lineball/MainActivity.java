@@ -3,6 +3,7 @@ package ru.ifmo.droid2016.lineball;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+//TODO
 public class MainActivity extends AppCompatActivity {
 
     @Override
