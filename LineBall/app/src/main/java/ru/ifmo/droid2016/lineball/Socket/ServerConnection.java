@@ -1,4 +1,5 @@
 package ru.ifmo.droid2016.lineball.Socket;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 
 import java.io.DataOutputStream;
@@ -8,17 +9,19 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.util.Date;
 
-public class ServerConnection implements ServerConnectionImpl {
+public class ServerConnection {
     private static final String host = "localhost";
     private static final int port = 8080;
-    private final Socket socket;
-    private InputStream inputStream;
-    private DataOutputStream dataOutputStream;
+    private final String androidId;
+    private static Socket socket;
+    private static InputStream inputStream;
+    private static DataOutputStream dataOutputStream;
 
-    public ServerConnection(String androidId) throws IOException {
+    public ServerConnection() throws IOException {
         socket = new Socket(host, port);
         socket.setTcpNoDelay(true);
         inputStream = socket.getInputStream();
+        androidId = Settings.Secure.ANDROID_ID;
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
         if (!send("con " + androidId)) {
             throw new ConnectException();
@@ -76,6 +79,7 @@ public class ServerConnection implements ServerConnectionImpl {
         writeStr("wall " + coordinates);
     }
 
+    @NonNull
     public String getWall() throws IOException {
         return readStr();
     }

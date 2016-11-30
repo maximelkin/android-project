@@ -1,51 +1,32 @@
 package ru.ifmo.droid2016.lineball.Game;
 
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-
 import ru.ifmo.droid2016.lineball.Board.Board;
-import ru.ifmo.droid2016.lineball.Board.BoardInterface;
 import ru.ifmo.droid2016.lineball.Board.MoveFrom;
-import ru.ifmo.droid2016.lineball.Socket.ServerConnection;
+import ru.ifmo.droid2016.lineball.R;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Game implements LoaderManager.LoaderCallbacks<String> {
-    private BoardInterface board;
+public class Game extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
+    private Board board;
     private static final long REDRAW_DELAY = 50;
     private static final long BEFORE_DRAW_DELAY = 20;
     private static final int GETTER_ID = 1;
     private static final int SENDER_ID = 2;
     private static final String TAG = "GAME";
-    private final ServerConnection serverConnection;
-    private final AppCompatActivity context;
 
-    public Game(ServerConnection serverConnection, AppCompatActivity context) {
-        this.serverConnection = serverConnection;
-        this.context = context;
-        board = new Board();
-    }
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super .onCreate(savedInstanceState);
+        setContentView(R.layout.game_layout);
 
-    //write moves getter from user
-
-    public void start() {
-        View view = new View(context);
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                //TODO
-                //use motionEvent.getEvent()
-                //run setWall(String)
-                return false;
-            }
-        });
-        context.setContentView(view);
 
         Timer myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
@@ -58,16 +39,22 @@ public class Game implements LoaderManager.LoaderCallbacks<String> {
         //run moves getter
         Bundle bundle = new Bundle();
         bundle.putInt("work_type", GETTER_ID);
-        context.getSupportLoaderManager().initLoader(GETTER_ID, bundle, this).forceLoad();
+        getSupportLoaderManager().initLoader(GETTER_ID, bundle, this).forceLoad();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //TODO write touch listener what should call setWall() when touching end
+        return true;    //action processed here
     }
 
     @Override
     public Loader<String> onCreateLoader(int i, Bundle bundle) {
         switch (bundle.getInt("work_type")) {
             case GETTER_ID:
-                return new MoveGetter(context, serverConnection);
+                return new MoveGetter(this);
             case SENDER_ID:
-                return new MoveSender(context, serverConnection, bundle.getString("move"));
+                return new MoveSender(this, bundle.getString("move"));
         }
 
         return null;
@@ -104,7 +91,7 @@ public class Game implements LoaderManager.LoaderCallbacks<String> {
         //reload
         Bundle bundle = new Bundle();
         bundle.putInt("work_type", GETTER_ID);
-        context.getSupportLoaderManager().restartLoader(GETTER_ID, bundle, this);
+        getSupportLoaderManager().restartLoader(GETTER_ID, bundle, this);
     }
 
     @Override
@@ -117,7 +104,6 @@ public class Game implements LoaderManager.LoaderCallbacks<String> {
         Bundle args = new Bundle();
         args.putInt("work_type", SENDER_ID);
         args.putString("move", coordinates);
-        context.getSupportLoaderManager().initLoader(SENDER_ID, args, this).forceLoad();
+        getSupportLoaderManager().initLoader(SENDER_ID, args, this).forceLoad();
     }
-
 }

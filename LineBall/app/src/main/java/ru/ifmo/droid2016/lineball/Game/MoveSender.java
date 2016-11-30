@@ -3,18 +3,16 @@ package ru.ifmo.droid2016.lineball.Game;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.content.AsyncTaskLoader;
-import ru.ifmo.droid2016.lineball.Socket.ServerConnection;
+import ru.ifmo.droid2016.lineball.Socket.ServerConnectionHandler;
 
 import java.io.IOException;
 
 class MoveSender extends AsyncTaskLoader<String> {
 
-    private final ServerConnection connection;
     private final String move;
     
-    MoveSender(Context context, ServerConnection connection, String move) {
+    MoveSender(Context context, String move) {
         super(context);
-        this.connection = connection;
         this.move = move;
     }
 
@@ -22,7 +20,7 @@ class MoveSender extends AsyncTaskLoader<String> {
     @Override
     public String loadInBackground() {
         try {
-            connection.setWall(move);
+            ServerConnectionHandler.getInstance().setWall(move);
         } catch (IOException e) {
             e.printStackTrace();
             return "send fail";

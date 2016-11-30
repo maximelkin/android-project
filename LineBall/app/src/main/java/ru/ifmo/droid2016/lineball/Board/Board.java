@@ -1,18 +1,16 @@
 package ru.ifmo.droid2016.lineball.Board;
 
-//TODO
-public class Board implements BoardInterface{
-    @Override
+//TODO all
+public class Board {
     public void setWall(String coord, MoveFrom from) {
 
     }
 
-    @Override
     public void redraw() {
 
     }
 
-    public Board(){
+    public Board() {
 
     }
 }
