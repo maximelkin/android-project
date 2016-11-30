@@ -124,4 +124,4 @@ function flushQueue(id) {
         x2.write("s");//send start message
     }
 }
-//setInterval(flushQueue, 3000);
+setInterval(flushQueue, 3000);

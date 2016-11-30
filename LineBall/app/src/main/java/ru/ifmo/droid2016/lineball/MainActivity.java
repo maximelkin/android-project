@@ -7,8 +7,6 @@ import ru.ifmo.droid2016.lineball.Socket.ServerConnection;
 //TODO
 public class MainActivity extends AppCompatActivity {
 
-    public ServerConnection serverConnection;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
