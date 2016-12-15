@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.widget.Button;
 import ru.ifmo.droid2016.lineball.Board.Board;
 import ru.ifmo.droid2016.lineball.Board.MoveFrom;
 import ru.ifmo.droid2016.lineball.R;
@@ -27,6 +29,7 @@ public class Game extends AppCompatActivity implements LoaderManager.LoaderCallb
         super .onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
 
+        board = new Board((LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE));
 
         Timer myTimer = new Timer();
         myTimer.schedule(new TimerTask() {
@@ -44,8 +47,8 @@ public class Game extends AppCompatActivity implements LoaderManager.LoaderCallb
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //TODO write touch listener what should call setWall() when touching end
-        return true;    //action processed here
+        //TODO write touch listener, what should call setWall(), when touching end
+        return true;    //"true" mean, what action processed here
     }
 
     @Override
@@ -66,9 +69,10 @@ public class Game extends AppCompatActivity implements LoaderManager.LoaderCallb
             Log.d(TAG, data);
             return;
         }
-        if (data.equals("send fail")) {
+        if (data.equals("send fail") || data.equals("connection fail")) {
             Log.e(TAG, data);
             //TODO add connection troubles message
+            //maybe i need special notify messages class
             return;
         }
         if (data.equals("1")) {
@@ -79,11 +83,6 @@ public class Game extends AppCompatActivity implements LoaderManager.LoaderCallb
         if (data.equals("2")) {
             Log.d(TAG, "win because rival left");
             //TODO add win message
-            return;
-        }
-        if (data.equals("connection fail")) {
-            Log.e(TAG, data);
-            //TODO add connection troubles message
             return;
         }
         //got some move

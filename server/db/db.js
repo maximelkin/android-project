@@ -3,12 +3,10 @@ var models = require('./models');
 var crypto = require('crypto');
 var user = models.user,
     queue = models.queue;
+var config = require("./config.json");
 
-var def_rate = 101;//throw out this file
-//two divisions
-var border = 100
+mongoose.connect(config.mongooseURL, { config: { autoIndex: false } });
 
-mongoose.connect('mongodb://localhost:2934/local', { config: { autoIndex: false } });
 var db = mongoose.connection;
 db.on('error', console.error.bind(
     console, 'connection error:'));
@@ -26,7 +24,7 @@ function createUser(androidId, pass, callback) {
     user.create({
         _id: androidId,
         pass: hashing(pass),
-        rate: def_rate
+        rate: config.defRate
     }, callback);
 }
 
@@ -44,36 +42,21 @@ function checkPass(androidId, pass, callback) {
 
 
 function clearUsers(callback) {
-    user.update({}, { rate: def_rate }, callback);
+    user.update({}, { rate: config.defRate }, callback);
 }
 
 
-function updateRate(androidId, ratingChange, callback) {
-    var change = ratingChange * 100 - 50
-    if (typeof (androidId) != 'string' || typeof (score) != 'number')
+function updateRate(androidId, isWon, callback) {
+    if (typeof (androidId) != 'string')
         return callback(new Error('dangerous data'));
+    var change = -config.deltaRatingChange;
+    if (isWon)
+        change = config.deltaRatingChange;
     user.updateOne({ _id: androidId }, { rate: { $inc: change } }, callback);
 }
-/*
-//------
-//queues
-function addToQueue(socket, callback) {
-    user.findOne({ _id: socket.id }, function (err, user) {
-        if (err)
-            return callback(err);
-        queue.update({ _id: (user.rate >= 100) }, { $push: { queue: socket } }, callback);
-    });
-}
-
-function pullQueue(id, callback) {
-    queue.findOneAndUpdate({ _id: id }, { queue: [] }, { new: false }, callback);
-}*/
 
 module.exports.createUser = createUser;
 module.exports.deleteUser = deleteUser;
 module.exports.checkPass = checkPass;
 module.exports.clearUsers = clearUsers;
 module.exports.updateRate = updateRate;
-/*
-module.exports.addToQueue = addToQueue;
-module.exports.pullQueue = pullQueue;*/

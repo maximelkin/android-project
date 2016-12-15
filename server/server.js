@@ -12,12 +12,12 @@ var server = net.createServer(function (socket) {
         console.log('user disconnected');
         socket.id = null;
     });
-
+    
     socket.on('data', function (mes) {
         accum += mes;
-        if (accum.slice(-1) == '#') {//last element == delimiter
-            var message = accum.slice(0, accum.length - 1).split(' ');
-            accum = "";
+        while (accum.indexOf('#') != -1) {
+            var message = accum.split('#')[0].split(' ');
+            accum = accum.split('#')[1];
             switch (message[0]) {
                 case "con":
                     if (socket.id) {
@@ -97,8 +97,8 @@ var server = net.createServer(function (socket) {
 
 function flushQueue(id) {
     var s = [queue, queue = []][0];//swap trick
-    //queue == []
     while (s.length > 0) {
+        //trying get alive user
         var x1 = s.pop();
         while (!x1.destroyed && s.length > 0)
             x1 = s.pop();
