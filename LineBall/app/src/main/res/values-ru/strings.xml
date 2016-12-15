@@ -5,4 +5,12 @@
     <string name="menu_high">Рекорды</string>
     <string name="menu_settings">Настройки</string>
     <string name="menu_about">Об игре</string>
+    <string name="text_about">Участвуют два игрока, у каждого есть шарик красного или синего цвета
+        и возможность рисовать на игровом поле стены того же цвета, о которые ударяются шарики,
+        ускоряясь или замедляясь. При столкновении шариков или вылете одного из них за пределы
+        поля игра заканчивается.</string>
+    <string name="text_developers">Разработчики</string>
+    <string name="author1">maximelkin</string>
+    <string name="author2">KiriosK</string>
+    <string name="author3">glebvr</string>
 </resources>
