@@ -13,18 +13,18 @@ public class Point {
     }
 
     Point sum (Point p){
-        return new Point(this.x + p.x, this.y + p.y);
+        return new Point(x + p.x, y + p.y);
     }
 
     Point sub(Point p){
-        return new Point(this.x - p.x, this.y - p.y);
+        return new Point(x - p.x, y - p.y);
     }
 
     double cp(Point p){
-        return this.x * p.y - this.y * p.x;
+        return x * p.y - y * p.x;
     }
 
     double sp(Point p){
-        return this.x * p.x + this.y * p.y;
+        return x * p.x + y * p.y;
     }
 }
