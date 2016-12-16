@@ -1,5 +1,7 @@
 package ru.ifmo.droid2016.lineball.Board;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 
 //TODO all
@@ -9,12 +11,14 @@ public class Board {
     private Ball b1, b2;
 
 
-    public void setWall(String coord, MoveFrom from) {
+    public void setWall(String coord, @NonNull Who from) {
 
     }
 
-    public void redraw() {
-
+    //should return who won or null if game not ended
+    @Nullable
+    public Who redraw() {
+        return null;
     }
 
     public Board(LayoutInflater inflater) {
