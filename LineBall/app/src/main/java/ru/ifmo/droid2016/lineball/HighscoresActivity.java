@@ -9,5 +9,6 @@ public class HighscoresActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_highscores);
+        getSupportActionBar().hide();
     }
 }

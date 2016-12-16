@@ -53,6 +53,7 @@
                     android:adjustViewBounds="true"
                     android:src="@drawable/author1" />
                 <TextView
+                    android:id="@+id/text_av1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/author1"
@@ -74,6 +75,7 @@
                     android:adjustViewBounds="true"
                     android:src="@drawable/author2" />
                 <TextView
+                    android:id="@+id/text_av2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/author2"
@@ -95,6 +97,7 @@
                     android:adjustViewBounds="true"
                     android:src="@drawable/author3" />
                 <TextView
+                    android:id="@+id/text_av3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/author3"
