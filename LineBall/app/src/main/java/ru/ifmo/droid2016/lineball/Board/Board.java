@@ -5,6 +5,9 @@ import android.view.LayoutInflater;
 //TODO all
 public class Board {
     private final LayoutInflater layoutInflater;
+    private Wall[] walls;
+    private Ball b1, b2;
+
 
     public void setWall(String coord, MoveFrom from) {
 
