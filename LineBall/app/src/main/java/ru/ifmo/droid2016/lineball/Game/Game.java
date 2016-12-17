@@ -1,5 +1,7 @@
 package ru.ifmo.droid2016.lineball.Game;
 
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.os.Bundle;
@@ -8,9 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.widget.Button;
 import ru.ifmo.droid2016.lineball.Board.Board;
-import ru.ifmo.droid2016.lineball.Board.MoveFrom;
+import ru.ifmo.droid2016.lineball.Board.Who;
+import ru.ifmo.droid2016.lineball.MainActivity;
 import ru.ifmo.droid2016.lineball.R;
 
 import java.util.Timer;
@@ -26,8 +28,11 @@ public class Game extends AppCompatActivity implements LoaderManager.LoaderCallb
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super .onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
+
+        //prohibit rotate
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         board = new Board((LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE));
 
@@ -35,7 +40,10 @@ public class Game extends AppCompatActivity implements LoaderManager.LoaderCallb
         myTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                board.redraw();
+                Who winner = board.redraw();
+                if (winner != null) {
+                    gameFinish(winner);
+                }
             }
         }, BEFORE_DRAW_DELAY, REDRAW_DELAY);
 
@@ -73,20 +81,22 @@ public class Game extends AppCompatActivity implements LoaderManager.LoaderCallb
             Log.e(TAG, data);
             //TODO add connection troubles message
             //maybe i need special notify messages class
+            gameFinish(Who.RIVAL);
             return;
         }
         if (data.equals("1")) {
             Log.e(TAG, "game not started");
             //TODO add app error message
+            //and go out?
             return;
         }
         if (data.equals("2")) {
             Log.d(TAG, "win because rival left");
-            //TODO add win message
+            gameFinish(Who.THIS_USER);
             return;
         }
         //got some move
-        board.setWall(data, MoveFrom.RIVAL);
+        board.setWall(data, Who.RIVAL);
         //reload
         Bundle bundle = new Bundle();
         bundle.putInt("work_type", GETTER_ID);
@@ -99,10 +109,18 @@ public class Game extends AppCompatActivity implements LoaderManager.LoaderCallb
     }
 
     private void setWall(String coordinates) {
-        board.setWall(coordinates, MoveFrom.THIS_USER);
+        board.setWall(coordinates, Who.THIS_USER);
         Bundle args = new Bundle();
         args.putInt("work_type", SENDER_ID);
         args.putString("move", coordinates);
         getSupportLoaderManager().initLoader(SENDER_ID, args, this).forceLoad();
+    }
+
+    private void gameFinish(Who winner) {
+        //TODO notify user about win/loose
+
+        //giving control to main activity
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

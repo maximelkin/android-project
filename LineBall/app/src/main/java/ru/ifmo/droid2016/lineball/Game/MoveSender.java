@@ -10,7 +10,7 @@ import java.io.IOException;
 class MoveSender extends AsyncTaskLoader<String> {
 
     private final String move;
-    
+
     MoveSender(Context context, String move) {
         super(context);
         this.move = move;
