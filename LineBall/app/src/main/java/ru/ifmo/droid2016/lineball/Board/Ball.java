@@ -4,26 +4,26 @@ public class Ball {
 
     Point pos;
     Point dir;
-    double v;
+    double v = 5;
 
     boolean collision(Ball ball){
         Line l1 = new Line(pos, pos.sum(dir));
         Line l2 = new Line(ball.pos, ball.pos.sum(dir));
-        //Траектории пересекаются
+        //Paths intersect
         if (l1.intersect(l2)){
             Point p = l1.intersectPoint(l2);
-            //Проверка на пересечение путей
+            //Check for paths intersect
             if (p.sub(ball.pos).sp(ball.dir) < 0 || p.sub(pos).sp(dir) < 0)
                 return false;
-            //TODO Проверка на столкновения(учесть скорость)
+            //TODO Check for collision(Use speed)
         }
-        //Движутся вдоль одной прямой
+        //Moving on the same line
         if(l1.eq(l2)){
-            //Один летит за другим
+            //One follow another
             if(dir.sp(ball.dir) > 0){
-                //TODO Учесть скорость
+                //TODO Use speed
             }
-            //Летят навстречу друг другу
+            //Moving to each other
             if (pos.sub(ball.pos).sp(ball.dir) < 0)
                 return false;
             return true;
@@ -34,16 +34,16 @@ public class Ball {
 
     boolean collision(Wall wall){
         Line l1 = new Line(pos, pos.sum(dir));
-        //Траектория пересекается с линией стены
+        //Intersect with wall line
         if (l1.intersect(wall.l)){
             Point p = l1.intersectPoint(wall.l);
             if (p.sub(wall.p1).sp(wall.p2.sub(wall.p1)) * p.sub(wall.p2).sp(wall.p1.sub(wall.p2)) < 0 || p.sub(pos).sp(dir) < 0)
                 return false;
             return true;
         }
-        //Движется по линии стены
+        //Moving on wall line
         if(l1.eq(wall.l)){
-            //Летит от стены
+            //Away from wall
             if(wall.p2.sub(pos).sp(dir) < 0 && wall.p1.sub(pos).sp(dir) < 0)
                 return false;
             return true;

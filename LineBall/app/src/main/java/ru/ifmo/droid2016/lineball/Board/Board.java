@@ -2,10 +2,12 @@ package ru.ifmo.droid2016.lineball.Board;
 
 import android.view.LayoutInflater;
 
+import java.util.ArrayList;
+
 //TODO all
 public class Board {
     private final LayoutInflater layoutInflater;
-    private Wall[] walls;
+    private ArrayList<Wall> walls1, walls2;
     private Ball b1, b2;
 
 
