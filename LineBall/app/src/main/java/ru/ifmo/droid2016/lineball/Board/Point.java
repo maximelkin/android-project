@@ -20,6 +20,10 @@ public class Point {
         return new Point(x - p.x, y - p.y);
     }
 
+    Point mul(double k){
+        return new Point(k * x, k * y);
+    }
+
     double cp(Point p){
         return x * p.y - y * p.x;
     }

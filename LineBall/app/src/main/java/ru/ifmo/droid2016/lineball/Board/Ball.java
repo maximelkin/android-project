@@ -4,50 +4,47 @@ public class Ball {
 
     Point pos;
     Point dir;
+    int r;
     double v = 5;
+    double eps = 1e-9;
 
     boolean collision(Ball ball){
-        Line l1 = new Line(pos, pos.sum(dir));
-        Line l2 = new Line(ball.pos, ball.pos.sum(dir));
-        //Paths intersect
-        if (l1.intersect(l2)){
-            Point p = l1.intersectPoint(l2);
-            //Check for paths intersect
-            if (p.sub(ball.pos).sp(ball.dir) < 0 || p.sub(pos).sp(dir) < 0)
-                return false;
-            //TODO Check for collision(Use speed)
-        }
-        //Moving on the same line
-        if(l1.eq(l2)){
-            //One follow another
-            if(dir.sp(ball.dir) > 0){
-                //TODO Use speed
-            }
-            //Moving to each other
-            if (pos.sub(ball.pos).sp(ball.dir) < 0)
-                return false;
-            return true;
+        Ball b1 = this;
+        Ball b2 = ball;
+        b2.pos.sub(b1.pos);
+        b1.pos = new Point(0, 0);
+        Line line = new Line(-2 * b2.pos.x, -2 * b2.pos.y, b2.pos.x * b2.pos.x + b2.pos.y * b2.pos.y + b1.r * b1.r - b2.r * b2.r);
+        return checkIntersect(b1, line);
+    }
 
+    boolean checkIntersect(Ball b, Line l){
+        double x0 = -l.A * l.C / (l.A * l.A + l.B * l.B), y0 = -l.B * l.C / (l.A * l.A + l.B * l.B);
+        if (l.C * l.C > b.r * b.r * (l.A * l.A + l.B * l.B) + eps){
+            return false;
+        } else {
+            return true;
         }
-        return false;
     }
 
     boolean collision(Wall wall){
-        Line l1 = new Line(pos, pos.sum(dir));
-        //Intersect with wall line
-        if (l1.intersect(wall.l)){
-            Point p = l1.intersectPoint(wall.l);
-            if (p.sub(wall.p1).sp(wall.p2.sub(wall.p1)) * p.sub(wall.p2).sp(wall.p1.sub(wall.p2)) < 0 || p.sub(pos).sp(dir) < 0)
-                return false;
+        Ball b1 = this;
+        b1.pos = new Point(0, 0);
+        Line line = new Line(wall.p1.sub(b1.pos), wall.p2.sub(b1.pos));
+        return checkIntersect(b1, line);
+    }
+
+    public void rotate(Wall w) {
+        Point n = new Point(-w.l.B, w.l.A);
+        double angle = 2 * Math.atan2(dir.cp(n), dir.sp(n));
+        double x1 = dir.x * Math.cos(angle) - dir.y * Math.sin(angle);
+        double y1 = dir.y * Math.cos(angle) + dir.x * Math.sin(angle);
+        dir = new Point(x1, y1);
+    }
+
+    public boolean outOfBoard() {
+        if(pos.x < 0 || pos.x > 1024 || pos.y < 0 || pos.y > 1024)
+            return false;
+        else
             return true;
-        }
-        //Moving on wall line
-        if(l1.eq(wall.l)){
-            //Away from wall
-            if(wall.p2.sub(pos).sp(dir) < 0 && wall.p1.sub(pos).sp(dir) < 0)
-                return false;
-            return true;
-        }
-        return false;
     }
 }
