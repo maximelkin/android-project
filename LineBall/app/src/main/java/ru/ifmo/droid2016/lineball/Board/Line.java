@@ -8,6 +8,12 @@ public class Line {
         getCoeff(p1, p2);
     }
 
+    Line(double A, double B, double C){
+        this.A = A;
+        this.B = B;
+        this.C = C;
+    }
+
     private void getCoeff(Point p1, Point p2) {
         this.A = p2.y - p1.y;
         this.B = p1.x - p2.x;
