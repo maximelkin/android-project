@@ -42,9 +42,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/menu_high"
+            android:text="@string/menu_help"
             android:textSize="24sp"
-            android:id="@+id/btn_menu_high"/>
+            android:id="@+id/btn_menu_help"/>
 
         <Button
             android:layout_width="match_parent"

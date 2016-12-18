@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">LineBall</string>
     <string name="menu_play">Играть</string>
-    <string name="menu_high">Рекорды</string>
+    <string name="menu_help">Справка</string>
     <string name="menu_settings">Настройки</string>
     <string name="menu_about">Об игре</string>
     <string name="text_about">Участвуют два игрока, у каждого есть шарик красного или синего цвета

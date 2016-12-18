@@ -12,7 +12,7 @@ import ru.ifmo.droid2016.lineball.Socket.ServerConnection;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btn_menu_play, btn_menu_high, btn_menu_settings, btn_menu_about;
+    private Button btn_menu_play, btn_menu_help, btn_menu_settings, btn_menu_about;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,12 +20,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         btn_menu_play = (Button)findViewById(R.id.btn_menu_play);
-        btn_menu_high = (Button)findViewById(R.id.btn_menu_high);
+        btn_menu_help = (Button)findViewById(R.id.btn_menu_help);
         btn_menu_settings = (Button)findViewById(R.id.btn_menu_settings);
         btn_menu_about = (Button)findViewById(R.id.btn_menu_about);
 
         btn_menu_play.setOnClickListener(this);
-        btn_menu_high.setOnClickListener(this);
+        btn_menu_help.setOnClickListener(this);
         btn_menu_settings.setOnClickListener(this);
         btn_menu_about.setOnClickListener(this);
     }
@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              case R.id.btn_menu_play:
                  startActivity(new Intent(this, GameActivity.class));
                  break;
-             case R.id.btn_menu_high:
-                 startActivity(new Intent(this, HighscoresActivity.class));
+             case R.id.btn_menu_help:
+                 startActivity(new Intent(this, HelpActivity.class));
                  break;
              case R.id.btn_menu_settings:
                  startActivity(new Intent(this, SettingsActivity.class));
