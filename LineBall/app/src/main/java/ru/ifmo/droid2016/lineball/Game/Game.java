@@ -25,6 +25,7 @@ public class Game extends AppCompatActivity implements LoaderManager.LoaderCallb
     private static final int GETTER_ID = 1;
     private static final int SENDER_ID = 2;
     private static final String TAG = "GAME";
+    String coord = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,8 +56,24 @@ public class Game extends AppCompatActivity implements LoaderManager.LoaderCallb
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //TODO write touch listener, what should call setWall(), when touching end
-        return true;    //"true" mean, what action processed here
+        double x = event.getX();
+        double y = event.getY();
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                coord += x + " " + y + " ";
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+                coord += x + " " + y;
+                setWall(coord);
+                coord = "";
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                break;
+        }
+        return true;
     }
 
     @Override
