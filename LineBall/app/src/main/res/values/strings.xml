@@ -12,4 +12,11 @@
     <string name="author1">maximelkin</string>
     <string name="author2">KiriosK</string>
     <string name="author3">glebvr</string>
+    <string name="help01">Game for two players.</string>
+    <string name="help02">Each player has a ball.</string>
+    <string name="help03">Players can draw walls of their color on the gameboard.</string>
+    <string name="help04">The ball moves slower if it hits the wall of the same color.</string>
+    <string name="help05">The ball moves faster if it hits the wall of the opponent\'s color.</string>
+    <string name="help06">The wall breaks after one hit of the same color ball or two hits of the opponent\'s ball.</string>
+    <string name="help07">The game ends if balls hit each other, after 30 seconds, if one ball goes out of the gameboard or stops.</string>
 </resources>

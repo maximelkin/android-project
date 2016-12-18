@@ -13,4 +13,11 @@
     <string name="author1">maximelkin</string>
     <string name="author2">KiriosK</string>
     <string name="author3">glebvr</string>
+    <string name="help01">В игре участвуют два человека.</string>
+    <string name="help02">У каждого игрока есть шарик.</string>
+    <string name="help03">Игроки могут рисовать стены своего цвета на поле.</string>
+    <string name="help04">Удар шарика о стену того же цвета замедляет шарик.</string>
+    <string name="help05">Удар шарика о стену другого цвета ускоряет шарик.</string>
+    <string name="help06">Стена ломается: для своего цвета - одним ударом шарика, для другого цвета - двумя ударами.</string>
+    <string name="help07">Игра заканчивается при столкновении шариков, по истечении 30 секунд, а также если один из шариков вылетает за пределы игрового поля или останавливается.</string>
 </resources>
