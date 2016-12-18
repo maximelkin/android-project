@@ -41,8 +41,8 @@ public class Ball {
         dir = new Point(x1, y1);
     }
 
-    public boolean outOfBoard() {
-        if(pos.x < 0 || pos.x > 1024 || pos.y < 0 || pos.y > 1024)
+    public boolean outOfBoard(double mX, double mY) {
+        if(pos.x < 0 || pos.x > mX || pos.y < 0 || pos.y > mY)
             return false;
         else
             return true;
