@@ -19,4 +19,5 @@
     <string name="help05">The ball moves faster if it hits the wall of the opponent\'s color.</string>
     <string name="help06">The wall breaks after one hit of the same color ball or two hits of the opponent\'s ball.</string>
     <string name="help07">The game ends if balls hit each other, after 30 seconds, if one ball goes out of the gameboard or stops.</string>
+    <string name="player_search">Looking for players…</string>
 </resources>

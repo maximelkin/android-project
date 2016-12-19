@@ -8,6 +8,23 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="ru.ifmo.droid2016.lineball.GameActivity">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+         <ProgressBar
+             android:id="@+id/search_progress"
+             android:layout_width="match_parent"
+             android:layout_height="96sp" />
+         <TextView
+             android:id="@+id/search_text"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:textSize="32sp"
+             android:gravity="center"
+             android:text="@string/player_search" />
+    </LinearLayout>
 </RelativeLayout>
