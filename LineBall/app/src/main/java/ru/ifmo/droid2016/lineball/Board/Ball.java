@@ -1,5 +1,9 @@
 package ru.ifmo.droid2016.lineball.Board;
 
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+
 public class Ball {
 
     Point pos;
@@ -46,5 +50,12 @@ public class Ball {
             return false;
         else
             return true;
+    }
+
+    public void onDraw(Canvas canvas)
+    {
+        Paint p = new Paint();
+        p.setColor(Color.RED);
+        canvas.drawCircle((float) pos.x, (float) pos.y, r, p);
     }
 }

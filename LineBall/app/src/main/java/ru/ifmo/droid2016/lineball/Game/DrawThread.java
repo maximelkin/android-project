@@ -5,10 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.view.SurfaceHolder;
 
+import ru.ifmo.droid2016.lineball.Board.Board;
+
 public class DrawThread extends Thread{
 
     private boolean runFlag = false;
     private SurfaceHolder surfaceHolder;
+    private Board board;
 
     public DrawThread(SurfaceHolder surfaceHolder) {
         this.surfaceHolder = surfaceHolder;
@@ -27,6 +30,7 @@ public class DrawThread extends Thread{
                 canvas = surfaceHolder.lockCanvas(null);
                 synchronized (surfaceHolder) {
                     canvas.drawColor(Color.WHITE);
+                    board.drawBoard();
                 }
             } finally {
                 if(canvas != null){
