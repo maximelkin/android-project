@@ -8,10 +8,11 @@ import java.util.ArrayList;
 
 //TODO all
 public class Board {
+	double dv = 1, maxX = 1024, maxY = 1024;
     private final LayoutInflater layoutInflater;
     private ArrayList<Wall> walls1, walls2;
     private Ball b1, b2;
-    double dv = 1, maxX = 1024, maxY = 1024;
+    
 
     public Who check() {
         if (b1.outOfBoard(maxX, maxY)) {
