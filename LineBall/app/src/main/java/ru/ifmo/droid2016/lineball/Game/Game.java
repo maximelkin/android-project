@@ -30,7 +30,8 @@ public class Game extends AppCompatActivity implements LoaderManager.LoaderCallb
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.game_layout);
+        setContentView(new GameView(this));
+        // setContentView(R.layout.game_layout);
 
         //prohibit rotate
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
