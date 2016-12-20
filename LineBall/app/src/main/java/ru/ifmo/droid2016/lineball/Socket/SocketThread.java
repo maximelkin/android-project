@@ -3,6 +3,7 @@ package ru.ifmo.droid2016.lineball.Socket;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -25,7 +26,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
 
     public SocketThread(String name, Handler uiHandler) throws IOException {
         super(name);
-        this.socket = new ServerConnection();
+       // this.socket = new ServerConnection();
         this.uiHandler = uiHandler;
     }
 
@@ -43,9 +44,10 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message message) {
-        boolean result = true;
+        Log.e("Socket thread", message.toString());
+      /*  boolean result = true;
         switch (message.what) {
-            case MSG_VERIFY:
+           case MSG_VERIFY:
                 result = socket.verify((String) message.obj);
                 break;
             case MSG_REGISTRATION:
@@ -78,7 +80,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                 break;
         }
         if (!result)
-            uiHandler.sendEmptyMessage(MSG_ERROR);
+            uiHandler.sendEmptyMessage(MSG_ERROR);*/
         return true;
     }
 

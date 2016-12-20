@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import ru.ifmo.droid2016.lineball.Board.Board;
 import ru.ifmo.droid2016.lineball.Board.Who;
@@ -51,6 +52,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
                 Who who = (msg.arg1 == 0 ? THIS_USER : RIVAL);
 
                 board.setWall((String) msg.obj, who);
+                Log.e("draw thread", "added wall");
                 break;
             case MSG_UPD:
                 Canvas c = surfaceHolder.lockCanvas();
@@ -65,6 +67,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
                     Message message = Message.obtain(uiHandler, MSG_END, who_won, 0);
                     uiHandler.sendMessage(message);
                 }
+                Log.e("draw thread", "update");
                 break;
         }
         return true;
