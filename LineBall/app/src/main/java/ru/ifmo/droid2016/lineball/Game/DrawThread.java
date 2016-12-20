@@ -48,11 +48,8 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case MSG_ADD:
-                Who who;
-                if (msg.arg1 == 0)
-                    who = Who.THIS_USER;
-                else
-                    who = RIVAL;
+                Who who = (msg.arg1 == 0 ? THIS_USER : RIVAL);
+
                 board.setWall((String) msg.obj, who);
                 break;
             case MSG_UPD:
@@ -64,11 +61,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
                 surfaceHolder.unlockCanvasAndPost(c);
                 Who checked = board.check();
                 if (checked != null) {
-                    int who_won;
-                    if (checked == THIS_USER)
-                        who_won = 0;
-                    else
-                        who_won = 1;
+                    int who_won = (checked == THIS_USER ? 0 : 1);
                     Message message = Message.obtain(uiHandler, MSG_END, who_won, 0);
                     uiHandler.sendMessage(message);
                 }
@@ -79,13 +72,9 @@ class DrawThread extends HandlerThread implements Handler.Callback {
 
 
     void setWall(String coord, @NonNull Who who) {
-        int x;
-        if (who == RIVAL)
-            x = 1;
-        else
-            x = 0;
-        Message msg = Message.obtain(mReceiver, MSG_ADD, x, 0, coord);
-        mReceiver.sendMessage(msg);
+        int who_set = (who == RIVAL ? 1 : 0);
+        Message msg = Message.obtain(mReceiver, MSG_ADD, who_set, 0, coord);
+        mReceiver.sendMessageAtFrontOfQueue(msg);
     }
 
     void redraw() {

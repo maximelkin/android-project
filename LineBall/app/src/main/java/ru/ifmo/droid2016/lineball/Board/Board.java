@@ -32,10 +32,6 @@ public class Board {
                 return null;
             }
         }
-        return null;
-    }
-
-    public void redraw() {
         for (Wall wall : walls1) {
             if (b1.collision(wall)) {
                 b1.rotate(wall);
@@ -75,6 +71,7 @@ public class Board {
                 break;
             }
         }
+        return null;
     }
 
     public void setWall(String coord, @NonNull Who from) {
