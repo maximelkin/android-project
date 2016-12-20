@@ -1,6 +1,0 @@
-{
-    "defRate": 401,
-    "border": 500,
-    "deltaRatingChange": 100,
-    "mongooseURL": "mongodb://localhost:2934/local"
-}
