@@ -8,7 +8,7 @@ public class Line {
         getCoeff(p1, p2);
     }
 
-    Line(double A, double B, double C){
+    Line(double A, double B, double C) {
         this.A = A;
         this.B = B;
         this.C = C;

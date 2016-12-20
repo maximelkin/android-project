@@ -3,32 +3,32 @@ package ru.ifmo.droid2016.lineball.Board;
 public class Point {
     double x, y;
 
-    Point(double x, double y){
+    Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    double length(){
+    double length() {
         return Math.sqrt(x * x + y * y);
     }
 
-    Point sum (Point p){
+    Point sum(Point p) {
         return new Point(x + p.x, y + p.y);
     }
 
-    Point sub(Point p){
+    Point sub(Point p) {
         return new Point(x - p.x, y - p.y);
     }
 
-    Point mul(double k){
+    Point mul(double k) {
         return new Point(k * x, k * y);
     }
 
-    double cp(Point p){
+    double cp(Point p) {
         return x * p.y - y * p.x;
     }
 
-    double sp(Point p){
+    double sp(Point p) {
         return x * p.x + y * p.y;
     }
 }

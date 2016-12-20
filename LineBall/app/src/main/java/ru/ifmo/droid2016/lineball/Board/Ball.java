@@ -56,6 +56,7 @@ public class Ball {
     {
         Paint p = new Paint();
         p.setColor(Color.RED);
+        //TODO convert coordinates
         canvas.drawCircle((float) pos.x, (float) pos.y, r, p);
     }
 }

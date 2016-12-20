@@ -6,7 +6,7 @@ public class ServerConnectionHandler {
     private static ServerConnection serverConnection;
 
     public static ServerConnection getInstance() throws IOException {
-        if (serverConnection == null){
+        if (serverConnection == null) {
             serverConnection = new ServerConnection();
         }
         return serverConnection;

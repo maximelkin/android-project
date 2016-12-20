@@ -1,4 +1,5 @@
 package ru.ifmo.droid2016.lineball.Socket;
+
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 
@@ -17,7 +18,7 @@ public class ServerConnection {
     private static InputStream inputStream;
     private static DataOutputStream dataOutputStream;
 
-    public ServerConnection() throws IOException {
+    ServerConnection() throws IOException {
         socket = new Socket(host, port);
         socket.setTcpNoDelay(true);
         inputStream = socket.getInputStream();

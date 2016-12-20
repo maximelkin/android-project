@@ -2,18 +2,15 @@ package ru.ifmo.droid2016.lineball.Board;
 
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 
 import java.util.ArrayList;
 
 //TODO all
 public class Board {
-	double dv = 1, maxX = 1024, maxY = 1024;
-    private final LayoutInflater layoutInflater;
-    private ArrayList<Wall> walls1, walls2;
+    double dv = 1, maxX = 1024, maxY = 1024;
+    ArrayList<Wall> walls1, walls2;
     private Ball b1, b2;
-    
+
 
     public Who check() {
         if (b1.outOfBoard(maxX, maxY)) {
@@ -35,7 +32,10 @@ public class Board {
                 return null;
             }
         }
+        return null;
+    }
 
+    public void redraw() {
         for (Wall wall : walls1) {
             if (b1.collision(wall)) {
                 b1.rotate(wall);
@@ -75,30 +75,19 @@ public class Board {
                 break;
             }
         }
-        return null;
     }
 
     public void setWall(String coord, @NonNull Who from) {
-
-    }
-
-    //should return who won or null if game not ended
-    @Nullable
-    public Who redraw() {
-        return check();
-    }
-
-    public Board(LayoutInflater inflater) {
-        layoutInflater = inflater;
+        //TODO
     }
 
     public void drawBoard(Canvas canvas) {
         b1.onDraw(canvas);
         b2.onDraw(canvas);
-        for(Wall wall:walls1){
+        for (Wall wall : walls1) {
             wall.onDraw(canvas);
         }
-        for(Wall wall:walls2){
+        for (Wall wall : walls2) {
             wall.onDraw(canvas);
         }
     }

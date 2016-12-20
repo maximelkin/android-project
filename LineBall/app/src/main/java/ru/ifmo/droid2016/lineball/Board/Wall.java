@@ -9,17 +9,17 @@ public class Wall {
     Line l;
     int k = 2;
 
-    Wall(Point p1, Point p2, Line l){
+    Wall(Point p1, Point p2, Line l) {
         this.p1 = p1;
         this.p2 = p2;
         this.l = l;
     }
 
-    public void onDraw(Canvas canvas)
-    {
+    public void onDraw(Canvas canvas) {
         Paint p = new Paint();
         p.setColor(Color.RED);
         p.setStrokeWidth(10);
+        //TODO convert coordinates
         canvas.drawLine((float) p1.x, (float) p1.y, (float) p2.x, (float) p2.y, p);
     }
 }
