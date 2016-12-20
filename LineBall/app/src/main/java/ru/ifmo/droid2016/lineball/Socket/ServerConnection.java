@@ -59,18 +59,13 @@ public class ServerConnection {
         }
     }
 
-    public boolean verify(String password) {
+    boolean verify(String password) {
         return send("ver " + password);
     }
 
-    public boolean registration(String password) {
+    boolean registration(String password) {
         return send("reg " + password);
     }
-
-    boolean resetUser() {
-        return send("reset");
-    }
-
 
     boolean search() {
         try {

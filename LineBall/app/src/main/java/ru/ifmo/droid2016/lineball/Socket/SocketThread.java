@@ -6,7 +6,9 @@ import android.os.Message;
 
 import java.io.IOException;
 
-import static ru.ifmo.droid2016.lineball.Game.Game.*;
+import static ru.ifmo.droid2016.lineball.Game.Game.MSG_END;
+import static ru.ifmo.droid2016.lineball.Game.Game.MSG_WALL;
+import static ru.ifmo.droid2016.lineball.Game.Game.REDRAW_DELAY;
 
 public class SocketThread extends HandlerThread implements Handler.Callback {
 
@@ -15,10 +17,11 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     private Handler mReceiver;
     private final static int MSG_VERIFY = 201;
     private final static int MSG_REGISTRATION = 202;
-    private final static int MSG_RESET = 203;
     private final static int MSG_SEARCH = 204;
+    public final static int MSG_ERROR = 205;
     private final static int MSG_SET = 206;
     private final static int MSG_GET = 207;
+    public final static int MSG_START = 208;
 
     public SocketThread(String name, Handler uiHandler) throws IOException {
         super(name);
@@ -48,11 +51,13 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
             case MSG_REGISTRATION:
                 result = socket.registration((String) message.obj);
                 break;
-            case MSG_RESET:
-                result = socket.resetUser();
-                break;
+
+            //WARNING! IT FREEZE THIS THREAD
             case MSG_SEARCH:
                 result = socket.search();
+                if (result) {
+                    uiHandler.sendEmptyMessage(MSG_START);
+                }
                 break;
             case MSG_END:
                 socket.gameOver((String) message.obj);
@@ -70,6 +75,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                     result = false;
                     e.printStackTrace();
                 }
+                break;
         }
         if (!result)
             uiHandler.sendEmptyMessage(MSG_ERROR);
@@ -88,11 +94,6 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
         mReceiver.sendMessage(Message.obtain(mReceiver, MSG_REGISTRATION, password));
     }
 
-    public void resetUser() {
-        mReceiver.sendEmptyMessage(MSG_RESET);
-    }
-
-
     public void search() {
         mReceiver.sendEmptyMessage(MSG_SEARCH);
     }
@@ -109,4 +110,5 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     public void getWall() {
         mReceiver.sendEmptyMessage(MSG_GET);
     }
+
 }

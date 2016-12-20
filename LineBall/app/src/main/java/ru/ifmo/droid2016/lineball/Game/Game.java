@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.Board.Who;
 import ru.ifmo.droid2016.lineball.MainActivity;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
@@ -19,12 +20,12 @@ import java.util.TimerTask;
 
 import static ru.ifmo.droid2016.lineball.Board.Who.RIVAL;
 import static ru.ifmo.droid2016.lineball.Board.Who.THIS_USER;
+import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_ERROR;
 
 
 public class Game extends AppCompatActivity implements View.OnTouchListener, SurfaceHolder.Callback, Handler.Callback {
     public static final long REDRAW_DELAY = 50;
     private static final long BEFORE_DRAW_DELAY = 20;
-    public static final int MSG_ERROR = 301;
     public static final int MSG_END = 302;
     private static final String TAG = "GAME";
     public static final int MSG_WALL = 300;
@@ -95,12 +96,17 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     }
 
     private void gameFinish(Who winner) {
-        //TODO notify user about win/loose
-
+        Toast.makeText(Game.this, (winner == THIS_USER) ? "you win! :)" : "you loose :(", Toast.LENGTH_SHORT)
+                .show();
         socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
-        //giving control to main activity
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                socketThread.quit();
+                socketThread = null;
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        }, 5000);
     }
 
     @Override
