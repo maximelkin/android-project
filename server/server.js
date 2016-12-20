@@ -86,9 +86,6 @@ var server = net.createServer(function (socket) {
                     } else
                         socket.rival.write(message[1]);//ok
                     break;
-                case "p"://ping
-                    socket.write((new Date()).getTime().toString());
-                    break;
             }
         }
     });
