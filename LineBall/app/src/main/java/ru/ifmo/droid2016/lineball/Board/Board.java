@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -17,19 +18,24 @@ public class Board {
 
     public Who check() {
         if (b1.outOfBoard(maxX, maxY)) {
+            Log.e("CHECK:", "we out of board");
             return Who.RIVAL;
         }
 
         if (b2.outOfBoard(maxX, maxY)) {
+            Log.e("CHECK:", "rival out of board");
             return Who.THIS_USER;
         }
 
         if (b1.collision(b2)) {
-            if (b1.v > b2.v)
+            if (b1.v > b2.v) {
+                Log.e("CHECK:", "we are faster");
                 return Who.THIS_USER;
-            else if (b2.v > b1.v)
+            } else if (b2.v > b1.v) {
+                Log.e("CHECK:", "we are slower");
                 return Who.RIVAL;
-            else if (b1.v == b2.v) {
+            } else if (b1.v == b2.v) {
+                Log.e("CHECK:", "need to reverse");
                 b1.dir.mul(-1);
                 b2.dir.mul(-1);
                 return null;
