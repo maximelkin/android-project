@@ -13,7 +13,7 @@ public class Board {
     double dv = 1, maxX = 1024, maxY = 1024;
     ArrayList<Wall> walls1 = new ArrayList<>(), walls2 = new ArrayList<>();
     private Ball b1 = new Ball(new Point(30, 30), new Point(1 / Math.sqrt(2), 1 / Math.sqrt(2))),
-            b2 = new Ball(new Point(100, 100), new Point(- 1 / Math.sqrt(2), - 1 / Math.sqrt(2)));
+            b2 = new Ball(new Point(300, 300), new Point(- 1 / Math.sqrt(2), - 1 / Math.sqrt(2)));
 
 
     public Who check() {
@@ -36,8 +36,10 @@ public class Board {
                 return Who.RIVAL;
             } else if (b1.v == b2.v) {
                 Log.e("CHECK:", "need to reverse");
-                b1.dir.mul(-1);
-                b2.dir.mul(-1);
+                b1.dir = b1.dir.mul(-1);
+                b2.dir = b2.dir.mul(-1);
+                b1.move();
+                b2.move();
                 return null;
             }
         }
