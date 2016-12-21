@@ -7,9 +7,14 @@ public class Ball {
 
     Point pos;
     Point dir;
-    int r;
-    double v = 5;
+    int r = 4;
+    double v = 1;
     double eps = 1e-9;
+
+    Ball (Point pos, Point dir){
+        this.pos = pos;
+        this.dir = dir;
+    }
 
     boolean collision(Ball ball) {
         Ball b1 = this;
@@ -54,5 +59,9 @@ public class Ball {
     public void onDraw(Canvas canvas, Paint p) {
         //TODO convert coordinates
         canvas.drawCircle((float) pos.x, (float) pos.y, r, p);
+    }
+
+    public void move() {
+        pos = pos.sum(dir.mul(v));
     }
 }
