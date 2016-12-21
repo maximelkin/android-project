@@ -33,6 +33,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     private DrawThread board;
     private Handler uiHandler = new Handler(Looper.getMainLooper(), this);
     private SocketThread socketThread;
+    private Timer timer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,14 +89,18 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     }
 
     private void gameFinish(Who winner) {
+        timer.cancel();
         Toast.makeText(Game.this, (winner == THIS_USER) ? "you win! :)" : "you loose :(", Toast.LENGTH_SHORT)
                 .show();
         socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
+        board.quit();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                socketThread.quit();
-                socketThread = null;
+                if (socketThread != null) {
+                    socketThread.quit();
+                    socketThread = null;
+                }
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
             }
         }, 5000);
@@ -106,7 +111,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         board = new DrawThread(surfaceHolder, uiHandler);
         board.start();
         //start redrawing
-        Timer timer = new Timer();
+        timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -124,6 +129,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         board.quit();
+        uiHandler.removeCallbacksAndMessages(null);
         board = null;
     }
 
@@ -137,6 +143,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
             //messages from socket
             case MSG_ERROR:
                 //cant send
+                Log.e("GAME/GAME", "SEND ERROR");
                 gameFinish(RIVAL);
                 return true;
             case MSG_WALL:
