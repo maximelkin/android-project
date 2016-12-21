@@ -16,29 +16,39 @@ public class Ball {
         this.dir = dir;
     }
 
-    boolean collision(Ball ball) {
-        Ball b1 = this;
-        Ball b2 = ball;
-        b2.pos.sub(b1.pos);
-        b1.pos = new Point(0, 0);
-        Line line = new Line(-2 * b2.pos.x, -2 * b2.pos.y, b2.pos.x * b2.pos.x + b2.pos.y * b2.pos.y + b1.r * b1.r - b2.r * b2.r);
-        return checkIntersect(b1, line);
+    Ball(Ball b) {
+        this.pos = b.pos;
+        this.dir = b.dir;
+        this.r = b.r;
+        this.v = b.v;
     }
 
-    boolean checkIntersect(Ball b, Line l) {
-        double x0 = -l.A * l.C / (l.A * l.A + l.B * l.B), y0 = -l.B * l.C / (l.A * l.A + l.B * l.B);
-        if (l.C * l.C > b.r * b.r * (l.A * l.A + l.B * l.B) + eps) {
-            return false;
-        } else {
+    boolean collision(Ball ball) {
+        Ball b1 = new Ball(this);
+        Ball b2 = new Ball(ball);
+        Point dist = b2.pos.sub(b1.pos);
+        if (dist.length() < 2 * r) {
             return true;
+        } else {
+            return false;
         }
     }
 
     boolean collision(Wall wall) {
-        Ball b1 = this;
-        b1.pos = new Point(0, 0);
-        Line line = new Line(wall.p1.sub(b1.pos), wall.p2.sub(b1.pos));
-        return checkIntersect(b1, line);
+        Ball b1 = new Ball(this);
+        Wall w1 = new Wall(wall);
+
+        Point p = new Point(b1.pos);
+        Point n = new Point(w1.l.A, w1.l.B);
+        double d = w1.l.dist(p);
+        n = n.mul(d / n.length());
+        p = p.sum(n);
+
+        if (w1.p1.sub(b1.pos).length() < r || w1.p2.sub(b1.pos).length() < r || Math.abs(p.sub(w1.p1).cp(w1.p2.sub(w1.p1))) < eps && d < r) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void rotate(Wall w) {

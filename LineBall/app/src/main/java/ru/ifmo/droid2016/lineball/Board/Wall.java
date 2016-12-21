@@ -14,6 +14,13 @@ public class Wall {
         this.l = l;
     }
 
+    Wall(Wall wall){
+        this.p1 = wall.p1;
+        this.p2 = wall.p2;
+        this.l = wall.l;
+        this.k = wall.k;
+    }
+
     public void onDraw(Canvas canvas, Paint p) {
         //TODO convert coordinates
         canvas.drawLine((float) p1.x, (float) p1.y, (float) p2.x, (float) p2.y, p);

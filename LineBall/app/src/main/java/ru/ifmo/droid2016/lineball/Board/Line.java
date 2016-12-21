@@ -24,17 +24,7 @@ public class Line {
         return (Math.abs(A * l.B - l.A * B) < eps);
     }
 
-    public Point intersectPoint(Line l) {
-        double det = A * l.B - l.A * B;
-        double detx = C * l.B - l.C * B;
-        double dety = A * l.C - l.A * C;
-        return new Point(-detx / det, -dety / det);
-    }
-
-    public boolean eq(Line l) {
-        double det = Math.abs(A * l.B - l.A * B);
-        double detx = Math.abs(C * l.B - l.C * B);
-        double dety = Math.abs(A * l.C - l.A * C);
-        return (det < eps && detx < eps && dety < eps);
+    public double dist(Point p) {
+        return (A * p.x + B * p.y + C) / Math.sqrt(A * A + B * B);
     }
 }

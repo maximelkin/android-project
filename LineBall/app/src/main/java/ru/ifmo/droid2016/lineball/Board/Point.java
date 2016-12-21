@@ -8,6 +8,11 @@ public class Point {
         this.y = y;
     }
 
+    Point(Point p) {
+        this.x = p.x;
+        this.y = p.y;
+    }
+
     double length() {
         return Math.sqrt(x * x + y * y);
     }
