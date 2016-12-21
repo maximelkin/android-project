@@ -45,6 +45,7 @@ public class Board {
         }
         for (Wall wall : walls1) {
             if (b1.collision(wall)) {
+                Log.e("CHECK:", "blue hits blue wall");
                 b1.rotate(wall);
                 b1.v -= dv;
                 if (--wall.k == 0) {
@@ -56,6 +57,7 @@ public class Board {
 
         for (Wall wall : walls2) {
             if (b1.collision(wall)) {
+                Log.e("CHECK:", "blue hits red wall");
                 b1.rotate(wall);
                 b1.v += dv;
                 walls2.remove(wall);
@@ -65,6 +67,7 @@ public class Board {
 
         for (Wall wall : walls1) {
             if (b2.collision(wall)) {
+                Log.e("CHECK:", "red hits blue wall");
                 b2.rotate(wall);
                 b2.v += dv;
                 walls1.remove(wall);
@@ -74,6 +77,7 @@ public class Board {
 
         for (Wall wall : walls2) {
             if (b2.collision(wall)) {
+                Log.e("CHECK:", "red hits red wall");
                 b2.rotate(wall);
                 b2.v -= dv;
                 if (--wall.k == 0) {

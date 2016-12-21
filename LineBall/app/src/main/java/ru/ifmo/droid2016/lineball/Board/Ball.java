@@ -38,17 +38,13 @@ public class Ball {
         Ball b1 = new Ball(this);
         Wall w1 = new Wall(wall);
 
-        Point p = new Point(b1.pos);
-        Point n = new Point(w1.l.A, w1.l.B);
+        Point m = (new Point(b1.pos)).sub(w1.p2);
+        Point p = (new Point(b1.pos)).sub(w1.p1);
+        Point q = new Point(w1.p2.sub(w1.p1));
+        Point qr = new Point(q.mul(-1));
         double d = w1.l.dist(p);
-        n = n.mul(d / n.length());
-        p = p.sub(n);
 
-        if (w1.p1.sub(b1.pos).length() < r || w1.p2.sub(b1.pos).length() < r || Math.abs(p.sub(w1.p1).cp(w1.p2.sub(w1.p1))) < eps && d < r) {
-            return true;
-        } else {
-            return false;
-        }
+        return ((m.sp(qr) * p.sp(q) >= 0 && d < r) || m.length() < r || p.length() < r);
     }
 
     public void rotate(Wall w) {

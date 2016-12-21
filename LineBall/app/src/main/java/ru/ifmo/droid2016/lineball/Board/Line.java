@@ -20,11 +20,7 @@ public class Line {
         this.C = -(A * p1.x + B * p1.y);
     }
 
-    public boolean intersect(Line l) {
-        return (Math.abs(A * l.B - l.A * B) < eps);
-    }
-
     public double dist(Point p) {
-        return (A * p.x + B * p.y + C) / Math.sqrt(A * A + B * B);
+        return Math.abs (A * p.x + B * p.y + C) / Math.sqrt(A * A + B * B);
     }
 }
