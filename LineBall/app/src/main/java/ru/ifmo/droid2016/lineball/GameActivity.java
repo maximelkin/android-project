@@ -13,7 +13,7 @@ import ru.ifmo.droid2016.lineball.Game.Game;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
 
 import java.io.IOException;
-import java.util.Random;
+import java.security.SecureRandom;
 
 import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_ERROR;
 import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_READY;
@@ -22,6 +22,9 @@ import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_START;
 public class GameActivity extends AppCompatActivity implements Handler.Callback {
     private SocketThread socket;
     private String password;
+    private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static SecureRandom rnd = new SecureRandom();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +43,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
 
     private String generateRandomString() {
         //TODO make more random string
-        return new Random().nextInt() + "super gen";
+        return randomString(10);
     }
 
     private void fail(){
@@ -80,5 +83,10 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
         return false;
     }
 
-
+    String randomString( int len ){
+        StringBuilder sb = new StringBuilder( len );
+        for( int i = 0; i < len; i++ )
+            sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
+        return sb.toString();
+    }
 }

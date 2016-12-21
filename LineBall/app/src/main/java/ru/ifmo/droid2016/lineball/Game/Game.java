@@ -157,6 +157,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         for (Thread t : Thread.getAllStackTraces().keySet()) {
             if (t.getName().equals(threadName)) return t;
         }
+        Log.e("GAME", "getting thread return null");
         return null;
     }
 
