@@ -7,11 +7,11 @@ public class Ball {
 
     Point pos;
     Point dir;
-    int r = 4;
+    int r = 20;
     double v = 1;
     double eps = 1e-9;
 
-    Ball (Point pos, Point dir){
+    Ball(Point pos, Point dir) {
         this.pos = pos;
         this.dir = dir;
     }
