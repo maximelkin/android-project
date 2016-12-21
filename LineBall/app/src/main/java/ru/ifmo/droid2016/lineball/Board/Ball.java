@@ -60,10 +60,7 @@ public class Ball {
     }
 
     public boolean outOfBoard(double mX, double mY) {
-        if (pos.x < 0 || pos.x > mX || pos.y < 0 || pos.y > mY)
-            return false;
-        else
-            return true;
+        return (pos.x < 0 || pos.x > mX || pos.y < 0 || pos.y > mY);
     }
 
     public void onDraw(Canvas canvas, Paint p) {
