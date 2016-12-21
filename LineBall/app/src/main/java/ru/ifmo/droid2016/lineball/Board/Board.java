@@ -102,6 +102,9 @@ public class Board {
         Point p1 = new Point(a[0], a[1]), p2 = new Point(a[2], a[3]);
         Wall w = new Wall(p1, p2, new Line(p1, p2));
 
+        if (b1.collision(w) || b2.collision(w))
+            return;
+
         switch (from) {
             case THIS_USER:
                 walls1.add(w);

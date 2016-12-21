@@ -2,12 +2,13 @@ package ru.ifmo.droid2016.lineball.Board;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 public class Ball {
 
     Point pos;
     Point dir;
-    int r = 30;
+    double r = 30;
     double v = 1;
     double eps = 1e-9;
 
@@ -42,17 +43,25 @@ public class Ball {
         Point p = (new Point(b1.pos)).sub(w1.p1);
         Point q = new Point(w1.p2.sub(w1.p1));
         Point qr = new Point(q.mul(-1));
-        double d = w1.l.dist(p);
+        double d = w1.l.dist(b1.pos);
 
-        return ((m.sp(qr) * p.sp(q) >= 0 && d < r) || m.length() < r || p.length() < r);
+        if (m.sp(qr) * p.sp(q) >= 0) {
+            Log.e("COLLISION", "distance to line");
+            return (d <= r);
+        } else {
+            Log.e("COLLISION", "distance to points");
+            return (m.length() <= r || p.length() <= r);
+        }
     }
 
     public void rotate(Wall w) {
+        //TODO Just do it OK
         Point n = new Point(-w.l.B, w.l.A);
         double angle = 2 * Math.atan2(dir.cp(n), dir.sp(n));
         double x1 = dir.x * Math.cos(angle) - dir.y * Math.sin(angle);
         double y1 = dir.y * Math.cos(angle) + dir.x * Math.sin(angle);
         dir = new Point(x1, y1);
+        dir = dir.mul(1 / dir.length());
     }
 
     public boolean outOfBoard(double mX, double mY) {
@@ -61,7 +70,7 @@ public class Ball {
 
     public void onDraw(Canvas canvas, Paint p) {
         //TODO convert coordinates
-        canvas.drawCircle((float) pos.x, (float) pos.y, r, p);
+        canvas.drawCircle((float) pos.x, (float) pos.y, (float) r, p);
     }
 
     public void move() {
