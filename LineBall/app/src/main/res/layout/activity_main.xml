@@ -9,20 +9,17 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:orientation="vertical"
-        android:weightSum="6"
         tools:context="ru.ifmo.droid2016.lineball.MainActivity">
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
         android:src="@drawable/menu_header"
-        android:layout_weight="4"
+        android:adjustViewBounds="true"
         android:layout_margin="16dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_weight="2"
         android:weightSum="4"
         android:paddingTop="32dp"
         android:paddingBottom="32dp"
