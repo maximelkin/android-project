@@ -101,7 +101,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
                     socketThread.quit();
                     socketThread = null;
                 }
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
             }
         }, 5000);
     }
@@ -115,7 +115,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                board.redraw();
+                if (board != null) board.redraw();
             }
         }, REDRAW_DELAY, BEFORE_DRAW_DELAY);
     }
