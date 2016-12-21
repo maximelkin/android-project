@@ -7,6 +7,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.Game.Game;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
@@ -15,35 +16,26 @@ import java.io.IOException;
 import java.util.Random;
 
 import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_ERROR;
+import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_READY;
 import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_START;
 
 public class GameActivity extends AppCompatActivity implements Handler.Callback {
     private SocketThread socket;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        getSupportActionBar().hide();
-        String password = PreferenceManager.getDefaultSharedPreferences(this).getString("password", null);
+       // getSupportActionBar().hide();
+        password = PreferenceManager.getDefaultSharedPreferences(this).getString("password", null);
         try {
             socket = new SocketThread("socket", new Handler(Looper.getMainLooper(), this));
+            socket.start();
         } catch (IOException e) {
             fail();
             e.printStackTrace();
         }
-        if (password == null) {
-            password = generateRandomString();
-            PreferenceManager.getDefaultSharedPreferences(this)
-                    .edit()
-                    .putString("password", password)
-                    .apply();
-            socket.registration(password);
-        } else {
-            socket.verify(password);
-        }
-        //start search
-        socket.search();
     }
 
     private String generateRandomString() {
@@ -69,6 +61,20 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                 break;
             case MSG_START:
                 startActivity(new Intent(this, Game.class));
+                break;
+            case MSG_READY:
+                if (password == null) {
+                    password = generateRandomString();
+                    PreferenceManager.getDefaultSharedPreferences(this)
+                            .edit()
+                            .putString("password", password)
+                            .apply();
+                    socket.registration(password);
+                } else {
+                    socket.verify(password);
+                }
+                //start search
+                socket.search();
                 break;
         }
         return false;

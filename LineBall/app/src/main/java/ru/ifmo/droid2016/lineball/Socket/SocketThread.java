@@ -1,8 +1,7 @@
 package ru.ifmo.droid2016.lineball.Socket;
 
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Message;
+import android.os.*;
+import android.os.Process;
 import android.util.Log;
 
 import java.io.IOException;
@@ -23,16 +22,20 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     private final static int MSG_SET = 206;
     private final static int MSG_GET = 207;
     public final static int MSG_START = 208;
+    public final static int MSG_READY = 209;
 
     public SocketThread(String name, Handler uiHandler) throws IOException {
-        super(name);
+        super(name, Process.THREAD_PRIORITY_MORE_FAVORABLE);
        // this.socket = new ServerConnection();
         this.uiHandler = uiHandler;
+//        mReceiver = new Handler(getLooper(), this);
     }
 
     @Override
     protected void onLooperPrepared() {
-        mReceiver = new Handler(getLooper(), this);
+        super.onLooperPrepared();
+        mReceiver = new Handler(Looper.myLooper(), this);
+        uiHandler.sendEmptyMessage(MSG_READY);
     }
 
     @Override
@@ -44,7 +47,6 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message message) {
-        Log.e("Socket thread", message.toString());
       /*  boolean result = true;
         switch (message.what) {
            case MSG_VERIFY:
@@ -81,6 +83,8 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
         }
         if (!result)
             uiHandler.sendEmptyMessage(MSG_ERROR);*/
+        if (message.what == MSG_SEARCH)
+            uiHandler.sendEmptyMessage(MSG_START);
         return true;
     }
 

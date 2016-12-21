@@ -53,14 +53,6 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         assert socketThread != null;
         socketThread.setUiHandler(uiHandler);
 
-        //start redrawing
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                board.redraw();
-            }
-        }, REDRAW_DELAY, BEFORE_DRAW_DELAY);
         //start getting walls
         socketThread.getWall();
 
@@ -113,6 +105,14 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         board = new DrawThread(surfaceHolder, uiHandler);
         board.start();
+        //start redrawing
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                board.redraw();
+            }
+        }, REDRAW_DELAY, BEFORE_DRAW_DELAY);
     }
 
     @Override
