@@ -1,7 +1,6 @@
 package ru.ifmo.droid2016.lineball.Board;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 
 public class Ball {
@@ -12,7 +11,7 @@ public class Ball {
     double v = 5;
     double eps = 1e-9;
 
-    boolean collision(Ball ball){
+    boolean collision(Ball ball) {
         Ball b1 = this;
         Ball b2 = ball;
         b2.pos.sub(b1.pos);
@@ -21,16 +20,16 @@ public class Ball {
         return checkIntersect(b1, line);
     }
 
-    boolean checkIntersect(Ball b, Line l){
+    boolean checkIntersect(Ball b, Line l) {
         double x0 = -l.A * l.C / (l.A * l.A + l.B * l.B), y0 = -l.B * l.C / (l.A * l.A + l.B * l.B);
-        if (l.C * l.C > b.r * b.r * (l.A * l.A + l.B * l.B) + eps){
+        if (l.C * l.C > b.r * b.r * (l.A * l.A + l.B * l.B) + eps) {
             return false;
         } else {
             return true;
         }
     }
 
-    boolean collision(Wall wall){
+    boolean collision(Wall wall) {
         Ball b1 = this;
         b1.pos = new Point(0, 0);
         Line line = new Line(wall.p1.sub(b1.pos), wall.p2.sub(b1.pos));
@@ -46,16 +45,13 @@ public class Ball {
     }
 
     public boolean outOfBoard(double mX, double mY) {
-        if(pos.x < 0 || pos.x > mX || pos.y < 0 || pos.y > mY)
+        if (pos.x < 0 || pos.x > mX || pos.y < 0 || pos.y > mY)
             return false;
         else
             return true;
     }
 
-    public void onDraw(Canvas canvas)
-    {
-        Paint p = new Paint();
-        p.setColor(Color.RED);
+    public void onDraw(Canvas canvas, Paint p) {
         //TODO convert coordinates
         canvas.drawCircle((float) pos.x, (float) pos.y, r, p);
     }

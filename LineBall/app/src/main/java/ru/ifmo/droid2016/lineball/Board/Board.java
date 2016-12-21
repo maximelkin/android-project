@@ -1,6 +1,8 @@
 package ru.ifmo.droid2016.lineball.Board;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -75,17 +77,39 @@ public class Board {
     }
 
     public void setWall(String coord, @NonNull Who from) {
-        //TODO
+        String[] s = coord.split(" ");
+        double[] a = new double[s.length];
+        for (int i = 0; i < s.length; ++i) {
+            a[i] = Double.parseDouble(s[i]);
+        }
+
+        Point p1 = new Point(a[0], a[1]), p2 = new Point(a[2], a[3]);
+        Wall w = new Wall(p1, p2, new Line(p1, p2));
+
+        switch (from) {
+            case THIS_USER:
+                walls1.add(w);
+                break;
+            case RIVAL:
+                walls2.add(w);
+                break;
+        }
     }
 
     public void drawBoard(Canvas canvas) {
-        b1.onDraw(canvas);
-        b2.onDraw(canvas);
+        Paint p = new Paint();
+        p.setStrokeWidth(10);
+        p.setColor(Color.BLUE);
+
+        b1.onDraw(canvas, p);
         for (Wall wall : walls1) {
-            wall.onDraw(canvas);
+            wall.onDraw(canvas, p);
         }
+
+        p.setColor(Color.RED);
+        b2.onDraw(canvas, p);
         for (Wall wall : walls2) {
-            wall.onDraw(canvas);
+            wall.onDraw(canvas, p);
         }
     }
 }
