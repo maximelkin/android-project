@@ -11,8 +11,6 @@ import android.view.SurfaceHolder;
 import ru.ifmo.droid2016.lineball.Board.Board;
 import ru.ifmo.droid2016.lineball.Board.Who;
 
-import static ru.ifmo.droid2016.lineball.Board.Who.RIVAL;
-import static ru.ifmo.droid2016.lineball.Board.Who.THIS_USER;
 import static ru.ifmo.droid2016.lineball.Game.Game.MSG_END;
 
 class DrawThread extends HandlerThread implements Handler.Callback {
@@ -49,9 +47,8 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case MSG_ADD:
-                Who who = (msg.arg1 == 0 ? THIS_USER : RIVAL);
 
-                board.setWall((String) msg.obj, who);
+                board.setWall((String) msg.obj, Who.values()[msg.arg1]);
                 Log.e("draw thread", "added wall");
                 break;
             case MSG_UPD:
@@ -63,8 +60,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
                 board.drawBoard(c);
                 surfaceHolder.unlockCanvasAndPost(c);
                 if (checked != null) {
-                    int who_won = (checked == THIS_USER ? 0 : 1);
-                    Message message = Message.obtain(uiHandler, MSG_END, who_won, 0);
+                    Message message = Message.obtain(uiHandler, MSG_END, checked.ordinal(), 0);
                     uiHandler.sendMessage(message);
                 }
                 Log.e("draw thread", "update");
@@ -75,7 +71,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
 
 
     void setWall(String coord, @NonNull Who who) {
-        Message msg = Message.obtain(mReceiver, MSG_ADD, (who == RIVAL ? 1 : 0), 0, coord);
+        Message msg = Message.obtain(mReceiver, MSG_ADD, who.ordinal(), 0, coord);
         mReceiver.sendMessageAtFrontOfQueue(msg);
     }
 

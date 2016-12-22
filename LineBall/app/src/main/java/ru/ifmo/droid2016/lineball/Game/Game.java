@@ -15,6 +15,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.Board.Who;
+import ru.ifmo.droid2016.lineball.R;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
 
 import java.util.Timer;
@@ -92,7 +93,8 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     private void gameFinish(Who winner) {
         timer.cancel();
-        Toast.makeText(Game.this, (winner == THIS_USER) ? "you win! :)" : "you loose :(", Toast.LENGTH_SHORT)
+        int toastTextId = (winner == THIS_USER) ? R.string.this_user_loose : R.string.this_user_win;
+        Toast.makeText(Game.this, getString(toastTextId), Toast.LENGTH_SHORT)
                 .show();
         socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
         board.quit();
@@ -139,7 +141,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         switch (message.what) {
             //message from board
             case MSG_END:
-                gameFinish((message.arg1 == 0) ? THIS_USER : RIVAL);
+                gameFinish(Who.values()[message.arg1]);
                 return true;
             //messages from socket
             case MSG_ERROR:

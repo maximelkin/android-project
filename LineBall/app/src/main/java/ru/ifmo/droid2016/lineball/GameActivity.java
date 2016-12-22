@@ -28,7 +28,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-       // getSupportActionBar().hide();
+        // getSupportActionBar().hide();
         password = PreferenceManager.getDefaultSharedPreferences(this).getString("password", null);
         try {
             socket = new SocketThread("socket", new Handler(Looper.getMainLooper(), this));
@@ -39,7 +39,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
         }
     }
 
-    private void fail(){
+    private void fail() {
         Toast.makeText(GameActivity.this, "Connection error", Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -51,7 +51,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
 
     @Override
     public boolean handleMessage(Message message) {
-        switch (message.what){
+        switch (message.what) {
             case MSG_ERROR:
                 fail();
                 break;
@@ -78,10 +78,10 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     }
 
     @NonNull
-    private String randomString(int len){
-        StringBuilder sb = new StringBuilder( len );
-        for( int i = 0; i < len; i++ )
-            sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
+    private String randomString(int len) {
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++)
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
         return sb.toString();
     }
 }
