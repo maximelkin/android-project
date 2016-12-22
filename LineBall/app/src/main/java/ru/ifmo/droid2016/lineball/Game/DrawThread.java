@@ -55,13 +55,14 @@ class DrawThread extends HandlerThread implements Handler.Callback {
                 Log.e("draw thread", "added wall");
                 break;
             case MSG_UPD:
+                Who checked = board.check();
                 Canvas c = surfaceHolder.lockCanvas();
                 if (c == null)
                     break;
                 c.drawColor(Color.WHITE);
                 board.drawBoard(c);
                 surfaceHolder.unlockCanvasAndPost(c);
-                Who checked = board.check();
+               // Who checked = board.check();
                 if (checked != null) {
                     int who_won = (checked == THIS_USER ? 0 : 1);
                     Message message = Message.obtain(uiHandler, MSG_END, who_won, 0);

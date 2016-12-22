@@ -46,7 +46,8 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         //prohibit rotate
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null)
+            getSupportActionBar().hide();
 
         //socket should be created before!!!
         socketThread = ((SocketThread) getThreadByName("socket"));
