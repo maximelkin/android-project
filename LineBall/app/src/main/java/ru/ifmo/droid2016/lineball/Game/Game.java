@@ -93,7 +93,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     private void gameFinish(Who winner) {
         timer.cancel();
-        int toastTextId = (winner == THIS_USER) ? R.string.this_user_loose : R.string.this_user_win;
+        int toastTextId = (winner == THIS_USER) ? R.string.this_user_win : R.string.this_user_loose;
         Toast.makeText(Game.this, getString(toastTextId), Toast.LENGTH_SHORT)
                 .show();
         socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
