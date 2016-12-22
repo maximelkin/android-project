@@ -1,8 +1,11 @@
 package ru.ifmo.droid2016.lineball.Game;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,7 +15,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.Board.Who;
-import ru.ifmo.droid2016.lineball.MainActivity;
+import ru.ifmo.droid2016.lineball.R;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
 
 import java.util.Timer;
@@ -46,12 +49,12 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         //prohibit rotate
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null)
+            getSupportActionBar().hide();
 
         //socket should be created before!!!
         socketThread = ((SocketThread) getThreadByName("socket"));
 
-        assert socketThread != null;
         socketThread.setUiHandler(uiHandler);
 
         //start getting walls
@@ -90,7 +93,8 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     private void gameFinish(Who winner) {
         timer.cancel();
-        Toast.makeText(Game.this, (winner == THIS_USER) ? "you win! :)" : "you loose :(", Toast.LENGTH_SHORT)
+        int toastTextId = (winner == THIS_USER) ? R.string.this_user_loose : R.string.this_user_win;
+        Toast.makeText(Game.this, getString(toastTextId), Toast.LENGTH_SHORT)
                 .show();
         socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
         board.quit();
@@ -122,7 +126,6 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        //rotate screen? seriously?
         Log.e(TAG, "SURFACE CHANGED");
     }
 
@@ -138,7 +141,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         switch (message.what) {
             //message from board
             case MSG_END:
-                gameFinish((message.arg1 == 0) ? THIS_USER : RIVAL);
+                gameFinish(Who.values()[message.arg1]);
                 return true;
             //messages from socket
             case MSG_ERROR:
@@ -153,11 +156,14 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         return false;
     }
 
+    @NonNull
     private Thread getThreadByName(String threadName) {
         for (Thread t : Thread.getAllStackTraces().keySet()) {
             if (t.getName().equals(threadName)) return t;
         }
         Log.e("GAME", "getting thread return null");
+        //app error
+        gameFinish(RIVAL);
         return null;
     }
 
