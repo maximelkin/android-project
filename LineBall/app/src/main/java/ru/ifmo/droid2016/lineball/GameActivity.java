@@ -51,7 +51,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                finish();
             }
         }, 5000);
     }
@@ -64,6 +64,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                 break;
             case MSG_START:
                 startActivity(new Intent(this, Game.class));
+                finish();
                 break;
             case MSG_READY:
                 if (password == null) {
