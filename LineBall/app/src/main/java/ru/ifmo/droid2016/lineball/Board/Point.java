@@ -36,4 +36,8 @@ public class Point {
     double sp(Point p) {
         return x * p.x + y * p.y;
     }
+
+    Point normalize() {
+        return mul(1 / length());
+    }
 }

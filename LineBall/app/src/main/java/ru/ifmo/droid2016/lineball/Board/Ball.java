@@ -78,11 +78,8 @@ public class Ball {
     }
 
     public void rotateDirection(Wall wall) {
-        Point wallNormal = new Point(wall.l.A, wall.l.B);
-        wallNormal = wallNormal.mul(1 / wallNormal.length());
-        dir = dir.sum(wallNormal.mul(-dir.sp(wallNormal) * 2));
-        dir = dir.mul(1 / dir.length()); // because calc error
-        //i couldn't explain mul(-1) but it works
+        Point wallNormal = new Point(wall.l.A, wall.l.B).normalize();
+        dir = dir.sum(wallNormal.mul(-dir.sp(wallNormal) * 2)).normalize();
     }
 
     public boolean outOfBoard(double mX, double mY) {
