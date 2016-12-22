@@ -1,5 +1,7 @@
 package ru.ifmo.droid2016.lineball.Board;
 
+import android.support.annotation.NonNull;
+
 public class Line {
     double A, B, C;
     private static final double eps = 1e-9;
@@ -27,4 +29,5 @@ public class Line {
     public double dist(Point p) {
         return (A * p.x + B * p.y + C) / Math.sqrt(A * A + B * B);
     }
+
 }

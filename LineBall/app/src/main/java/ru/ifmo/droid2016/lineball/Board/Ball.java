@@ -2,6 +2,7 @@ package ru.ifmo.droid2016.lineball.Board;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Picture;
 import android.util.Log;
 
 public class Ball {
@@ -57,7 +58,8 @@ public class Ball {
     }
 
     public void rotate(Wall w) {
-        //TODO Just do it OK
+        rotateDirection(w);
+        /*//TODO Just do it OK
 
         Point p = new Point(w.p1.sum(dir));
         Point n = new Point(w.l.A, w.l.B);
@@ -72,7 +74,14 @@ public class Ball {
             p = p.sum(n);
         }
         dir = p.sub(w.p1);
-        dir = dir.mul(1 / dir.length());
+        dir = dir.mul(1 / dir.length());*/
+    }
+
+    public void rotateDirection(Wall wall) {
+        Point wallNormal = new Point(-wall.l.B, wall.l.A);
+        wallNormal = wallNormal.mul(1 / wallNormal.length());
+        dir = dir.sum(wallNormal.mul(-dir.sp(wallNormal) * 2)).mul(-1);
+        //i couldn't explain mul(-1) but it works
     }
 
     public boolean outOfBoard(double mX, double mY) {
