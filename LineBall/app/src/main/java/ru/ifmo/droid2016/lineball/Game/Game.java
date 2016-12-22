@@ -1,8 +1,11 @@
 package ru.ifmo.droid2016.lineball.Game;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,7 +15,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.Board.Who;
-import ru.ifmo.droid2016.lineball.MainActivity;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
 
 import java.util.Timer;
@@ -52,7 +54,6 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         //socket should be created before!!!
         socketThread = ((SocketThread) getThreadByName("socket"));
 
-        assert socketThread != null;
         socketThread.setUiHandler(uiHandler);
 
         //start getting walls
@@ -123,7 +124,6 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-        //rotate screen? seriously?
         Log.e(TAG, "SURFACE CHANGED");
     }
 
@@ -154,11 +154,14 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         return false;
     }
 
+    @NonNull
     private Thread getThreadByName(String threadName) {
         for (Thread t : Thread.getAllStackTraces().keySet()) {
             if (t.getName().equals(threadName)) return t;
         }
         Log.e("GAME", "getting thread return null");
+        //app error
+        gameFinish(RIVAL);
         return null;
     }
 

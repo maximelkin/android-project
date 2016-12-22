@@ -62,7 +62,6 @@ class DrawThread extends HandlerThread implements Handler.Callback {
                 c.drawColor(Color.WHITE);
                 board.drawBoard(c);
                 surfaceHolder.unlockCanvasAndPost(c);
-               // Who checked = board.check();
                 if (checked != null) {
                     int who_won = (checked == THIS_USER ? 0 : 1);
                     Message message = Message.obtain(uiHandler, MSG_END, who_won, 0);
@@ -76,8 +75,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
 
 
     void setWall(String coord, @NonNull Who who) {
-        int who_set = (who == RIVAL ? 1 : 0);
-        Message msg = Message.obtain(mReceiver, MSG_ADD, who_set, 0, coord);
+        Message msg = Message.obtain(mReceiver, MSG_ADD, (who == RIVAL ? 1 : 0), 0, coord);
         mReceiver.sendMessageAtFrontOfQueue(msg);
     }
 

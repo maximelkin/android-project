@@ -1,13 +1,13 @@
 package ru.ifmo.droid2016.lineball;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.Game.Game;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
@@ -15,9 +15,7 @@ import ru.ifmo.droid2016.lineball.Socket.SocketThread;
 import java.io.IOException;
 import java.security.SecureRandom;
 
-import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_ERROR;
-import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_READY;
-import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_START;
+import static ru.ifmo.droid2016.lineball.Socket.SocketThread.*;
 
 public class GameActivity extends AppCompatActivity implements Handler.Callback {
     private SocketThread socket;
@@ -39,11 +37,6 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
             fail();
             e.printStackTrace();
         }
-    }
-
-    private String generateRandomString() {
-        //TODO make more random string
-        return randomString(10);
     }
 
     private void fail(){
@@ -68,7 +61,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                 break;
             case MSG_READY:
                 if (password == null) {
-                    password = generateRandomString();
+                    password = randomString(10);
                     PreferenceManager.getDefaultSharedPreferences(this)
                             .edit()
                             .putString("password", password)
@@ -84,7 +77,8 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
         return false;
     }
 
-    String randomString( int len ){
+    @NonNull
+    private String randomString(int len){
         StringBuilder sb = new StringBuilder( len );
         for( int i = 0; i < len; i++ )
             sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
