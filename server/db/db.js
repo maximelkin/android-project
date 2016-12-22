@@ -1,11 +1,10 @@
 var mongoose = require('mongoose');
 var models = require('./models');
 var crypto = require('crypto');
-var user = models.user,
-    queue = models.queue;
+var user = models.user;
 var config = require("./config.json");
 
-mongoose.connect(config.mongooseURL, { config: { autoIndex: false } });
+mongoose.connect(config.mongooseURL, {config: {autoIndex: false}});
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(
@@ -13,8 +12,7 @@ db.on('error', console.error.bind(
 
 
 function hashing(password) {
-    return crypto.createHash('sha256').
-        update(password).digest('hex');
+    return crypto.createHash('sha256').update(password).digest('hex');
 }
 
 
@@ -31,18 +29,18 @@ function createUser(androidId, pass, callback) {
 function deleteUser(androidId, callback) {
     if (typeof (androidId) != 'string')
         return callback(new Error('dangerous data'));
-    user.remove({ _id: androidId }, callback);
+    user.remove({_id: androidId}, callback);
 }
 
 function checkPass(androidId, pass, callback) {
-    user.findOne({ _id: androidId }, function (err, user) {
+    user.findOne({_id: androidId}, 'pass', {lean: true}, function (err, user) {
         callback(err || user.pass != hashing(pass));
     });
 }
 
 
 function clearUsers(callback) {
-    user.update({}, { rate: config.defRate }, callback);
+    user.update({}, {rate: config.defRate}, callback);
 }
 
 
@@ -52,7 +50,7 @@ function updateRate(androidId, isWon, callback) {
     var change = -config.deltaRatingChange;
     if (isWon)
         change = config.deltaRatingChange;
-    user.updateOne({ _id: androidId }, { rate: { $inc: change } }, callback);
+    user.updateOne({_id: androidId}, {rate: {$inc: change}}, {lean: true}, callback);
 }
 
 module.exports.createUser = createUser;

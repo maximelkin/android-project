@@ -1,23 +1,23 @@
-
 var net = require('net');
 var db = require('./db/db');
 var queue = [];
 
-var server = net.createServer(function (socket) {
+net.createServer(function (socket) {
     socket.setNoDelay(true);
+
     console.log("connected new user");
-    var accum = "";
+    var accumulator = "";
 
     socket.on('end', function () {
         console.log('user disconnected');
         socket.id = null;
     });
-    
-    socket.on('data', function (mes) {
-        accum += mes;
-        while (accum.indexOf('#') != -1) {
-            var message = accum.split('#')[0].split(' ');
-            accum = accum.split('#')[1];
+
+    socket.on('data', function (message_peace) {
+        accumulator += message_peace;
+        while (accumulator.indexOf('#') != -1) {
+            var message = accumulator.split('#')[0].split(' ');
+            accumulator = accumulator.split('#')[1];
             switch (message[0]) {
                 case "con":
                     if (socket.id) {
@@ -71,7 +71,7 @@ var server = net.createServer(function (socket) {
                     if (socket.verified && socket.rival != null)
                         db.updateRate(socket.id, message[1] == 'win', function (err) {
                             if (err)
-                                socket.write('1')
+                                socket.write('1');
                             else socket.write('0'); //ok
                         });
                     else
@@ -80,11 +80,15 @@ var server = net.createServer(function (socket) {
                     break;
                 case "wall"://set wall
                     if (socket.rival == null) {
-                        socket.write('1');//game not started
-                    } else if (socket.rival.readyState != openState) {
-                        socket.write('2');//rival leave
-                    } else
-                        socket.rival.write(message[1]);//ok
+                        //game not started
+                        socket.write('1');
+                    } else if (!socket.rival._connecting) {
+                        //rival leave
+                        socket.write('2');
+                    } else {
+                        //ok
+                        socket.rival.write(message[1]);
+                    }
                     break;
             }
         }
@@ -92,8 +96,10 @@ var server = net.createServer(function (socket) {
 }).listen(8080, 'localhost');
 
 
-function flushQueue(id) {
-    var s = [queue, queue = []][0];//swap trick
+function flushQueue() {
+    var s = [queue, queue = []][0];
+    //now s = queue
+    //queue = []
     while (s.length > 0) {
         //trying get alive user
         var x1 = s.pop();
