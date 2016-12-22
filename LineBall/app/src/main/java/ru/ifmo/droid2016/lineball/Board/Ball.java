@@ -8,13 +8,15 @@ public class Ball {
 
     Point pos;
     Point dir;
-    double r = 30;
-    double v = 1;
+    double r;
+    double v;
     double eps = 1e-9;
 
     Ball(Point pos, Point dir) {
         this.pos = pos;
         this.dir = dir;
+        this.r = 30;
+        this.v = 2;
     }
 
     Ball(Ball b) {
@@ -47,7 +49,7 @@ public class Ball {
 
         if (m.sp(qr) * p.sp(q) >= 0) {
             Log.e("COLLISION", "distance to line");
-            return (d <= r);
+            return (Math.abs(d) <= r);
         } else {
             Log.e("COLLISION", "distance to points");
             return (m.length() <= r || p.length() <= r);
@@ -56,16 +58,25 @@ public class Ball {
 
     public void rotate(Wall w) {
         //TODO Just do it OK
-        Point n = new Point(-w.l.B, w.l.A);
-        double angle = 2 * Math.atan2(dir.cp(n), dir.sp(n));
-        double x1 = dir.x * Math.cos(angle) - dir.y * Math.sin(angle);
-        double y1 = dir.y * Math.cos(angle) + dir.x * Math.sin(angle);
-        dir = new Point(x1, y1);
+
+        Point p = new Point(w.p1.sum(dir));
+        Point n = new Point(w.l.A, w.l.B);
+        double d = w.l.dist(p);
+        n = n.mul(d / n.length());
+        p = p.sum(n);
+
+        if (w.l.contain(p)) {
+            p = p.sum(n);
+        } else {
+            n = n.mul(-3);
+            p = p.sum(n);
+        }
+        dir = p.sub(w.p1);
         dir = dir.mul(1 / dir.length());
     }
 
     public boolean outOfBoard(double mX, double mY) {
-        return (pos.x < 0 || pos.x > mX || pos.y < 0 || pos.y > mY);
+        return (pos.x < -r || pos.x > mX + r || pos.y < -r || pos.y > mY + r);
     }
 
     public void onDraw(Canvas canvas, Paint p) {

@@ -6,15 +6,16 @@ import android.graphics.Paint;
 public class Wall {
     Point p1, p2;
     Line l;
-    int k = 2;
+    int k;
 
     Wall(Point p1, Point p2, Line l) {
         this.p1 = p1;
         this.p2 = p2;
         this.l = l;
+        this.k = 2;
     }
 
-    Wall(Wall wall){
+    Wall(Wall wall) {
         this.p1 = wall.p1;
         this.p2 = wall.p2;
         this.l = wall.l;

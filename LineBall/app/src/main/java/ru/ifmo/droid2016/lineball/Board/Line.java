@@ -20,7 +20,11 @@ public class Line {
         this.C = -(A * p1.x + B * p1.y);
     }
 
+    public boolean contain(Point p) {
+        return (Math.abs(A * p.x + B * p.y + C) < eps);
+    }
+
     public double dist(Point p) {
-        return Math.abs (A * p.x + B * p.y + C) / Math.sqrt(A * A + B * B);
+        return (A * p.x + B * p.y + C) / Math.sqrt(A * A + B * B);
     }
 }

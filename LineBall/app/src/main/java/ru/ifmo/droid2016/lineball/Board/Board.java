@@ -10,13 +10,21 @@ import java.util.ArrayList;
 
 //TODO all
 public class Board {
-    double dv = 1, maxX = 1024, maxY = 1024;
+    double dv = 0.2, maxX = 1024, maxY = 1024;
     ArrayList<Wall> walls1 = new ArrayList<>(), walls2 = new ArrayList<>();
     private Ball b1 = new Ball(new Point(30, 30), new Point(1 / Math.sqrt(2), 1 / Math.sqrt(2))),
-            b2 = new Ball(new Point(300, 300), new Point(- 1 / Math.sqrt(2), - 1 / Math.sqrt(2)));
+            b2 = new Ball(new Point(300, 300), new Point(-1 / Math.sqrt(2), -1 / Math.sqrt(2)));
 
 
     public Who check() {
+
+        //TODO do all it the correct order
+        if (b1.v == 0)
+            return Who.RIVAL;
+
+        if (b2.v == 0)
+            return Who.THIS_USER;
+
         if (b1.outOfBoard(maxX, maxY)) {
             Log.e("CHECK:", "we out of board");
             return Who.RIVAL;
@@ -47,7 +55,7 @@ public class Board {
             if (b1.collision(wall)) {
                 Log.e("CHECK:", "blue hits blue wall");
                 b1.rotate(wall);
-                b1.v -= dv;
+                b1.v = Math.max(0, b1.v - dv);
                 if (--wall.k == 0) {
                     walls1.remove(wall);
                 }
@@ -79,7 +87,7 @@ public class Board {
             if (b2.collision(wall)) {
                 Log.e("CHECK:", "red hits red wall");
                 b2.rotate(wall);
-                b2.v -= dv;
+                b2.v = Math.max(0, b1.v - dv);
                 if (--wall.k == 0) {
                     walls2.remove(wall);
                 }
