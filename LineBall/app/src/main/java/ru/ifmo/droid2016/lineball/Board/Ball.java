@@ -42,13 +42,22 @@ public class Ball {
         Ball b1 = new Ball(this);
         Wall w1 = new Wall(wall);
 
+        Point nextPos = new Point(b1.pos.sum(b1.dir));
+
+        double s1 = w1.p1.sub(nextPos).cp(w1.p2.sub(w1.p1));
+        double s2 = w1.p2.sub(nextPos).cp(b1.pos.sub(w1.p2));
+        double s3 = b1.pos.sub(nextPos).cp(w1.p1.sub(b1.pos));
+
+        if (s1 * s2 < 0 || s1 * s3 < 0 || s2 * s3 < 0)
+            return false;
+        
         Point m = (new Point(b1.pos)).sub(w1.p2);
         Point p = (new Point(b1.pos)).sub(w1.p1);
         Point q = new Point(w1.p2.sub(w1.p1));
-        Point qr = new Point(q.mul(-1));
+        Point qrev = new Point(q.mul(-1));
         double d = w1.l.dist(b1.pos);
 
-        if (m.sp(qr) * p.sp(q) >= 0) {
+        if (m.sp(qrev) * p.sp(q) >= 0) {
             return (Math.abs(d) <= r);
         } else {
             return (m.length() <= r || p.length() <= r);
