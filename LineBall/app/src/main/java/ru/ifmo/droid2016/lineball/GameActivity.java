@@ -1,5 +1,7 @@
 package ru.ifmo.droid2016.lineball;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -7,7 +9,11 @@ import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.Game.Game;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
@@ -29,6 +35,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         // getSupportActionBar().hide();
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("password", null).apply();
         password = PreferenceManager.getDefaultSharedPreferences(this).getString("password", null);
         try {
             socket = new SocketThread("socket", new Handler(Looper.getMainLooper(), this));
@@ -68,12 +75,44 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                             .edit()
                             .putString("password", password)
                             .apply();
-                    socket.registration(password);
+
+                    //magic what show dialog with choosing username
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                    final Context context = getApplicationContext();
+                    LinearLayout layout = new LinearLayout(context);
+                    layout.setOrientation(LinearLayout.VERTICAL);
+
+                    final EditText username = new EditText(layout.getContext());
+                    layout.addView(username);
+                    final AlertDialog alertDialog;
+
+                    alertDialog = builder.setMessage(R.string.input_your_nick)
+                            .setView(layout)
+                            .setPositiveButton(R.string.register, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    String usernameText = username.getText().toString();
+                                    //TODO check in logs
+                                    Log.e("username", usernameText);
+                                    if (usernameText.length() > 3 && usernameText.length() < 15) {
+                                        PreferenceManager
+                                                .getDefaultSharedPreferences(context)
+                                                .edit().putString("name", usernameText)
+                                                .apply();
+                                        dialogInterface.dismiss();
+                                        socket.registration(String.format("%s %s", password, usernameText));
+                                        socket.search();
+                                    }
+                                }
+                            })
+                            .create();
+                    alertDialog.show();
+                    //magic end
                 } else {
                     socket.verify(password);
+                    socket.search();
                 }
-                //start search
-                socket.search();
                 break;
         }
         return false;
@@ -86,4 +125,5 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
             sb.append(AB.charAt(rnd.nextInt(AB.length())));
         return sb.toString();
     }
+
 }

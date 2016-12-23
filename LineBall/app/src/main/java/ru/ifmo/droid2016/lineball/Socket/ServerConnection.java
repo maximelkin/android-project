@@ -63,8 +63,8 @@ public class ServerConnection {
         return send("ver " + password);
     }
 
-    boolean registration(String password) {
-        return send("reg " + password);
+    boolean registration(String password_username) {
+        return send("reg " + password_username);
     }
 
     String search() {
