@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.Board.Who;
 import ru.ifmo.droid2016.lineball.R;
@@ -27,7 +29,7 @@ import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_ERROR;
 
 
 public class Game extends AppCompatActivity implements View.OnTouchListener, SurfaceHolder.Callback, Handler.Callback {
-    public static final long REDRAW_DELAY = 50;
+    public static final long REDRAW_DELAY = 80;
     private static final long BEFORE_DRAW_DELAY = 20;
     public static final int MSG_END = 302;
     private static final String TAG = "GAME";
@@ -41,10 +43,18 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SurfaceView surfaceView = new SurfaceView(this);
+        setContentView(R.layout.game_layout);
+
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceView.setOnTouchListener(this);
         surfaceView.getHolder().addCallback(this);
-        setContentView(surfaceView);
+        String rivalName = getIntent().getStringExtra("rival name");
+        String thisUserName = PreferenceManager.getDefaultSharedPreferences(this).getString("name", "anonimus");
+
+        TextView leftTextField = (TextView) findViewById(R.id.left_field);
+        TextView rightTextField = (TextView) findViewById(R.id.right_field);
+        leftTextField.setText(thisUserName);
+        rightTextField.setText(rivalName);
 
         //prohibit rotate
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

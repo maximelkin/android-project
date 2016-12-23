@@ -63,17 +63,18 @@ public class ServerConnection {
         return send("ver " + password);
     }
 
-    boolean registration(String password) {
-        return send("reg " + password);
+    boolean registration(String password_username) {
+        return send("reg " + password_username);
     }
 
-    boolean search() {
+    String search() {
         try {
             writeStr("search");
-            return !readStr().equals("1");
+            String read = readStr();
+            return (read.equals("1")? null: read);
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

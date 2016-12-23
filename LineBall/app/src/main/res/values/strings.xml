@@ -19,4 +19,6 @@
     <string name="player_search">Looking for players…</string>
     <string name="this_user_win">You win! :)</string>
     <string name="this_user_loose">You loose :(</string>
+    <string name="input_your_nick">Input your nick</string>
+    <string name="register">Register</string>
 </resources>

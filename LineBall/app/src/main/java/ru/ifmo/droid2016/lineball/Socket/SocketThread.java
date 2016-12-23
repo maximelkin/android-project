@@ -26,7 +26,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
 
     public SocketThread(String name, Handler uiHandler) throws IOException {
         super(name, Process.THREAD_PRIORITY_MORE_FAVORABLE);
-       // this.socket = new ServerConnection();
+        // this.socket = new ServerConnection();
         this.uiHandler = uiHandler;
 //        mReceiver = new Handler(getLooper(), this);
     }
@@ -47,9 +47,9 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message message) {
-      /*  boolean result = true;
+        /* boolean result = true;
         switch (message.what) {
-           case MSG_VERIFY:
+            case MSG_VERIFY:
                 result = socket.verify((String) message.obj);
                 break;
             case MSG_REGISTRATION:
@@ -58,9 +58,13 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
 
             //WARNING! IT FREEZE THIS THREAD
             case MSG_SEARCH:
-                result = socket.search();
+                String name = socket.search();
+                result = (name != null);
                 if (result) {
                     uiHandler.sendEmptyMessage(MSG_START);
+                    uiHandler.sendMessage(Message.obtain(uiHandler, MSG_START, name));
+                } else {
+                    //TODO show error pop-up
                 }
                 break;
             case MSG_END:
