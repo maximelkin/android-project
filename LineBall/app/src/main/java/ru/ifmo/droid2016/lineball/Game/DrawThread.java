@@ -49,7 +49,6 @@ class DrawThread extends HandlerThread implements Handler.Callback {
             case MSG_ADD:
 
                 board.setWall((String) msg.obj, Who.values()[msg.arg1]);
-                Log.e("draw thread", "added wall");
                 break;
             case MSG_UPD:
                 Who checked = board.check();

@@ -49,10 +49,8 @@ public class Ball {
         double d = w1.l.dist(b1.pos);
 
         if (m.sp(qr) * p.sp(q) >= 0) {
-            Log.e("COLLISION", "distance to line");
             return (Math.abs(d) <= r);
         } else {
-            Log.e("COLLISION", "distance to points");
             return (m.length() <= r || p.length() <= r);
         }
     }
