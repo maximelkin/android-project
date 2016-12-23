@@ -67,13 +67,14 @@ public class ServerConnection {
         return send("reg " + password);
     }
 
-    boolean search() {
+    String search() {
         try {
             writeStr("search");
-            return !readStr().equals("1");
+            String read = readStr();
+            return (read.equals("1")? null: read);
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 

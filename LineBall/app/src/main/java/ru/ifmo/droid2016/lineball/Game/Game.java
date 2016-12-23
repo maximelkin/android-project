@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,8 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         surfaceView.setOnTouchListener(this);
         surfaceView.getHolder().addCallback(this);
         setContentView(surfaceView);
+        String rivalName = getIntent().getStringExtra("rival name");
+        String thisUserName = PreferenceManager.getDefaultSharedPreferences(this).getString("name", "anonimus");
 
         //prohibit rotate
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

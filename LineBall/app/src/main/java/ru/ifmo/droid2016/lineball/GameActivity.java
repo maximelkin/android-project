@@ -56,7 +56,9 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                 fail();
                 break;
             case MSG_START:
-                startActivity(new Intent(this, Game.class));
+                Intent intent = new Intent(this, Game.class);
+                intent.putExtra("rival name", (String) message.obj);
+                startActivity(intent);
                 finish();
                 break;
             case MSG_READY:
