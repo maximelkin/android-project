@@ -9,11 +9,9 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
+import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.Board.Who;
@@ -122,7 +120,8 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        board = new DrawThread(surfaceHolder, uiHandler);
+        DisplayMetrics metrics = getBaseContext().getResources().getDisplayMetrics();
+        board = new DrawThread(surfaceHolder, uiHandler, metrics.widthPixels, metrics.heightPixels);
         board.start();
         //start redrawing
         timer = new Timer();
