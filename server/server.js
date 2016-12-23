@@ -32,8 +32,14 @@ net.createServer(function (socket) {
                 case "ver":
                     db.checkPass(socket.id, message[1], function (err) {
                         if (!err) {
-                            socket.verified = true;
-                            socket.write('0');
+                            socket.username = db.getUsername(socket.id, function (err) {
+                                if (err) {
+                                    socket.write('1');
+                                    break;
+                                }
+                                socket.verified = true;
+                                socket.write('0');
+                            });
                         }
                         else
                             socket.write('1');
@@ -41,7 +47,7 @@ net.createServer(function (socket) {
                     break;
 
                 case "reg":
-                    db.createUser(socket.id, message[1], function (err) {
+                    db.createUser(socket.id, message[1], message[2], function (err) {
                         if (err)
                             socket.write('1');
                         else socket.write('0');
@@ -123,8 +129,8 @@ function flushQueue() {
         }
         x1.rival = x2;
         x2.rival = x1;
-        x1.write("s");//send start message
-        x2.write("s");//send start message
+        x1.write(x2.username);//send start message
+        x2.write(x1.username);//send start message
     }
 }
 setInterval(flushQueue, 3000);

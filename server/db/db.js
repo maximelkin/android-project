@@ -16,14 +16,19 @@ function hashing(password) {
 }
 
 
-function createUser(androidId, pass, callback) {
-    if (typeof (androidId) != 'string' || typeof (pass) != 'string')
+function createUser(androidId, pass, username, callback) {
+    if (typeof (androidId) != 'string' || typeof (pass) != 'string' || typeof (username) != 'string')
         return callback(new Error("dangerous data"));
     user.create({
         _id: androidId,
         pass: hashing(pass),
-        rate: config.defRate
+        rate: config.defRate,
+        username: username
     }, callback);
+}
+
+function getUsername(androidId, callback) {
+    user.findOne({_id: androidId}, {username: 1}, {lean: true}, callback);
 }
 
 function deleteUser(androidId, callback) {
@@ -33,7 +38,7 @@ function deleteUser(androidId, callback) {
 }
 
 function checkPass(androidId, pass, callback) {
-    user.findOne({_id: androidId}, 'pass', {lean: true}, function (err, user) {
+    user.findOne({_id: androidId}, {'pass': 1}, {lean: true}, function (err, user) {
         callback(err || user.pass != hashing(pass));
     });
 }
@@ -58,3 +63,4 @@ module.exports.deleteUser = deleteUser;
 module.exports.checkPass = checkPass;
 module.exports.clearUsers = clearUsers;
 module.exports.updateRate = updateRate;
+module.exports.getUsername = getUsername;
