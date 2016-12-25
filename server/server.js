@@ -35,7 +35,7 @@ net.createServer(function (socket) {
                             socket.username = db.getUsername(socket.id, function (err) {
                                 if (err) {
                                     socket.write('1');
-                                    break;
+                                    return;
                                 }
                                 socket.verified = true;
                                 socket.write('0');
