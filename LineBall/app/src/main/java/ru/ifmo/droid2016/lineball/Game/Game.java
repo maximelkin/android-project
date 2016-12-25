@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
+import ru.ifmo.droid2016.lineball.Board.Board;
 import ru.ifmo.droid2016.lineball.Board.Who;
 import ru.ifmo.droid2016.lineball.R;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
@@ -21,6 +22,7 @@ import ru.ifmo.droid2016.lineball.Socket.SocketThread;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static ru.ifmo.droid2016.lineball.Board.Board.*;
 import static ru.ifmo.droid2016.lineball.Board.Who.RIVAL;
 import static ru.ifmo.droid2016.lineball.Board.Who.THIS_USER;
 import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_ERROR;
@@ -73,8 +75,8 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     public boolean onTouch(View view, MotionEvent event) {
 
         //TODO convert coordinates
-        double x = event.getX();
-        double y = event.getY();
+        double x = event.getX() * (maxX / maxXLocal);
+        double y = event.getY() * (maxY / maxYLocal);
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:

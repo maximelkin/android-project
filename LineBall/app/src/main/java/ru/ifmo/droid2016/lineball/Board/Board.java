@@ -137,7 +137,8 @@ public class Board {
             a[i] = Double.parseDouble(s[i]);
         }
 
-        Point p1 = (new Point(a[0], a[1])).mul(maxX / maxXLocal), p2 = (new Point(a[2], a[3])).mul(maxY / maxYLocal);
+        Point p1 = new Point(a[0], a[1]),
+                p2 = new Point(a[2], a[3]);
         Wall w = new Wall(p1, p2, new Line(p1, p2));
 
         if (b1.collision(w) || b2.collision(w))
