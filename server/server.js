@@ -35,7 +35,7 @@ net.createServer(function (socket) {
                             socket.username = db.getUsername(socket.id, function (err) {
                                 if (err) {
                                     socket.write('1');
-                                    break;
+                                    return;
                                 }
                                 socket.verified = true;
                                 socket.write('0');
@@ -99,7 +99,9 @@ net.createServer(function (socket) {
             }
         }
     });
-}).listen(8080, 'localhost');
+}).listen(8080, function () {
+    console.log("listening");
+});
 
 
 function flushQueue() {
