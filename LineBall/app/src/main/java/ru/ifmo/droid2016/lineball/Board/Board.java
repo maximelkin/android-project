@@ -16,7 +16,7 @@ public class Board {
     private Ball b1 = new Ball(new Point(30, 30), new Point(1 / Math.sqrt(2), 1 / Math.sqrt(2))),
             b2 = new Ball(new Point(300, 300), new Point(-1 / Math.sqrt(2), -1 / Math.sqrt(2)));
 
-    public Board(int maxX, int maxY){
+    public Board(int maxX, int maxY) {
         maxXLocal = maxX;
         maxYLocal = maxY;
     }
@@ -137,7 +137,7 @@ public class Board {
             a[i] = Double.parseDouble(s[i]);
         }
 
-        Point p1 = new Point(a[0], a[1]), p2 = new Point(a[2], a[3]);
+        Point p1 = (new Point(a[0], a[1])).mul(maxXLocal / maxX), p2 = (new Point(a[2], a[3])).mul(maxYLocal / maxY);
         Wall w = new Wall(p1, p2, new Line(p1, p2));
 
         if (b1.collision(w) || b2.collision(w))
@@ -150,6 +150,7 @@ public class Board {
                 walls1.add(w);
                 break;
             case RIVAL:
+                w.reverse();
                 walls2.add(w);
                 break;
         }
