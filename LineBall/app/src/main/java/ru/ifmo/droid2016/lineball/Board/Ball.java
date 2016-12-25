@@ -50,7 +50,7 @@ public class Ball {
 
         if (s1 * s2 < 0 || s1 * s3 < 0 || s2 * s3 < 0)
             return false;
-        
+
         Point m = (new Point(b1.pos)).sub(w1.p2);
         Point p = (new Point(b1.pos)).sub(w1.p1);
         Point q = new Point(w1.p2.sub(w1.p1));
@@ -95,7 +95,7 @@ public class Ball {
 
     public void onDraw(Canvas canvas, Paint p) {
         //TODO convert coordinates
-        canvas.drawCircle((float) pos.x, (float) pos.y, (float) r, p);
+        canvas.drawCircle((float) (pos.x * Board.maxXLocal / Board.maxX), (float) (pos.y * Board.maxYLocal / Board.maxY), (float) (r * Board.maxYLocal / Board.maxY), p);
     }
 
     public void move() {

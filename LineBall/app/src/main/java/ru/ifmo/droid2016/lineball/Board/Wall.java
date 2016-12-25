@@ -23,7 +23,17 @@ public class Wall {
     }
 
     public void onDraw(Canvas canvas, Paint p) {
-        //TODO convert coordinates
-        canvas.drawLine((float) p1.x, (float) p1.y, (float) p2.x, (float) p2.y, p);
+        canvas.drawLine((float) (p1.x * Board.maxXLocal / Board.maxX), (float) (p1.y * Board.maxYLocal / Board.maxY),
+                (float) (p2.x * Board.maxXLocal / Board.maxX), (float) (p2.y * Board.maxYLocal / Board.maxY), p);
+    }
+
+    public void toAbsoluteCoord() {
+    }
+
+    public void reverse() {
+        Point maxCoord = new Point(Board.maxX, Board.maxY);
+        p1 = maxCoord.sub(p1);
+        p2 = maxCoord.sub(p2);
+        l = new Line(p1, p2);
     }
 }
