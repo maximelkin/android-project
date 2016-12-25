@@ -99,7 +99,9 @@ net.createServer(function (socket) {
             }
         }
     });
-}).listen(8080, 'localhost');
+}).listen(8080, function () {
+    console.log("listening");
+});
 
 
 function flushQueue() {
