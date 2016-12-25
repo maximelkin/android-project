@@ -11,7 +11,7 @@ import java.util.ArrayList;
 //TODO all
 public class Board {
     //maxX/maxY = 16/9
-    public static double dv = 0.2, maxX = 1024, maxY = 576, maxXLocal, maxYLocal, eps = 1e-9;
+    public static double dv = 0.2, maxX = 576, maxY = 1024, maxXLocal, maxYLocal, eps = 1e-9;
     private ArrayList<Wall> walls1 = new ArrayList<>(), walls2 = new ArrayList<>();
     private Ball b1 = new Ball(new Point(30, 30), new Point(1 / Math.sqrt(2), 1 / Math.sqrt(2))),
             b2 = new Ball(new Point(maxX - 30, maxY - 30), new Point(-1 / Math.sqrt(2), -1 / Math.sqrt(2)));
@@ -137,7 +137,7 @@ public class Board {
             a[i] = Double.parseDouble(s[i]);
         }
 
-        Point p1 = (new Point(a[0], a[1])).mul(maxXLocal / maxX), p2 = (new Point(a[2], a[3])).mul(maxYLocal / maxY);
+        Point p1 = (new Point(a[0], a[1])).mul(maxX / maxXLocal), p2 = (new Point(a[2], a[3])).mul(maxY / maxYLocal);
         Wall w = new Wall(p1, p2, new Line(p1, p2));
 
         if (b1.collision(w) || b2.collision(w))
