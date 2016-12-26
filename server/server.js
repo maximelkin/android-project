@@ -108,12 +108,7 @@ net.createServer(function (socket) {
                         console.log("NO RIVAL");
                         //game not started
                         socket.write('1');
-                    } else if (!socket.rival._connecting) {
-                        console.log("RIVAL DEAD");
-                        //rival leave
-                        socket.write('2');
                     } else {
-                        //ok
                         try {
                             socket.rival.write(message[1] + ' ' + message[2] + ' ' + message[3] + ' ' + message[4]);
                         } catch (e) {
