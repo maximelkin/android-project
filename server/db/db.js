@@ -17,13 +17,14 @@ function hashing(password) {
 }
 
 
-function createUser(androidId, pass, callback) {
+function createUser(androidId, pass, username, callback) {
     if (typeof (androidId) != 'string' || typeof (pass) != 'string')
         return callback(new Error("dangerous data"));
     user.create({
         _id: androidId,
         pass: hashing(pass),
-        rate: config.defRate
+        rate: config.defRate,
+        username: username
     }, callback);
 }
 
