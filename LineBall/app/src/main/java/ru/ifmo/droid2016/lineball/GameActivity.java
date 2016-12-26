@@ -29,6 +29,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     private String password;
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static SecureRandom rnd = new SecureRandom();
+    private AlertDialog alertDialog;
 
 
     @Override
@@ -65,9 +66,11 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     public boolean handleMessage(Message message) {
         switch (message.what) {
             case MSG_ERROR:
+                alertDialog.dismiss();
                 fail();
                 break;
             case MSG_START:
+                alertDialog.dismiss();
                 Intent intent = new Intent(this, Game.class);
                 intent.putExtra("rival name", (String) message.obj);
                 startActivity(intent);
@@ -94,7 +97,6 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
 
                     final EditText username = new EditText(layout.getContext());
                     layout.addView(username);
-                    final AlertDialog alertDialog;
 
                     alertDialog = builder.setMessage(R.string.input_your_nick)
                             .setView(layout)
@@ -120,7 +122,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                                 }
                             })
                             .create();
-                    alertDialog.setCanceledOnTouchOutside(false);
+                   // alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.show();
                     //magic end
                 } else {
