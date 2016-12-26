@@ -153,6 +153,9 @@ net.createServer(function (socket) {
             x1.write(x2.username);//send start message
             x2.write(x1.username);//send start message
         }
+        if (s.length == 1){
+            queue.push(s[0]);
+        }
     }
     setInterval(flushQueue, 3000);
 });
