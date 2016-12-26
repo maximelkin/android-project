@@ -82,8 +82,10 @@ net.createServer(function (socket) {
                     break;
 
                 case "search":
-                    if (socket.verified)
+                    if (socket.verified){
                         queue.push(socket);
+                        console.log("NEW MAN IN QUEUE");
+                    }
                     else
                         socket.write('1');
                     break;
@@ -121,7 +123,7 @@ net.createServer(function (socket) {
     function flushQueue() {
         console.log(queue);
         var s = [queue, queue = []][0];
-        console.log(s);
+        console.log(s.length);
         //now s = queue
         //queue = []
         while (s.length > 0) {
