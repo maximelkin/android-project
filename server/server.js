@@ -82,7 +82,7 @@ net.createServer(function (socket) {
                     break;
 
                 case "search":
-                    if (socket.verified){
+                    if (socket.verified) {
                         queue.push(socket);
                         console.log("NEW MAN IN QUEUE");
                     }
@@ -129,24 +129,24 @@ net.createServer(function (socket) {
         while (s.length > 0) {
             //trying get alive user
             var x1 = s.pop();
-            while (!x1.destroyed && s.length > 0)
-                x1 = s.pop();
-
-            if (x1.destroyed)
-                break;
-            if (s.length == 0) {
-                queue.push(x1);
-                break;
-            }
-
-            var x2 = s.pop();
+            /* while (!x1.destroyed && s.length > 0)
+                 x1 = s.pop();
+ 
+             if (x1.destroyed)
+                 break;
+             if (s.length == 0) {
+                 queue.push(x1);
+                 break;
+             }
+ */
+            var x2 = s.pop();/*
             while (!x2.destroyed && s.length > 0)
                 x2 = s.pop();
 
             if (x2.destroyed) {
                 queue.push(x1);
                 break;
-            }
+            }*/
             x1.rival = x2;
             x2.rival = x1;
             console.log("STARTED");
