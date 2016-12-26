@@ -21,6 +21,7 @@ net.createServer(function (socket) {
             if (socket.id == null && message[0] != "con"){
                 continue;
             }
+            console.log(message);
             switch (message[0]) {
                 case "con":
                     if (socket.id || message.length < 2) {
