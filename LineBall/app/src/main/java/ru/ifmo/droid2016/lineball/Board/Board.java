@@ -160,6 +160,7 @@ public class Board {
     public void drawBoard(Canvas canvas) {
         Paint p = new Paint();
         p.setStrokeWidth(10);
+        p.setAntiAlias(true);
         p.setColor(Color.BLUE);
 
         b1.onDraw(canvas, p);

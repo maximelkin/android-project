@@ -29,11 +29,11 @@ public class Point {
         return new Point(k * x, k * y);
     }
 
-    double cp(Point p) {
+    double crossProduct(Point p) {
         return x * p.y - y * p.x;
     }
 
-    double sp(Point p) {
+    double scalarProduct(Point p) {
         return x * p.x + y * p.y;
     }
 
@@ -41,7 +41,7 @@ public class Point {
         return mul(1 / length());
     }
 
-    double distance(Point other){
-        return sub(other).length();
+    Point getPerpendicularVector(){
+        return new Point(-y, x);
     }
 }

@@ -46,10 +46,12 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
+            //add wall
             case MSG_ADD:
 
                 board.setWall((String) msg.obj, Who.values()[msg.arg1]);
                 break;
+            //next tact
             case MSG_UPD:
                 Who checked = board.check();
                 Canvas c = surfaceHolder.lockCanvas();
@@ -62,7 +64,6 @@ class DrawThread extends HandlerThread implements Handler.Callback {
                     Message message = Message.obtain(uiHandler, MSG_END, checked.ordinal(), 0);
                     uiHandler.sendMessage(message);
                 }
-                Log.e("draw thread", "update");
                 break;
         }
         return true;

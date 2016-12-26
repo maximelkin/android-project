@@ -2,15 +2,15 @@ package ru.ifmo.droid2016.lineball.Board;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Picture;
 import android.util.Log;
+
+import static java.lang.StrictMath.abs;
 
 public class Ball {
 
     Point pos;
     Point dir;
-    double r;
-    double v;
+    double r, v;
     double eps = 1e-9;
 
     Ball(Point pos, Point dir) {
@@ -44,9 +44,9 @@ public class Ball {
 
         Point nextPos = new Point(b1.pos.sum(b1.dir));
 
-        double s1 = w1.p1.sub(nextPos).cp(w1.p2.sub(w1.p1));
-        double s2 = w1.p2.sub(nextPos).cp(b1.pos.sub(w1.p2));
-        double s3 = b1.pos.sub(nextPos).cp(w1.p1.sub(b1.pos));
+        double s1 = w1.p1.sub(nextPos).crossProduct(w1.p2.sub(w1.p1));
+        double s2 = w1.p2.sub(nextPos).crossProduct(b1.pos.sub(w1.p2));
+        double s3 = b1.pos.sub(nextPos).crossProduct(w1.p1.sub(b1.pos));
 
         if (s1 * s2 < 0 || s1 * s3 < 0 || s2 * s3 < 0)
             return false;
@@ -57,7 +57,7 @@ public class Ball {
         Point qrev = new Point(q.mul(-1));
         double d = w1.l.dist(b1.pos);
 
-        if (m.sp(qrev) * p.sp(q) >= 0) {
+        if (m.scalarProduct(qrev) * p.scalarProduct(q) >= 0) {
             return (Math.abs(d) <= r);
         } else {
             return (m.length() <= r || p.length() <= r);
@@ -65,8 +65,31 @@ public class Ball {
     }
 
     public void rotate(Wall wall) {
+        //collision with p1
+        Point p1p2 = wall.p2.sub(wall.p1);
+        if (p1p2.scalarProduct(pos.sub(wall.p1)) < 0) {
+            Log.e("Rotate", "impact with p1");
+            rotateDueToPoint(wall.p1);
+            return;
+        }
+        //collision with p2
+        Point p2p1 = wall.p1.sub(wall.p2);
+        if (p2p1.scalarProduct(pos.sub(wall.p2)) < 0) {
+            Log.e("Rotate", "impact with p2");
+            rotateDueToPoint(wall.p2);
+            return;
+        }
+        //usual impact with wall
+        //wallNormal - normal vector for wall.l with length = 1
+        Log.e("Rotate", "impact with wall");
         Point wallNormal = new Point(wall.l.A, wall.l.B).normalize();
-        dir = dir.sum(wallNormal.mul(-dir.sp(wallNormal) * 2)).normalize();
+        dir = dir.sum(wallNormal.mul(-dir.scalarProduct(wallNormal) * 2)).normalize();
+    }
+
+    public void rotateDueToPoint(Point point) {
+        //lets "lineBetween" - line between point and pos
+        Point normalVectorLineBetween = pos.sub(point).getPerpendicularVector().normalize();
+        dir = dir.sum(normalVectorLineBetween.mul(-dir.scalarProduct(normalVectorLineBetween) * 2)).normalize();
     }
 
     public boolean outOfBoard(double mX, double mY) {
