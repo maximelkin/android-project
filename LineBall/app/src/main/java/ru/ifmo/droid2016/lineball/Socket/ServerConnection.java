@@ -3,6 +3,7 @@ package ru.ifmo.droid2016.lineball.Socket;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import ru.ifmo.droid2016.lineball.GameActivity;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -19,11 +20,10 @@ public class ServerConnection {
     private static InputStream inputStream;
     private static DataOutputStream dataOutputStream;
 
-    ServerConnection() throws IOException {
+    ServerConnection(String androidId) throws IOException {
         socket = new Socket(host, port);
         socket.setTcpNoDelay(true);
         inputStream = socket.getInputStream();
-        String androidId = Settings.Secure.ANDROID_ID;
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
         if (!send("con " + androidId)) {
             throw new ConnectException();

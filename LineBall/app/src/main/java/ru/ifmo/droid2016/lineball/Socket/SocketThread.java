@@ -25,10 +25,12 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     public final static int MSG_START = 208;
     public final static int MSG_READY = 209;
     public final static int MSG_REG_ERR = 502;
+    private String androidId;
 
-    public SocketThread(String name, Handler uiHandler) throws IOException {
+    public SocketThread(String name, Handler uiHandler, String androidId) throws IOException {
         super(name, Process.THREAD_PRIORITY_MORE_FAVORABLE);
         this.uiHandler = uiHandler;
+        this.androidId = androidId;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
         super.onLooperPrepared();
         mReceiver = new Handler(Looper.myLooper(), this);
         try {
-            socket = new ServerConnection();
+            socket = new ServerConnection(androidId);
             uiHandler.sendEmptyMessage(MSG_READY);
         } catch (IOException e) {
             uiHandler.sendEmptyMessage(MSG_ERROR);

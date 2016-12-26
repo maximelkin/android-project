@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -38,7 +39,11 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
         //PreferenceManager.getDefaultSharedPreferences(this).edit().putString("password", null).apply();
         password = PreferenceManager.getDefaultSharedPreferences(this).getString("password", null);
         try {
-            socket = new SocketThread("socket", new Handler(Looper.getMainLooper(), this));
+
+            String android_id = Settings.Secure.getString(getBaseContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+
+            socket = new SocketThread("socket", new Handler(Looper.getMainLooper(), this), android_id);
             socket.start();
         } catch (IOException e) {
             fail();
@@ -128,7 +133,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     }
 
     @NonNull
-    private String randomString(int len) {
+    public static String randomString(int len) {
         StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++)
             sb.append(AB.charAt(rnd.nextInt(AB.length())));
