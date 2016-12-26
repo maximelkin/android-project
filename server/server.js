@@ -16,11 +16,14 @@ net.createServer(function (socket) {
     socket.on('data', function (message_peace) {
         accumulator += message_peace;
         while (accumulator.indexOf('#') != -1) {
-            var message = accumulator.split('#')[0].split(' ');
-            accumulator = accumulator.split('#')[1];
+            const message = accumulator.split('#')[0].split(' ');
+            accumulator = accumulator.split('#')[1];//dangerous
+            if (socket.id == null && message[0] != "con"){
+                continue;
+            }
             switch (message[0]) {
                 case "con":
-                    if (socket.id) {
+                    if (socket.id || message.length < 2) {
                         socket.write('1');
                         break;
                     }
@@ -30,23 +33,31 @@ net.createServer(function (socket) {
                     break;
 
                 case "ver":
+                    if (message.length < 2) {
+                        socket.write('1');
+                        break;
+                    }
                     db.checkPass(socket.id, message[1], function (err) {
-                        if (!err) {
-                            socket.username = db.getUsername(socket.id, function (err) {
-                                if (err) {
-                                    socket.write('1');
-                                    return;
-                                }
-                                socket.verified = true;
-                                socket.write('0');
-                            });
-                        }
-                        else
+                        if (err) {
                             socket.write('1');
+                            return;
+                        }
+                        socket.username = db.getUsername(socket.id, function (err) {
+                            if (err) {
+                                socket.write('1');
+                                return;
+                            }
+                            socket.verified = true;
+                            socket.write('0');
+                        });
                     });
                     break;
 
                 case "reg":
+                    if (message.length < 3){
+                        socket.write('1');
+                        break;
+                    }
                     db.createUser(socket.id, message[1], message[2], function (err) {
                         if (err)
                             socket.write('1');
@@ -55,15 +66,16 @@ net.createServer(function (socket) {
                     break;
 
                 case "reset":
-                    if (socket.verified)
-                        db.deleteUser(socket.id, function (err) {
-                            if (err)
-                                socket.write('1');
-                            else
-                                socket.write('0');
-                        });
-                    else
+                    if (!socket.verified) {
                         socket.write('1');
+                        break;
+                    }
+                    db.deleteUser(socket.id, function (err) {
+                        if (err)
+                            socket.write('1');
+                        else
+                            socket.write('0');
+                    });
                     break;
 
                 case "search":
@@ -74,17 +86,17 @@ net.createServer(function (socket) {
                     break;
 
                 case "gameov":
-                    if (socket.verified && socket.rival != null)
-                        db.updateRate(socket.id, message[1] == 'win', function (err) {
-                            if (err)
-                                socket.write('1');
-                            else socket.write('0'); //ok
-                        });
-                    else
-                        socket.write('1'); //game not started
-                    socket.rival = null;
+                    if (!socket.verified || socket.rival == null || message.length < 2) {
+                        socket.write('1');
+                        break;
+                    }
+                    db.updateRate(socket.id, message[1] == 'win', function (err) {
+                        if (err)
+                            socket.write('1');
+                        else socket.write('0'); //ok
+                    });
                     break;
-                case "wall"://set wall
+                case "wall":
                     if (socket.rival == null) {
                         //game not started
                         socket.write('1');
@@ -98,7 +110,8 @@ net.createServer(function (socket) {
                     break;
             }
         }
-    });
+    })
+    ;
 }).listen(8080, function () {
     console.log("listening");
 });

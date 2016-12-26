@@ -28,16 +28,20 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
 
     public SocketThread(String name, Handler uiHandler) throws IOException {
         super(name, Process.THREAD_PRIORITY_MORE_FAVORABLE);
-        // this.socket = new ServerConnection();
         this.uiHandler = uiHandler;
-//        mReceiver = new Handler(getLooper(), this);
     }
 
     @Override
     protected void onLooperPrepared() {
         super.onLooperPrepared();
         mReceiver = new Handler(Looper.myLooper(), this);
-        uiHandler.sendEmptyMessage(MSG_READY);
+        try {
+            socket = new ServerConnection();
+            uiHandler.sendEmptyMessage(MSG_READY);
+        } catch (IOException e) {
+            uiHandler.sendEmptyMessage(MSG_ERROR);
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -49,10 +53,10 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message message) {
-        /* boolean result = true;
+        boolean result = true;
         switch (message.what) {
             case MSG_VERIFY:
-                if (!socket.verify((String) message.obj)){
+                if (!socket.verify((String) message.obj)) {
                     uiHandler.sendEmptyMessage(MSG_REG_ERR);
                 }
                 break;
@@ -67,8 +71,6 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                 if (result) {
                     uiHandler.sendEmptyMessage(MSG_START);
                     uiHandler.sendMessage(Message.obtain(uiHandler, MSG_START, name));
-                } else {
-                    //TODO show error pop-up
                 }
                 break;
             case MSG_END:
@@ -90,9 +92,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                 break;
         }
         if (!result)
-            uiHandler.sendEmptyMessage(MSG_ERROR);*/
-        if (message.what == MSG_SEARCH)
-            uiHandler.sendEmptyMessage(MSG_START);
+            uiHandler.sendEmptyMessage(MSG_ERROR);
         return true;
     }
 

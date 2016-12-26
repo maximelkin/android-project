@@ -110,7 +110,7 @@ public class Ball {
     public void rotateDueToPoint(Point point) {
         //lets "lineBetween" - line between point and pos
         Point normalVectorLineBetween = pos.sub(point).getPerpendicularVector().normalize();
-        dir = dir.sum(normalVectorLineBetween.mul(-dir.scalarProduct(normalVectorLineBetween) * 2)).normalize();
+        dir = dir.sum(normalVectorLineBetween.mul(dir.scalarProduct(normalVectorLineBetween) * 2)).normalize();
     }
 
     public boolean outOfBoard(double mX, double mY) {

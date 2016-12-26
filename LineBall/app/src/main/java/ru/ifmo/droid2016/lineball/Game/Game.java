@@ -31,8 +31,8 @@ import static ru.ifmo.droid2016.lineball.Socket.SocketThread.getThreadByName;
 
 
 public class Game extends AppCompatActivity implements View.OnTouchListener, SurfaceHolder.Callback, Handler.Callback {
-    public static final long REDRAW_DELAY = 60;
-    private static final long BEFORE_DRAW_DELAY = 20;
+    public static final long REDRAW_DELAY = 40;
+    private static final long BEFORE_DRAW_DELAY = 100;
     public static final int MSG_END = 302;
     private static final String TAG = "GAME";
     public static final int MSG_WALL = 300;
