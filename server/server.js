@@ -110,7 +110,11 @@ net.createServer(function (socket) {
                         socket.write('2');
                     } else {
                         //ok
-                        socket.rival.write(message[1]);
+                        try {
+                            socket.rival.write(message[1] + ' ' + message[2] + ' ' + message[3] + ' ' + message[4]);
+                        } catch (e) {
+                            console.log(e);
+                        }
                     }
                     break;
             }
@@ -156,7 +160,7 @@ net.createServer(function (socket) {
             x1.write(x2.username + "");//send start message
             x2.write(x1.username + "");//send start message
         }
-        if (s.length == 1){
+        if (s.length == 1) {
             queue.push(s[0]);
         }
     }
