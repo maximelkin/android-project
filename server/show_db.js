@@ -11,5 +11,5 @@ db.on('error', console.error.bind(
 
 user.find({}).lean().exec(function(err, users){
     console.log(err);
-    console.log(user);
+    console.log(users);
 });
