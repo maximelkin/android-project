@@ -121,12 +121,12 @@ net.createServer(function (socket) {
     console.log("listening");
 
     function flushQueue() {
-        console.log(queue);
+        //console.log(queue);
         var s = [queue, queue = []][0];
         console.log(s.length);
         //now s = queue
         //queue = []
-        while (s.length > 0) {
+        while (s.length > 1) {
             //trying get alive user
             var x1 = s.pop();
             /* while (!x1.destroyed && s.length > 0)
