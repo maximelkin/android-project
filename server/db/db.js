@@ -39,8 +39,8 @@ function deleteUser(androidId, callback) {
 }
 
 function checkPass(androidId, pass, callback) {
-    user.findOne({ _id: androidId }, function (err, user) {
-        callback(err || user == null || user.pass != hashing(pass));
+    user.find({ _id: androidId }, function (err, user) {
+        callback(err || user == null || user[0].pass != hashing(pass));
     });
 }
 
@@ -56,7 +56,7 @@ function updateRate(androidId, isWon, callback) {
     var change = -config.deltaRatingChange;
     if (isWon)
         change = config.deltaRatingChange;
-    user.updateOne({ _id: androidId }, { rate: { $inc: change } }, callback);
+    user.update({ _id: androidId }, { rate: { $inc: change } }, callback);
 }
 
 module.exports.createUser = createUser;
