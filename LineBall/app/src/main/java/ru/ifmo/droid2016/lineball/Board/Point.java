@@ -40,4 +40,8 @@ public class Point {
     Point normalize() {
         return mul(1 / length());
     }
+
+    double distance(Point other){
+        return sub(other).length();
+    }
 }

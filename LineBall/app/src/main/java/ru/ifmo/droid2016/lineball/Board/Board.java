@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 //TODO all
 public class Board {
-    //maxX/maxY = 16/9
+    //maxX/maxY = 9/16
     public static double dv = 0.2, maxX = 576, maxY = 1024, maxXLocal, maxYLocal, eps = 1e-9;
     private ArrayList<Wall> walls1 = new ArrayList<>(), walls2 = new ArrayList<>();
     private Ball b1 = new Ball(new Point(30, 30), new Point(1 / Math.sqrt(2), 1 / Math.sqrt(2))),

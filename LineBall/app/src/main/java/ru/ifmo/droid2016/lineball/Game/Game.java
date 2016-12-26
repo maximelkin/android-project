@@ -6,15 +6,16 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.*;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import ru.ifmo.droid2016.lineball.Board.Board;
 import ru.ifmo.droid2016.lineball.Board.Who;
 import ru.ifmo.droid2016.lineball.R;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
@@ -26,10 +27,11 @@ import static ru.ifmo.droid2016.lineball.Board.Board.*;
 import static ru.ifmo.droid2016.lineball.Board.Who.RIVAL;
 import static ru.ifmo.droid2016.lineball.Board.Who.THIS_USER;
 import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_ERROR;
+import static ru.ifmo.droid2016.lineball.Socket.SocketThread.getThreadByName;
 
 
 public class Game extends AppCompatActivity implements View.OnTouchListener, SurfaceHolder.Callback, Handler.Callback {
-    public static final long REDRAW_DELAY = 80;
+    public static final long REDRAW_DELAY = 60;
     private static final long BEFORE_DRAW_DELAY = 20;
     public static final int MSG_END = 302;
     private static final String TAG = "GAME";
@@ -64,6 +66,10 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
         //socket should be created before!!!
         socketThread = ((SocketThread) getThreadByName("socket"));
+
+        if (socketThread == null){
+            gameFinish(RIVAL);
+        }
 
         socketThread.setUiHandler(uiHandler);
 
@@ -167,15 +173,5 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         return false;
     }
 
-    @NonNull
-    private Thread getThreadByName(String threadName) {
-        for (Thread t : Thread.getAllStackTraces().keySet()) {
-            if (t.getName().equals(threadName)) return t;
-        }
-        Log.e("GAME", "getting thread return null");
-        //app error
-        gameFinish(RIVAL);
-        return null;
-    }
 
 }

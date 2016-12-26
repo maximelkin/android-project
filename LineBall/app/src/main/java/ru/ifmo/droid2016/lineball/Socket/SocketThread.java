@@ -2,6 +2,7 @@ package ru.ifmo.droid2016.lineball.Socket;
 
 import android.os.*;
 import android.os.Process;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     private final static int MSG_GET = 207;
     public final static int MSG_START = 208;
     public final static int MSG_READY = 209;
+    public final static int MSG_REG_ERR = 502;
 
     public SocketThread(String name, Handler uiHandler) throws IOException {
         super(name, Process.THREAD_PRIORITY_MORE_FAVORABLE);
@@ -50,7 +52,9 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
         /* boolean result = true;
         switch (message.what) {
             case MSG_VERIFY:
-                result = socket.verify((String) message.obj);
+                if (!socket.verify((String) message.obj)){
+                    uiHandler.sendEmptyMessage(MSG_REG_ERR);
+                }
                 break;
             case MSG_REGISTRATION:
                 result = socket.registration((String) message.obj);
@@ -119,6 +123,15 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     //only one run!
     public void getWall() {
         mReceiver.sendEmptyMessage(MSG_GET);
+    }
+
+    @Nullable
+    public static Thread getThreadByName(String threadName) {
+        for (Thread t : Thread.getAllStackTraces().keySet()) {
+            if (t.getName().equals(threadName)) return t;
+        }
+        Log.e("GAME", "getting thread return null");
+        return null;
     }
 
 }

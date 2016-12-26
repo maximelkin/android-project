@@ -64,27 +64,7 @@ public class Ball {
         }
     }
 
-    public void rotate(Wall w) {
-        rotateDirection(w);
-        /*//TODO Just do it OK
-
-        Point p = new Point(w.p1.sum(dir));
-        Point n = new Point(w.l.A, w.l.B);
-        double d = w.l.dist(p);
-        n = n.mul(d / n.length());
-        p = p.sum(n);
-
-        if (w.l.contain(p)) {
-            p = p.sum(n);
-        } else {
-            n = n.mul(-3);
-            p = p.sum(n);
-        }
-        dir = p.sub(w.p1);
-        dir = dir.mul(1 / dir.length());*/
-    }
-
-    public void rotateDirection(Wall wall) {
+    public void rotate(Wall wall) {
         Point wallNormal = new Point(wall.l.A, wall.l.B).normalize();
         dir = dir.sum(wallNormal.mul(-dir.sp(wallNormal) * 2)).normalize();
     }

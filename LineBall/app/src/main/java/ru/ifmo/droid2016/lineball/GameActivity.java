@@ -35,7 +35,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         // getSupportActionBar().hide();
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("password", null).apply();
+        //PreferenceManager.getDefaultSharedPreferences(this).edit().putString("password", null).apply();
         password = PreferenceManager.getDefaultSharedPreferences(this).getString("password", null);
         try {
             socket = new SocketThread("socket", new Handler(Looper.getMainLooper(), this));
@@ -68,6 +68,10 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                 startActivity(intent);
                 finish();
                 break;
+            case MSG_REG_ERR:
+                password = null;
+                //go to MSG_READY
+                //for creating new account if error
             case MSG_READY:
                 if (password == null) {
                     password = randomString(10);
@@ -95,18 +99,23 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                                     String usernameText = username.getText().toString();
                                     //TODO check in logs
                                     Log.e("username", usernameText);
-                                    if (usernameText.length() > 3 && usernameText.length() < 15) {
-                                        PreferenceManager
-                                                .getDefaultSharedPreferences(context)
-                                                .edit().putString("name", usernameText)
-                                                .apply();
-                                        dialogInterface.dismiss();
-                                        socket.registration(String.format("%s %s", password, usernameText));
-                                        socket.search();
+                                    if (usernameText.length() < 3) {
+                                        usernameText += " 2007";
                                     }
+                                    if (usernameText.length() > 10) {
+                                        usernameText = (String) usernameText.subSequence(0, 10);
+                                    }
+                                    PreferenceManager
+                                            .getDefaultSharedPreferences(context)
+                                            .edit().putString("name", usernameText)
+                                            .apply();
+                                    dialogInterface.dismiss();
+                                    socket.registration(String.format("%s %s", password, usernameText));
+                                    socket.search();
                                 }
                             })
                             .create();
+                    alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.show();
                     //magic end
                 } else {
