@@ -43,11 +43,12 @@ net.createServer(function (socket) {
                             socket.write('1');
                             return;
                         }
-                        socket.username = db.getUsername(socket.id, function (err) {
+                        db.getUsername(socket.id, function (err, user) {
                             if (err) {
                                 socket.write('1');
                                 return;
                             }
+                            socket.username = user.username;
                             socket.verified = true;
                             socket.write('0');
                         });

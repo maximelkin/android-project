@@ -28,6 +28,10 @@ function createUser(androidId, pass, username, callback) {
     }, callback);
 }
 
+function getUsername(androidId, callback){
+    user.findOne({_id: androidId}, callback);
+}
+
 function deleteUser(androidId, callback) {
     if (typeof (androidId) != 'string')
         return callback(new Error('dangerous data'));
@@ -60,3 +64,4 @@ module.exports.deleteUser = deleteUser;
 module.exports.checkPass = checkPass;
 module.exports.clearUsers = clearUsers;
 module.exports.updateRate = updateRate;
+module.exports.getUsername = getUsername;
