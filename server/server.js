@@ -64,6 +64,7 @@ net.createServer(function (socket) {
                         if (err)
                             socket.write('1');
                         else socket.write('0');
+                        socket.verified = true;
                     });
                     break;
 
