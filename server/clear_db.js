@@ -1,8 +1,6 @@
 var mongoose = require('mongoose');
-var models = require('./models');
-var crypto = require('crypto');
-var user = models.user,
-    queue = models.queue;
+var models = require('./db/models');
+var user = models.user;
 var config = require("./config.json");
 
 mongoose.connect(config.mongooseURL, { config: { autoIndex: false } });
