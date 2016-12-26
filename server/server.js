@@ -150,8 +150,10 @@ net.createServer(function (socket) {
             x1.rival = x2;
             x2.rival = x1;
             console.log("STARTED");
-            x1.write(x2.username);//send start message
-            x2.write(x1.username);//send start message
+            console.log(x1.username);
+            console.log(x2.username);
+            x1.write(x2.username + "");//send start message
+            x2.write(x1.username + "");//send start message
         }
         if (s.length == 1){
             queue.push(s[0]);
