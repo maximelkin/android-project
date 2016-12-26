@@ -9,7 +9,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(
     console, 'connection error:'));
 
-user.find({}, function(err, user){
+user.find({}).lean().exec(function(err, users){
     console.log(err);
     console.log(user);
 });
