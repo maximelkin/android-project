@@ -48,6 +48,7 @@ net.createServer(function (socket) {
                                 socket.write('1');
                                 return;
                             }
+                            console.log(JSON.stringify(user));
                             socket.username = user.username;
                             socket.verified = true;
                             socket.write('0');
@@ -65,6 +66,7 @@ net.createServer(function (socket) {
                             socket.write('1');
                         else socket.write('0');
                         socket.verified = true;
+                        socket.username = message[2];
                     });
                     break;
 
@@ -103,9 +105,11 @@ net.createServer(function (socket) {
                     break;
                 case "wall":
                     if (socket.rival == null) {
+                        console.log("NO RIVAL");
                         //game not started
                         socket.write('1');
                     } else if (!socket.rival._connecting) {
+                        console.log("RIVAL DEAD");
                         //rival leave
                         socket.write('2');
                     } else {
