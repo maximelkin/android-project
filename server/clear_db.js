@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var models = require('./db/models');
 var user = models.user;
-var config = require("./config.json");
+var config = require("./db/config.json");
 
 mongoose.connect(config.mongooseURL, { config: { autoIndex: false } });
 
