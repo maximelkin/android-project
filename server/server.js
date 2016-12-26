@@ -18,7 +18,7 @@ net.createServer(function (socket) {
         while (accumulator.indexOf('#') != -1) {
             const message = accumulator.split('#')[0].split(' ');
             accumulator = accumulator.split('#')[1];//dangerous
-            if (socket.id == null && message[0] != "con"){
+            if (socket.id == null && message[0] != "con") {
                 continue;
             }
             console.log(message);
@@ -56,7 +56,7 @@ net.createServer(function (socket) {
                     break;
 
                 case "reg":
-                    if (message.length < 3){
+                    if (message.length < 3) {
                         socket.write('1');
                         break;
                     }
@@ -114,41 +114,45 @@ net.createServer(function (socket) {
             }
         }
     })
-    ;
+        ;
 }).listen(8080, function () {
     console.log("listening");
-});
 
+    function flushQueue() {
+        console.log(queue);
+        var s = [queue, queue = []][0];
+        console.log(s);
+        //now s = queue
+        //queue = []
+        while (s.length > 0) {
+            //trying get alive user
+            var x1 = s.pop();
+            while (!x1.destroyed && s.length > 0)
+                x1 = s.pop();
 
-function flushQueue() {
-    var s = [queue, queue = []][0];
-    //now s = queue
-    //queue = []
-    while (s.length > 0) {
-        //trying get alive user
-        var x1 = s.pop();
-        while (!x1.destroyed && s.length > 0)
-            x1 = s.pop();
+            if (x1.destroyed)
+                break;
+            if (s.length == 0) {
+                queue.push(x1);
+                break;
+            }
 
-        if (x1.destroyed)
-            break;
-        if (s.length == 0) {
-            queue.push(x1);
-            break;
+            var x2 = s.pop();
+            while (!x2.destroyed && s.length > 0)
+                x2 = s.pop();
+
+            if (x2.destroyed) {
+                queue.push(x1);
+                break;
+            }
+            x1.rival = x2;
+            x2.rival = x1;
+            console.log("STARTED");
+            x1.write(x2.username);//send start message
+            x2.write(x1.username);//send start message
         }
-
-        var x2 = s.pop();
-        while (!x2.destroyed && s.length > 0)
-            x2 = s.pop();
-
-        if (x2.destroyed) {
-            queue.push(x1);
-            break;
-        }
-        x1.rival = x2;
-        x2.rival = x1;
-        x1.write(x2.username);//send start message
-        x2.write(x1.username);//send start message
     }
-}
-setInterval(flushQueue, 3000);
+    setInterval(flushQueue, 3000);
+});
+console.log("WTF");
+
