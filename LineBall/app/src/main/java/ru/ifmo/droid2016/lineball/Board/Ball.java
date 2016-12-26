@@ -1,6 +1,7 @@
 package ru.ifmo.droid2016.lineball.Board;
 
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.Log;
 
@@ -17,7 +18,7 @@ public class Ball {
         this.pos = pos;
         this.dir = dir;
         this.r = 30;
-        this.v = 2;
+        this.v = 5;
     }
 
     Ball(Ball b) {
@@ -44,24 +45,44 @@ public class Ball {
 
         Point nextPos = new Point(b1.pos.sum(b1.dir));
 
+        /*
         double s1 = w1.p1.sub(nextPos).crossProduct(w1.p2.sub(w1.p1));
+
         double s2 = w1.p2.sub(nextPos).crossProduct(b1.pos.sub(w1.p2));
         double s3 = b1.pos.sub(nextPos).crossProduct(w1.p1.sub(b1.pos));
 
         if (s1 * s2 < 0 || s1 * s3 < 0 || s2 * s3 < 0)
             return false;
+        */
 
         Point m = (new Point(b1.pos)).sub(w1.p2);
         Point p = (new Point(b1.pos)).sub(w1.p1);
         Point q = new Point(w1.p2.sub(w1.p1));
         Point qrev = new Point(q.mul(-1));
-        double d = w1.l.dist(b1.pos);
+        double d_ball = w1.l.dist(b1.pos);
+        double d_nextPos = w1.l.dist(nextPos);
+        boolean intersect = false;
 
         if (m.scalarProduct(qrev) * p.scalarProduct(q) >= 0) {
-            return (Math.abs(d) <= r);
+            intersect |= (Math.abs(d_ball) <= r);
         } else {
-            return (m.length() <= r || p.length() <= r);
+            intersect |= (m.length() <= r || p.length() <= r);
         }
+        if (!intersect)
+            return false;
+        m = (new Point(nextPos).sub(w1.p2));
+        p = (new Point(nextPos).sub(w1.p1));
+
+        if (m.scalarProduct(qrev) * p.scalarProduct(q) >= 0) {
+            return (Math.abs(d_nextPos) < Math.abs(d_ball));
+        } else {
+            d_nextPos = Math.min(m.length(), p.length());
+            m = (new Point(b1.pos)).sub(w1.p2);
+            p = (new Point(b1.pos)).sub(w1.p1);
+            d_ball = Math.min(m.length(), p.length());
+            return (d_nextPos < d_ball);
+        }
+
     }
 
     public void rotate(Wall wall) {
