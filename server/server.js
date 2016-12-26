@@ -152,6 +152,7 @@ net.createServer(function (socket) {
             console.log("STARTED");
             console.log(x1.username);
             console.log(x2.username);
+            console.log(x1);
             x1.write(x2.username + "");//send start message
             x2.write(x1.username + "");//send start message
         }
