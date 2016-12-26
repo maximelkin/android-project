@@ -36,7 +36,7 @@ function deleteUser(androidId, callback) {
 
 function checkPass(androidId, pass, callback) {
     user.findOne({ _id: androidId }, function (err, user) {
-        callback(err || user.pass != hashing(pass));
+        callback(err || user == null || user.pass != hashing(pass));
     });
 }
 
