@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.os.Process;
 import android.support.annotation.NonNull;
 import android.view.SurfaceHolder;
 import ru.ifmo.droid2016.lineball.Board.Board;
@@ -23,7 +24,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
 
 
     DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int maxX, int maxY) {
-        super("DrawThread");
+        super("DrawThread", Process.THREAD_PRIORITY_URGENT_DISPLAY);
         this.surfaceHolder = surfaceHolder;
         this.board = new Board(maxX, maxY);
         this.uiHandler = uiHandler;
