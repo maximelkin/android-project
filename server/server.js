@@ -129,6 +129,8 @@ net.createServer(function (socket) {
         console.log(s.length);
         //now s = queue
         //queue = []
+        for (var i = 0; i < s.length; i++)
+            console.log(s[i].destroyed);
         while (s.length > 1) {
             //trying get alive user
             var x1 = s.pop();
