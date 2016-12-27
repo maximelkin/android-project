@@ -55,9 +55,9 @@ public class Ball {
             return false;
         */
 
-        Point m = (new Point(b1.pos)).sub(w1.p2);
-        Point p = (new Point(b1.pos)).sub(w1.p1);
-        Point q = new Point(w1.p2.sub(w1.p1));
+        Point m = b1.pos.sub(w1.p2);
+        Point p = b1.pos.sub(w1.p1);
+        Point q = w1.p2.sub(w1.p1);
         Point qrev = new Point(q.mul(-1));
         double d_ball = w1.l.dist(b1.pos);
         double d_nextPos = w1.l.dist(nextPos);
@@ -70,19 +70,8 @@ public class Ball {
         }
         if (!intersect)
             return false;
-        m = (new Point(nextPos).sub(w1.p2));
-        p = (new Point(nextPos).sub(w1.p1));
 
-        if (m.scalarProduct(qrev) * p.scalarProduct(q) >= 0) {
-            return (Math.abs(d_nextPos) < Math.abs(d_ball));
-        } else {
-            d_nextPos = Math.min(m.length(), p.length());
-            m = (new Point(b1.pos)).sub(w1.p2);
-            p = (new Point(b1.pos)).sub(w1.p1);
-            d_ball = Math.min(m.length(), p.length());
-            return (d_nextPos < d_ball);
-        }
-
+        return (Math.abs(d_nextPos) < Math.abs(d_ball));
     }
 
     public void rotate(Wall wall) {
