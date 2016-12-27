@@ -22,4 +22,8 @@
     <string name="input_your_nick">Nick</string>
     <string name="register">Register</string>
     <string name="connection_error">Connection error</string>
+    <string name="ball_color">Ball color</string>
+    <string name="ball_blue">Blue</string>
+    <string name="ball_red">Red</string>
+    <string name="clear_nick">Clear saved nick</string>
 </resources>
