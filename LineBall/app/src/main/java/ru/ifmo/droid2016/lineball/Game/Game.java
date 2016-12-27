@@ -2,6 +2,7 @@ package ru.ifmo.droid2016.lineball.Game;
 
 import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -41,11 +42,14 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     private Handler uiHandler = new Handler(Looper.getMainLooper(), this);
     private SocketThread socketThread;
     private Timer timer;
+    private int color;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
+
+        color = PreferenceManager.getDefaultSharedPreferences(this).getInt("color", 0);
 
         SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceView.setOnTouchListener(this);
@@ -58,6 +62,8 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         leftTextField.setText(thisUserName);
         rightTextField.setText(rivalName);
 
+        leftTextField.setTextColor((color == 0) ? Color.BLUE : Color.RED);
+        rightTextField.setTextColor((color == 0) ? Color.RED : Color.BLUE);
         //prohibit rotate
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -128,7 +134,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         Canvas canvas = surfaceHolder.lockCanvas();
-        board = new DrawThread(surfaceHolder, uiHandler, canvas.getWidth(), canvas.getHeight());
+        board = new DrawThread(surfaceHolder, uiHandler, canvas.getWidth(), canvas.getHeight(), color);
         surfaceHolder.unlockCanvasAndPost(canvas);
         board.start();
         //start redrawing
