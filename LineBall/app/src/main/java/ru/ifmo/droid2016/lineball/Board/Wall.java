@@ -8,10 +8,10 @@ public class Wall {
     Line l;
     int k;
 
-    Wall(Point p1, Point p2, Line l) {
+    Wall(Point p1, Point p2) {
         this.p1 = p1;
         this.p2 = p2;
-        this.l = l;
+        this.l = new Line(p1, p2);
         this.k = 2;
     }
 
@@ -27,13 +27,10 @@ public class Wall {
                 (float) (p2.x * Board.maxXLocal / Board.maxX), (float) (p2.y * Board.maxYLocal / Board.maxY), p);
     }
 
-    public void toAbsoluteCoord() {
-    }
-
     public void reverse() {
         Point maxCoord = new Point(Board.maxX, Board.maxY);
-        p1 = maxCoord.sub(p1);
-        p2 = maxCoord.sub(p2);
+        p1.sub(maxCoord).mul(-1);
+        p2.sub(maxCoord).mul(-1);
         l = new Line(p1, p2);
     }
 }

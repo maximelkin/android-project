@@ -8,40 +8,41 @@ public class Point {
         this.y = y;
     }
 
-    Point(Point p) {
-        this.x = p.x;
-        this.y = p.y;
-    }
-
     double length() {
         return Math.sqrt(x * x + y * y);
     }
 
-    Point sum(Point p) {
-        return new Point(x + p.x, y + p.y);
+    void add(Point p) {
+        x += p.x;
+        y += p.y;
+    }
+
+    static Point sum(Point point1, Point point2){
+        return new Point(point1.x + point2.x, point1.y + point2.y);
     }
 
     Point sub(Point p) {
-        return new Point(x - p.x, y - p.y);
+        x -= p.x;
+        y -= p.y;
+        return this;
+    }
+
+    static Point sub(Point point1, Point point2) {
+        return new Point(point1.x - point2.x, point1.y - point2.y);
     }
 
     Point mul(double k) {
-        return new Point(k * x, k * y);
+        x *= k;
+        y *= k;
+        return this;
     }
 
-    double crossProduct(Point p) {
-        return x * p.y - y * p.x;
+    static Point multiply(Point point, double k) {
+        return new Point(k * point.x, k * point.y);
     }
 
     double scalarProduct(Point p) {
         return x * p.x + y * p.y;
     }
 
-    Point normalize() {
-        return mul(1 / length());
-    }
-
-    Point getPerpendicularVector(){
-        return new Point(-y, x);
-    }
 }

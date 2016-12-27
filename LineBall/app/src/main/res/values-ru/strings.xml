@@ -22,4 +22,8 @@
     <string name="input_your_nick">Ник</string>
     <string name="register">Регистрация</string>
     <string name="connection_error">Ошибка соединения</string>
+    <string name="ball_color">Цвет мяча</string>
+    <string name="ball_blue">Синий</string>
+    <string name="ball_red">Красный</string>
+    <string name="clear_nick">Очистить сохраненный ник</string>
 </resources>

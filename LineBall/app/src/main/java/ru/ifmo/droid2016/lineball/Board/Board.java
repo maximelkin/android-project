@@ -15,20 +15,22 @@ public class Board {
     private ArrayList<Wall> walls1 = new ArrayList<>(), walls2 = new ArrayList<>();
     private Ball b1 = new Ball(new Point(30, 30), new Point(1 / Math.sqrt(2), 1 / Math.sqrt(2))),
             b2 = new Ball(new Point(maxX - 30, maxY - 30), new Point(-1 / Math.sqrt(2), -1 / Math.sqrt(2)));
+    private int color;
 
-    public Board(int maxX, int maxY) {
+    public Board(int maxX, int maxY, int color) {
         maxXLocal = maxX;
         maxYLocal = maxY;
+        this.color = color;
     }
 
 
     public Who check() {
 
         //TODO do all it the correct order
-        if (Math.abs(b1.v) < eps)
+        if (Math.abs(b1.v) < 1)
             return Who.RIVAL;
 
-        if (Math.abs(b2.v) < eps)
+        if (Math.abs(b2.v) < 1)
             return Who.THIS_USER;
 
         if (b1.outOfBoard(maxX, maxY)) {
@@ -42,8 +44,8 @@ public class Board {
         }
 
         for (Wall wall : walls1) {
-            boolean rotate1 = b1.collision(wall);
-            boolean rotate2 = b2.collision(wall);
+            boolean rotate1 = b1.collision(wall, false);
+            boolean rotate2 = b2.collision(wall, false);
 
             if (rotate1 && rotate2) {
                 Log.e("CHECK:", "balls hit blue wall");
@@ -75,8 +77,8 @@ public class Board {
         }
 
         for (Wall wall : walls2) {
-            boolean rotate1 = b1.collision(wall);
-            boolean rotate2 = b2.collision(wall);
+            boolean rotate1 = b1.collision(wall, false);
+            boolean rotate2 = b2.collision(wall, false);
 
             if (rotate1 && rotate2) {
                 Log.e("CHECK:", "balls hit red wall");
@@ -84,7 +86,6 @@ public class Board {
                 b2.rotate(wall);
                 b1.v += dv;
                 b2.v = Math.max(0, b2.v - dv);
-                ;
                 walls1.remove(wall);
                 break;
             }
@@ -117,8 +118,9 @@ public class Board {
                 return Who.RIVAL;
             } else if (Math.abs(b1.v - b2.v) < eps) {
                 Log.e("CHECK:", "need to reverse");
-                b1.dir = b1.dir.mul(-1);
-                b2.dir = b2.dir.mul(-1);
+                Point t = b1.dir;
+                b1.dir = b2.dir;
+                b2.dir = t;
                 b1.move();
                 b2.move();
                 return null;
@@ -139,9 +141,9 @@ public class Board {
 
         Point p1 = new Point(a[0], a[1]),
                 p2 = new Point(a[2], a[3]);
-        Wall w = new Wall(p1, p2, new Line(p1, p2));
+        Wall w = new Wall(p1, p2);
 
-        if (b1.collision(w) || b2.collision(w))
+        if (b1.collision(w, true) || b2.collision(w, true))
             return;
 
         Log.e("Board:", "wall added");
@@ -161,14 +163,14 @@ public class Board {
         Paint p = new Paint();
         p.setStrokeWidth(10);
         p.setAntiAlias(true);
-        p.setColor(Color.BLUE);
+        p.setColor((color == 0) ? Color.BLUE : Color.RED);
 
         b1.onDraw(canvas, p);
         for (Wall wall : walls1) {
             wall.onDraw(canvas, p);
         }
 
-        p.setColor(Color.RED);
+        p.setColor((color == 0) ? Color.RED : Color.BLUE);
         b2.onDraw(canvas, p);
         for (Wall wall : walls2) {
             wall.onDraw(canvas, p);

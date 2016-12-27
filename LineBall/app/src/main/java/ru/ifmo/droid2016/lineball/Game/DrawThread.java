@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.os.Process;
 import android.support.annotation.NonNull;
 import android.view.SurfaceHolder;
 import ru.ifmo.droid2016.lineball.Board.Board;
@@ -22,10 +23,10 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     private Handler uiHandler;
 
 
-    DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int maxX, int maxY) {
-        super("DrawThread");
+    DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int maxX, int maxY, int color) {
+        super("DrawThread", Process.THREAD_PRIORITY_URGENT_DISPLAY);
         this.surfaceHolder = surfaceHolder;
-        this.board = new Board(maxX, maxY);
+        this.board = new Board(maxX, maxY, color);
         this.uiHandler = uiHandler;
     }
 
@@ -50,7 +51,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
 
                 board.setWall((String) msg.obj, Who.values()[msg.arg1]);
                 break;
-            //next tact
+            //next tick
             case MSG_REDRAW_BOARD:
                 Who checked = board.check();
                 Canvas c = surfaceHolder.lockCanvas();

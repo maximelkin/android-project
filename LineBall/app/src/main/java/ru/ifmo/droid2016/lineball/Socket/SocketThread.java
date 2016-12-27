@@ -42,8 +42,8 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
             socket = new ServerConnection(androidId);
             uiHandler.sendEmptyMessage(MSG_SOCKET_READY);
         } catch (IOException e) {
-            uiHandler.sendEmptyMessage(MSG_ERROR);
             e.printStackTrace();
+            uiHandler.sendEmptyMessage(MSG_ERROR);
         }
     }
 
@@ -98,6 +98,10 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
         }
         if (!result)
             uiHandler.sendEmptyMessage(MSG_ERROR);
+        if (message.what == MSG_VERIFY_USER || message.what == MSG_REGISTRATION)
+            uiHandler.sendEmptyMessage(MSG_USER_VERIFIED);
+        if (message.what == MSG_SEARCH)
+            uiHandler.sendEmptyMessage(MSG_START_GAME);
         return true;
     }
 

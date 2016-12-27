@@ -1,7 +1,8 @@
 package ru.ifmo.droid2016.lineball.Game;
 
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,7 +10,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -32,8 +32,8 @@ import static ru.ifmo.droid2016.lineball.Socket.SocketThread.getThreadByName;
 
 
 public class Game extends AppCompatActivity implements View.OnTouchListener, SurfaceHolder.Callback, Handler.Callback {
-    public static final long REDRAW_DELAY = 40;
-    private static final long BEFORE_DRAW_DELAY = 100;
+    public static final long REDRAW_DELAY = 50;
+    private static final long BEFORE_DRAW_DELAY = 50;
     public static final int MSG_GAME_END = 302;
     private static final String TAG = "GAME";
     public static final int MSG_SET_WALL_FROM_RIVAL = 300;
@@ -42,11 +42,14 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     private Handler uiHandler = new Handler(Looper.getMainLooper(), this);
     private SocketThread socketThread;
     private Timer timer;
+    private int color;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_layout);
+
+        color = PreferenceManager.getDefaultSharedPreferences(this).getInt("color", 0);
 
         SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceView.setOnTouchListener(this);
@@ -59,6 +62,8 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         leftTextField.setText(thisUserName);
         rightTextField.setText(rivalName);
 
+        leftTextField.setTextColor((color == 0) ? Color.BLUE : Color.RED);
+        rightTextField.setTextColor((color == 0) ? Color.RED : Color.BLUE);
         //prohibit rotate
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -128,9 +133,9 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        DisplayMetrics metrics = getBaseContext().getResources().getDisplayMetrics();
-        int dp = (int)(32.0 * Resources.getSystem().getDisplayMetrics().density);
-        board = new DrawThread(surfaceHolder, uiHandler, metrics.widthPixels - dp, metrics.heightPixels - 2 * dp);
+        Canvas canvas = surfaceHolder.lockCanvas();
+        board = new DrawThread(surfaceHolder, uiHandler, canvas.getWidth(), canvas.getHeight(), color);
+        surfaceHolder.unlockCanvasAndPost(canvas);
         board.start();
         //start redrawing
         timer = new Timer();
@@ -139,7 +144,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
             public void run() {
                 if (board != null) board.redraw();
             }
-        }, REDRAW_DELAY, BEFORE_DRAW_DELAY);
+        }, BEFORE_DRAW_DELAY, REDRAW_DELAY);
     }
 
     @Override
