@@ -134,7 +134,7 @@ net.createServer(function (socket) {
         while (s.length > 1) {
             //trying get alive user
             var x1 = s.pop();
-            while (!x1.destroyed && s.length > 0)
+            while (x1.destroyed && s.length > 0)
                 x1 = s.pop();
 
             if (x1.destroyed)
@@ -145,7 +145,7 @@ net.createServer(function (socket) {
             }
 
             var x2 = s.pop();
-            while (!x2.destroyed && s.length > 0)
+            while (x2.destroyed && s.length > 0)
                 x2 = s.pop();
 
             if (x2.destroyed) {
