@@ -12,7 +12,6 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -27,8 +26,8 @@ import static ru.ifmo.droid2016.lineball.Socket.SocketThread.*;
 public class GameActivity extends AppCompatActivity implements Handler.Callback {
     private SocketThread socket;
     private String password;
-    private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    private static SecureRandom rnd = new SecureRandom();
+    private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static SecureRandom random = new SecureRandom();
     private AlertDialog alertDialog;
 
 
@@ -54,7 +53,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
 
     private void fail() {
         alertDialog.dismiss();
-        Toast.makeText(GameActivity.this, "Connection error", Toast.LENGTH_SHORT).show();
+        Toast.makeText(GameActivity.this, R.string.connection_error, Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -70,18 +69,18 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                 //alertDialog.dismiss();
                 fail();
                 break;
-            case MSG_START:
+            case MSG_START_GAME:
                 if (alertDialog != null) alertDialog.dismiss();
                 Intent intent = new Intent(this, Game.class);
                 intent.putExtra("rival name", (String) message.obj);
                 startActivity(intent);
                 finish();
                 break;
-            case MSG_REG_ERR:
+            case MSG_VERIFYING_ERROR:
                 password = null;
-                //go to MSG_READY
-                //for creating new account if error
-            case MSG_READY:
+                //go to MSG_SOCKET_READY
+                //for creating new account because error
+            case MSG_SOCKET_READY:
                 if (password == null) {
                     password = randomString(10);
                     PreferenceManager.getDefaultSharedPreferences(this)
@@ -104,9 +103,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                             .setPositiveButton(R.string.register, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    String usernameText = username.getText().toString();
-                                    //TODO check in logs
-                                    Log.e("username", usernameText);
+                                    String usernameText = username.getText().toString().replace(' ', '_');
                                     if (usernameText.length() < 3) {
                                         usernameText += "2007";
                                     }
@@ -123,14 +120,14 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                                 }
                             })
                             .create();
-                   // alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.setCanceledOnTouchOutside(false);
                     alertDialog.show();
                     //magic end
                 } else {
                     socket.verify(password);
                 }
                 break;
-            case MSG_VERIFIED:
+            case MSG_USER_VERIFIED:
                 socket.search();
                 break;
         }
@@ -138,10 +135,10 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     }
 
     @NonNull
-    public static String randomString(int len) {
+    private static String randomString(int len) {
         StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++)
-            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+            sb.append(ALPHABET.charAt(random.nextInt(ALPHABET.length())));
         return sb.toString();
     }
 

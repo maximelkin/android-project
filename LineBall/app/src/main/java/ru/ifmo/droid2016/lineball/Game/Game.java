@@ -33,9 +33,9 @@ import static ru.ifmo.droid2016.lineball.Socket.SocketThread.getThreadByName;
 public class Game extends AppCompatActivity implements View.OnTouchListener, SurfaceHolder.Callback, Handler.Callback {
     public static final long REDRAW_DELAY = 40;
     private static final long BEFORE_DRAW_DELAY = 100;
-    public static final int MSG_END = 302;
+    public static final int MSG_GAME_END = 302;
     private static final String TAG = "GAME";
-    public static final int MSG_WALL = 300;
+    public static final int MSG_SET_WALL_FROM_RIVAL = 300;
     private String coord = "";
     private DrawThread board;
     private Handler uiHandler = new Handler(Looper.getMainLooper(), this);
@@ -51,7 +51,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         surfaceView.setOnTouchListener(this);
         surfaceView.getHolder().addCallback(this);
         String rivalName = getIntent().getStringExtra("rival name");
-        String thisUserName = PreferenceManager.getDefaultSharedPreferences(this).getString("name", "anonimus");
+        String thisUserName = PreferenceManager.getDefaultSharedPreferences(this).getString("name", "anonymous");
 
         TextView leftTextField = (TextView) findViewById(R.id.left_field);
         TextView rightTextField = (TextView) findViewById(R.id.right_field);
@@ -80,7 +80,6 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     public boolean onTouch(View view, MotionEvent event) {
 
-        //TODO convert coordinates
         double x = event.getX() * (maxX / maxXLocal);
         double y = event.getY() * (maxY / maxYLocal);
 
@@ -157,7 +156,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     public boolean handleMessage(Message message) {
         switch (message.what) {
             //message from board
-            case MSG_END:
+            case MSG_GAME_END:
                 gameFinish(Who.values()[message.arg1]);
                 return true;
             //messages from socket
@@ -166,7 +165,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
                 Log.e("GAME/GAME", "SEND ERROR");
                 gameFinish(RIVAL);
                 return true;
-            case MSG_WALL:
+            case MSG_SET_WALL_FROM_RIVAL:
                 board.setWall((String) message.obj, RIVAL);
                 return true;
         }
