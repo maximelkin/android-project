@@ -16,7 +16,7 @@ public class Ball {
         this.pos = pos;
         this.dir = dir;
         this.r = 30;
-        this.v = 5;
+        this.v = 8;
     }
 
     private Ball(Ball b) {
@@ -33,7 +33,7 @@ public class Ball {
         return dist.length() < 2 * r;
     }
 
-    boolean collision(Wall wall/*, boolean settingWall*/) {
+    boolean collision(Wall wall, boolean settingWall) {
         Ball b1 = new Ball(this);
         Wall w1 = new Wall(wall);
 
@@ -55,9 +55,9 @@ public class Ball {
         if (!intersect)
             return false;
 
-        /*if (settingWall) {
+        if (settingWall) {
             return true;
-        }*/
+        }
 
         if (w1.l.contain(pos) && w1.l.contain(nextPos)) {
             dir.mul(-1);
