@@ -49,9 +49,7 @@ public class ServerConnection {
 
     private boolean send(String action) {
         try {
-            writeStr(action);
-            String response = readStr();
-            return Integer.parseInt(response) == 0;
+            return writeStr(action) && readStr().equals("0");
         } catch (IOException e) {
             e.printStackTrace();
             return false;
