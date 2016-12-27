@@ -29,7 +29,7 @@ public class ServerConnection {
 
     @NonNull
     private String readStr() throws IOException {
-        byte[] b = new byte[20];
+        byte[] b = new byte[100];
         int len = inputStream.read(b);
         if (len == -1)
             throw new IOException("no input");
