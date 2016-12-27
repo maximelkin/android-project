@@ -19,5 +19,7 @@
     <string name="player_search">Поиск игроков…</string>
     <string name="this_user_win">Ты победил! :)</string>
     <string name="this_user_loose">Ты проиграл :(</string>
+    <string name="input_your_nick">Ник</string>
+    <string name="register">Регистрация</string>
     <string name="connection_error">Ошибка соединения</string>
 </resources>

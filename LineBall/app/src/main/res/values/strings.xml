@@ -19,7 +19,7 @@
     <string name="player_search">Looking for players…</string>
     <string name="this_user_win">You win! :)</string>
     <string name="this_user_loose">You loose :(</string>
-    <string name="input_your_nick">Input your nick</string>
+    <string name="input_your_nick">Nick</string>
     <string name="register">Register</string>
     <string name="connection_error">Connection error</string>
 </resources>

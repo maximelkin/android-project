@@ -12,6 +12,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -52,7 +53,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     }
 
     private void fail() {
-        alertDialog.dismiss();
+        if (alertDialog != null) alertDialog.dismiss();
         Toast.makeText(GameActivity.this, R.string.connection_error, Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -90,15 +91,11 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
 
                     //magic what show dialog with choosing username
                     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
+                    View layout = getLayoutInflater().inflate(R.layout.dialog_register, null);
+                    final EditText username = (EditText) layout.findViewById(R.id.username);
                     final Context context = getApplicationContext();
-                    LinearLayout layout = new LinearLayout(context);
-                    layout.setOrientation(LinearLayout.VERTICAL);
 
-                    final EditText username = new EditText(layout.getContext());
-                    layout.addView(username);
-
-                    alertDialog = builder.setMessage(R.string.input_your_nick)
+                    alertDialog = builder.setTitle(R.string.app_name)
                             .setView(layout)
                             .setPositiveButton(R.string.register, new DialogInterface.OnClickListener() {
                                 @Override
