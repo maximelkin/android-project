@@ -40,7 +40,7 @@ function deleteUser(androidId, callback) {
 
 function checkPass(androidId, pass, callback) {
     user.find({ _id: androidId }, function (err, user) {
-        callback(err || user == null || user[0].pass != hashing(pass));
+        callback(err || user == [] || user[0].pass != hashing(pass));
     });
 }
 
