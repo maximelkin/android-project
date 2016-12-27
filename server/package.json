@@ -1,9 +1,10 @@
 {
-    "name": "android_serv",
-    "version": "0.0.1",
-    "private": true,
-    "dependencies": {
-        "mongoose": "4.7.4",
-        "crypto": "0.0.3"
-    }
+  "name": "android_serv",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "mongoose": "4.7.4",
+    "crypto": "0.0.3",
+    "forever-monitor": "1.7.1"
+  }
 }

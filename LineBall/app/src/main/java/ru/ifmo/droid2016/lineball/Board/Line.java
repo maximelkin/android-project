@@ -1,5 +1,7 @@
 package ru.ifmo.droid2016.lineball.Board;
 
+import android.support.annotation.NonNull;
+
 public class Line {
     double A, B, C;
     private static final double eps = 1e-9;
@@ -20,21 +22,12 @@ public class Line {
         this.C = -(A * p1.x + B * p1.y);
     }
 
-    public boolean intersect(Line l) {
-        return (Math.abs(A * l.B - l.A * B) < eps);
+    public boolean contain(Point p) {
+        return (Math.abs(A * p.x + B * p.y + C) < eps);
     }
 
-    public Point intersectPoint(Line l) {
-        double det = A * l.B - l.A * B;
-        double detx = C * l.B - l.C * B;
-        double dety = A * l.C - l.A * C;
-        return new Point(-detx / det, -dety / det);
+    public double dist(Point p) {
+        return (A * p.x + B * p.y + C) / Math.sqrt(A * A + B * B);
     }
 
-    public boolean eq(Line l) {
-        double det = Math.abs(A * l.B - l.A * B);
-        double detx = Math.abs(C * l.B - l.C * B);
-        double dety = Math.abs(A * l.C - l.A * C);
-        return (det < eps && detx < eps && dety < eps);
-    }
 }

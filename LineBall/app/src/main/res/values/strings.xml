@@ -17,4 +17,9 @@
     <string name="help05">The ball moves faster if it hits the wall of the opponent\'s color.</string>
     <string name="help06">The wall breaks after one hit of the same color ball or two hits of the opponent\'s ball.</string>
     <string name="player_search">Looking for players…</string>
+    <string name="this_user_win">You win! :)</string>
+    <string name="this_user_loose">You loose :(</string>
+    <string name="input_your_nick">Nick</string>
+    <string name="register">Register</string>
+    <string name="connection_error">Connection error</string>
 </resources>

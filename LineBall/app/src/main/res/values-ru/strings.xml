@@ -17,4 +17,9 @@
     <string name="help05">Удар шарика о стену другого цвета ускоряет шарик.</string>
     <string name="help06">Стена ломается: для своего цвета - одним ударом шарика, для другого цвета - двумя ударами.</string>
     <string name="player_search">Поиск игроков…</string>
+    <string name="this_user_win">Ты победил! :)</string>
+    <string name="this_user_loose">Ты проиграл :(</string>
+    <string name="input_your_nick">Ник</string>
+    <string name="register">Регистрация</string>
+    <string name="connection_error">Ошибка соединения</string>
 </resources>

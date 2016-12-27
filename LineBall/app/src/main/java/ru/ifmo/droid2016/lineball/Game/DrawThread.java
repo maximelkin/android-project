@@ -10,31 +10,29 @@ import android.view.SurfaceHolder;
 import ru.ifmo.droid2016.lineball.Board.Board;
 import ru.ifmo.droid2016.lineball.Board.Who;
 
-import static ru.ifmo.droid2016.lineball.Board.Who.RIVAL;
-import static ru.ifmo.droid2016.lineball.Board.Who.THIS_USER;
-import static ru.ifmo.droid2016.lineball.Game.Game.MSG_END;
+import static ru.ifmo.droid2016.lineball.Game.Game.MSG_GAME_END;
 
 class DrawThread extends HandlerThread implements Handler.Callback {
 
     private Board board;
     private SurfaceHolder surfaceHolder;
-    private static final int MSG_ADD = 100;
-    private static final int MSG_UPD = 101;
+    private static final int MSG_SET_NEW_WALL = 100;
+    private static final int MSG_REDRAW_BOARD = 101;
     private Handler mReceiver;
     private Handler uiHandler;
 
 
-    DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler) {
+    DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int maxX, int maxY) {
         super("DrawThread");
         this.surfaceHolder = surfaceHolder;
-        this.board = new Board();
+        this.board = new Board(maxX, maxY);
         this.uiHandler = uiHandler;
     }
 
     @Override
     protected void onLooperPrepared() {
         mReceiver = new Handler(getLooper(), this);
-        mReceiver.sendEmptyMessage(MSG_UPD);
+        mReceiver.sendEmptyMessage(MSG_REDRAW_BOARD);
     }
 
     @Override
@@ -47,22 +45,22 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
-            case MSG_ADD:
-                Who who = (msg.arg1 == 0 ? THIS_USER : RIVAL);
+            //add wall
+            case MSG_SET_NEW_WALL:
 
-                board.setWall((String) msg.obj, who);
+                board.setWall((String) msg.obj, Who.values()[msg.arg1]);
                 break;
-            case MSG_UPD:
+            //next tact
+            case MSG_REDRAW_BOARD:
+                Who checked = board.check();
                 Canvas c = surfaceHolder.lockCanvas();
                 if (c == null)
                     break;
                 c.drawColor(Color.WHITE);
                 board.drawBoard(c);
                 surfaceHolder.unlockCanvasAndPost(c);
-                Who checked = board.check();
                 if (checked != null) {
-                    int who_won = (checked == THIS_USER ? 0 : 1);
-                    Message message = Message.obtain(uiHandler, MSG_END, who_won, 0);
+                    Message message = Message.obtain(uiHandler, MSG_GAME_END, checked.ordinal(), 0);
                     uiHandler.sendMessage(message);
                 }
                 break;
@@ -72,12 +70,11 @@ class DrawThread extends HandlerThread implements Handler.Callback {
 
 
     void setWall(String coord, @NonNull Who who) {
-        int who_set = (who == RIVAL ? 1 : 0);
-        Message msg = Message.obtain(mReceiver, MSG_ADD, who_set, 0, coord);
+        Message msg = Message.obtain(mReceiver, MSG_SET_NEW_WALL, who.ordinal(), 0, coord);
         mReceiver.sendMessageAtFrontOfQueue(msg);
     }
 
     void redraw() {
-        mReceiver.sendEmptyMessage(MSG_UPD);
+        mReceiver.sendEmptyMessage(MSG_REDRAW_BOARD);
     }
 }

@@ -8,6 +8,11 @@ public class Point {
         this.y = y;
     }
 
+    Point(Point p) {
+        this.x = p.x;
+        this.y = p.y;
+    }
+
     double length() {
         return Math.sqrt(x * x + y * y);
     }
@@ -24,11 +29,19 @@ public class Point {
         return new Point(k * x, k * y);
     }
 
-    double cp(Point p) {
+    double crossProduct(Point p) {
         return x * p.y - y * p.x;
     }
 
-    double sp(Point p) {
+    double scalarProduct(Point p) {
         return x * p.x + y * p.y;
+    }
+
+    Point normalize() {
+        return mul(1 / length());
+    }
+
+    Point getPerpendicularVector(){
+        return new Point(-y, x);
     }
 }
