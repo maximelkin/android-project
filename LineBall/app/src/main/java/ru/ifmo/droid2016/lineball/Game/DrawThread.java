@@ -23,10 +23,10 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     private Handler uiHandler;
 
 
-    DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int maxX, int maxY) {
+    DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int maxX, int maxY, int color) {
         super("DrawThread", Process.THREAD_PRIORITY_URGENT_DISPLAY);
         this.surfaceHolder = surfaceHolder;
-        this.board = new Board(maxX, maxY);
+        this.board = new Board(maxX, maxY, color);
         this.uiHandler = uiHandler;
     }
 

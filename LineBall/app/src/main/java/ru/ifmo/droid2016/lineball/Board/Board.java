@@ -15,10 +15,12 @@ public class Board {
     private ArrayList<Wall> walls1 = new ArrayList<>(), walls2 = new ArrayList<>();
     private Ball b1 = new Ball(new Point(30, 30), new Point(1 / Math.sqrt(2), 1 / Math.sqrt(2))),
             b2 = new Ball(new Point(maxX - 30, maxY - 30), new Point(-1 / Math.sqrt(2), -1 / Math.sqrt(2)));
+    private int color;
 
-    public Board(int maxX, int maxY) {
+    public Board(int maxX, int maxY, int color) {
         maxXLocal = maxX;
         maxYLocal = maxY;
+        this.color = color;
     }
 
 
@@ -161,14 +163,14 @@ public class Board {
         Paint p = new Paint();
         p.setStrokeWidth(10);
         p.setAntiAlias(true);
-        p.setColor(Color.BLUE);
+        p.setColor((color == 0) ? Color.BLUE : Color.RED);
 
         b1.onDraw(canvas, p);
         for (Wall wall : walls1) {
             wall.onDraw(canvas, p);
         }
 
-        p.setColor(Color.RED);
+        p.setColor((color == 0) ? Color.RED : Color.BLUE);
         b2.onDraw(canvas, p);
         for (Wall wall : walls2) {
             wall.onDraw(canvas, p);
