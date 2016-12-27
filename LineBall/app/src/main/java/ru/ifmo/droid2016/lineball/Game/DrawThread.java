@@ -51,7 +51,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
 
                 board.setWall((String) msg.obj, Who.values()[msg.arg1]);
                 break;
-            //next tact
+            //next tick
             case MSG_REDRAW_BOARD:
                 Who checked = board.check();
                 Canvas c = surfaceHolder.lockCanvas();

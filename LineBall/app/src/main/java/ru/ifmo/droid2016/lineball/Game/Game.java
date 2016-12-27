@@ -1,7 +1,7 @@
 package ru.ifmo.droid2016.lineball.Game;
 
 import android.content.pm.ActivityInfo;
-import android.content.res.Resources;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,7 +9,6 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -128,9 +127,9 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        DisplayMetrics metrics = getBaseContext().getResources().getDisplayMetrics();
-        int dp = (int)(32.0 * Resources.getSystem().getDisplayMetrics().density);
-        board = new DrawThread(surfaceHolder, uiHandler, metrics.widthPixels - dp, metrics.heightPixels - 2 * dp);
+        Canvas canvas = surfaceHolder.lockCanvas();
+        board = new DrawThread(surfaceHolder, uiHandler, canvas.getWidth(), canvas.getHeight());
+        surfaceHolder.unlockCanvasAndPost(canvas);
         board.start();
         //start redrawing
         timer = new Timer();

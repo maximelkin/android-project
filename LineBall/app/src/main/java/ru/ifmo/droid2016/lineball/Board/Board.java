@@ -84,7 +84,6 @@ public class Board {
                 b2.rotate(wall);
                 b1.v += dv;
                 b2.v = Math.max(0, b2.v - dv);
-                ;
                 walls1.remove(wall);
                 break;
             }
@@ -140,7 +139,7 @@ public class Board {
 
         Point p1 = new Point(a[0], a[1]),
                 p2 = new Point(a[2], a[3]);
-        Wall w = new Wall(p1, p2, new Line(p1, p2));
+        Wall w = new Wall(p1, p2);
 
         if (b1.collision(w, true) || b2.collision(w, true))
             return;
@@ -159,8 +158,6 @@ public class Board {
     }
 
     public void drawBoard(Canvas canvas) {
-        maxXLocal = canvas.getWidth();
-        maxYLocal = canvas.getHeight();
         Paint p = new Paint();
         p.setStrokeWidth(10);
         p.setAntiAlias(true);
