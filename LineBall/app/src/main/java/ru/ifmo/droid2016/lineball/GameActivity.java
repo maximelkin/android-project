@@ -8,10 +8,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -26,8 +27,9 @@ import static ru.ifmo.droid2016.lineball.Socket.SocketThread.*;
 public class GameActivity extends AppCompatActivity implements Handler.Callback {
     private SocketThread socket;
     private String password;
-    private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-    private static SecureRandom rnd = new SecureRandom();
+    private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    private static SecureRandom random = new SecureRandom();
+    private AlertDialog alertDialog;
 
 
     @Override
@@ -38,7 +40,11 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
         //PreferenceManager.getDefaultSharedPreferences(this).edit().putString("password", null).apply();
         password = PreferenceManager.getDefaultSharedPreferences(this).getString("password", null);
         try {
-            socket = new SocketThread("socket", new Handler(Looper.getMainLooper(), this));
+
+            String android_id = Settings.Secure.getString(getBaseContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
+
+            socket = new SocketThread("socket", new Handler(Looper.getMainLooper(), this), android_id);
             socket.start();
         } catch (IOException e) {
             fail();
@@ -47,7 +53,8 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     }
 
     private void fail() {
-        Toast.makeText(GameActivity.this, "Connection error", Toast.LENGTH_SHORT).show();
+        if (alertDialog != null) alertDialog.dismiss();
+        Toast.makeText(GameActivity.this, R.string.connection_error, Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -60,19 +67,21 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     public boolean handleMessage(Message message) {
         switch (message.what) {
             case MSG_ERROR:
+                //alertDialog.dismiss();
                 fail();
                 break;
-            case MSG_START:
+            case MSG_START_GAME:
+                if (alertDialog != null) alertDialog.dismiss();
                 Intent intent = new Intent(this, Game.class);
                 intent.putExtra("rival name", (String) message.obj);
                 startActivity(intent);
                 finish();
                 break;
-            case MSG_REG_ERR:
+            case MSG_VERIFYING_ERROR:
                 password = null;
-                //go to MSG_READY
-                //for creating new account if error
-            case MSG_READY:
+                //go to MSG_SOCKET_READY
+                //for creating new account because error
+            case MSG_SOCKET_READY:
                 if (password == null) {
                     password = randomString(10);
                     PreferenceManager.getDefaultSharedPreferences(this)
@@ -82,25 +91,18 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
 
                     //magic what show dialog with choosing username
                     final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
+                    View layout = getLayoutInflater().inflate(R.layout.dialog_register, null);
+                    final EditText username = (EditText) layout.findViewById(R.id.username);
                     final Context context = getApplicationContext();
-                    LinearLayout layout = new LinearLayout(context);
-                    layout.setOrientation(LinearLayout.VERTICAL);
 
-                    final EditText username = new EditText(layout.getContext());
-                    layout.addView(username);
-                    final AlertDialog alertDialog;
-
-                    alertDialog = builder.setMessage(R.string.input_your_nick)
+                    alertDialog = builder.setTitle(R.string.app_name)
                             .setView(layout)
                             .setPositiveButton(R.string.register, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    String usernameText = username.getText().toString();
-                                    //TODO check in logs
-                                    Log.e("username", usernameText);
+                                    String usernameText = username.getText().toString().replace(' ', '_');
                                     if (usernameText.length() < 3) {
-                                        usernameText += " 2007";
+                                        usernameText += "2007";
                                     }
                                     if (usernameText.length() > 10) {
                                         usernameText = (String) usernameText.subSequence(0, 10);
@@ -111,7 +113,6 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                                             .apply();
                                     dialogInterface.dismiss();
                                     socket.registration(String.format("%s %s", password, usernameText));
-                                    socket.search();
                                 }
                             })
                             .create();
@@ -120,18 +121,20 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                     //magic end
                 } else {
                     socket.verify(password);
-                    socket.search();
                 }
+                break;
+            case MSG_USER_VERIFIED:
+                socket.search();
                 break;
         }
         return false;
     }
 
     @NonNull
-    private String randomString(int len) {
+    private static String randomString(int len) {
         StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++)
-            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+            sb.append(ALPHABET.charAt(random.nextInt(ALPHABET.length())));
         return sb.toString();
     }
 

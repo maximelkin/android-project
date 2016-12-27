@@ -1,9 +1,7 @@
 package ru.ifmo.droid2016.lineball.Socket;
 
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,11 +17,10 @@ public class ServerConnection {
     private static InputStream inputStream;
     private static DataOutputStream dataOutputStream;
 
-    ServerConnection() throws IOException {
+    ServerConnection(String androidId) throws IOException {
         socket = new Socket(host, port);
         socket.setTcpNoDelay(true);
         inputStream = socket.getInputStream();
-        String androidId = Settings.Secure.ANDROID_ID;
         dataOutputStream = new DataOutputStream(socket.getOutputStream());
         if (!send("con " + androidId)) {
             throw new ConnectException();
@@ -32,8 +29,10 @@ public class ServerConnection {
 
     @NonNull
     private String readStr() throws IOException {
-        byte[] b = new byte[20];
+        byte[] b = new byte[100];
         int len = inputStream.read(b);
+        if (len == -1)
+            throw new IOException("no input");
         return new String(b, "UTF8").substring(0, len);
     }
 
@@ -50,9 +49,7 @@ public class ServerConnection {
 
     private boolean send(String action) {
         try {
-            writeStr(action);
-            String response = readStr();
-            return Integer.parseInt(response) == 0;
+            return writeStr(action) && readStr().equals("0");
         } catch (IOException e) {
             e.printStackTrace();
             return false;

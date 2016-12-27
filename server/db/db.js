@@ -1,8 +1,7 @@
 var mongoose = require('mongoose');
 var models = require('./models');
 var crypto = require('crypto');
-var user = models.user,
-    queue = models.queue;
+var user = models.user;
 var config = require("./config.json");
 
 mongoose.connect(config.mongooseURL, { config: { autoIndex: false } });
@@ -18,14 +17,19 @@ function hashing(password) {
 }
 
 
-function createUser(androidId, pass, callback) {
+function createUser(androidId, pass, username, callback) {
     if (typeof (androidId) != 'string' || typeof (pass) != 'string')
         return callback(new Error("dangerous data"));
     user.create({
         _id: androidId,
         pass: hashing(pass),
-        rate: config.defRate
+        rate: config.defRate,
+        username: username
     }, callback);
+}
+
+function getUsername(androidId, callback){
+    user.findOne({_id: androidId}, callback);
 }
 
 function deleteUser(androidId, callback) {
@@ -35,8 +39,8 @@ function deleteUser(androidId, callback) {
 }
 
 function checkPass(androidId, pass, callback) {
-    user.findOne({ _id: androidId }, function (err, user) {
-        callback(err || user.pass != hashing(pass));
+    user.find({ _id: androidId }, function (err, user) {
+        callback(err || user[0] == null || user[0].pass != hashing(pass));
     });
 }
 
@@ -52,7 +56,7 @@ function updateRate(androidId, isWon, callback) {
     var change = -config.deltaRatingChange;
     if (isWon)
         change = config.deltaRatingChange;
-    user.updateOne({ _id: androidId }, { rate: { $inc: change } }, callback);
+    user.update({ _id: androidId }, { rate: { $inc: change } }, callback);
 }
 
 module.exports.createUser = createUser;
@@ -60,3 +64,4 @@ module.exports.deleteUser = deleteUser;
 module.exports.checkPass = checkPass;
 module.exports.clearUsers = clearUsers;
 module.exports.updateRate = updateRate;
+module.exports.getUsername = getUsername;
