@@ -25,10 +25,10 @@ public class Board {
     public Who check() {
 
         //TODO do all it the correct order
-        if (Math.abs(b1.v) < eps)
+        if (Math.abs(b1.v) < 1)
             return Who.RIVAL;
 
-        if (Math.abs(b2.v) < eps)
+        if (Math.abs(b2.v) < 1)
             return Who.THIS_USER;
 
         if (b1.outOfBoard(maxX, maxY)) {

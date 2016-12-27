@@ -18,7 +18,7 @@ public class Ball {
         this.pos = pos;
         this.dir = dir;
         this.r = 30;
-        this.v = 5;
+        this.v = 10;
     }
 
     Ball(Ball b) {
