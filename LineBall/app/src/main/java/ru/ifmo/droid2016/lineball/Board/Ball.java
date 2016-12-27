@@ -45,16 +45,6 @@ public class Ball {
 
         Point nextPos = new Point(b1.pos.sum(b1.dir));
 
-        /*
-        double s1 = w1.p1.sub(nextPos).crossProduct(w1.p2.sub(w1.p1));
-
-        double s2 = w1.p2.sub(nextPos).crossProduct(b1.pos.sub(w1.p2));
-        double s3 = b1.pos.sub(nextPos).crossProduct(w1.p1.sub(b1.pos));
-
-        if (s1 * s2 < 0 || s1 * s3 < 0 || s2 * s3 < 0)
-            return false;
-        */
-
         Point m = b1.pos.sub(w1.p2);
         Point p = b1.pos.sub(w1.p1);
         Point q = w1.p2.sub(w1.p1);
@@ -71,9 +61,35 @@ public class Ball {
         if (!intersect)
             return false;
 
+        if(w1.l.contain(pos) && w1.l.contain(nextPos)){
+            dir = dir.mul(-1);
+            return false;
+        }
+
         return (Math.abs(d_nextPos) < Math.abs(d_ball));
     }
 
+    public void rotate(Wall w) {
+        //TODO Just do it OK
+
+        Point p = new Point(w.p1.sum(dir));
+        Point n = new Point(w.l.A, w.l.B);
+        double d = w.l.dist(p);
+        n = n.mul(d / n.length());
+        p = p.sum(n);
+
+        if (w.l.contain(p)) {
+            p = p.sum(n);
+        } else {
+            n = n.mul(-3);
+            p = p.sum(n);
+        }
+        dir = p.sub(w.p1);
+        dir = dir.mul(1 / dir.length());
+    }
+
+
+    /*
     public void rotate(Wall wall) {
         //collision with p1
         Point p1p2 = wall.p2.sub(wall.p1);
@@ -101,6 +117,8 @@ public class Ball {
         Point normalVectorLineBetween = pos.sub(point).getPerpendicularVector().normalize();
         dir = dir.sum(normalVectorLineBetween.mul(dir.scalarProduct(normalVectorLineBetween) * 2)).normalize();
     }
+
+    */
 
     public boolean outOfBoard(double mX, double mY) {
         return (pos.x < -r || pos.x > mX + r || pos.y < -r || pos.y > mY + r);
