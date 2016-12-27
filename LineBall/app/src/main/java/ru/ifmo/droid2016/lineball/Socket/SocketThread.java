@@ -38,8 +38,13 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     protected void onLooperPrepared() {
         super.onLooperPrepared();
         mReceiver = new Handler(Looper.myLooper(), this);
-        //  socket = new ServerConnection(androidId);
-        uiHandler.sendEmptyMessage(MSG_SOCKET_READY);
+        try {
+            socket = new ServerConnection(androidId);
+            uiHandler.sendEmptyMessage(MSG_SOCKET_READY);
+        } catch (IOException e) {
+            e.printStackTrace();
+            uiHandler.sendEmptyMessage(MSG_ERROR);
+        }
     }
 
     @Override
@@ -51,7 +56,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message message) {
-        /*boolean result = true;
+        boolean result = true;
         switch (message.what) {
             case MSG_VERIFY_USER:
                 if (!socket.verify((String) message.obj))
@@ -92,7 +97,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                 break;
         }
         if (!result)
-            uiHandler.sendEmptyMessage(MSG_ERROR);*/
+            uiHandler.sendEmptyMessage(MSG_ERROR);
         if (message.what == MSG_VERIFY_USER || message.what == MSG_REGISTRATION)
             uiHandler.sendEmptyMessage(MSG_USER_VERIFIED);
         if (message.what == MSG_SEARCH)
