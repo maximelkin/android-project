@@ -39,7 +39,7 @@ public class Ball {
         }
     }
 
-    boolean collision(Wall wall) {
+    boolean collision(Wall wall, boolean settingWall) {
         Ball b1 = new Ball(this);
         Wall w1 = new Wall(wall);
 
@@ -60,6 +60,10 @@ public class Ball {
         }
         if (!intersect)
             return false;
+
+        if(settingWall){
+            return true;
+        }
 
         if(w1.l.contain(pos) && w1.l.contain(nextPos)){
             dir = dir.mul(-1);

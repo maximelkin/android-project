@@ -42,8 +42,8 @@ public class Board {
         }
 
         for (Wall wall : walls1) {
-            boolean rotate1 = b1.collision(wall);
-            boolean rotate2 = b2.collision(wall);
+            boolean rotate1 = b1.collision(wall, false);
+            boolean rotate2 = b2.collision(wall, false);
 
             if (rotate1 && rotate2) {
                 Log.e("CHECK:", "balls hit blue wall");
@@ -75,8 +75,8 @@ public class Board {
         }
 
         for (Wall wall : walls2) {
-            boolean rotate1 = b1.collision(wall);
-            boolean rotate2 = b2.collision(wall);
+            boolean rotate1 = b1.collision(wall, false);
+            boolean rotate2 = b2.collision(wall, false);
 
             if (rotate1 && rotate2) {
                 Log.e("CHECK:", "balls hit red wall");
@@ -142,7 +142,7 @@ public class Board {
                 p2 = new Point(a[2], a[3]);
         Wall w = new Wall(p1, p2, new Line(p1, p2));
 
-        if (b1.collision(w) || b2.collision(w))
+        if (b1.collision(w, true) || b2.collision(w, true))
             return;
 
         Log.e("Board:", "wall added");
