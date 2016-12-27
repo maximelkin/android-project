@@ -71,7 +71,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                 fail();
                 break;
             case MSG_START:
-                alertDialog.dismiss();
+                if (alertDialog != null) alertDialog.dismiss();
                 Intent intent = new Intent(this, Game.class);
                 intent.putExtra("rival name", (String) message.obj);
                 startActivity(intent);
