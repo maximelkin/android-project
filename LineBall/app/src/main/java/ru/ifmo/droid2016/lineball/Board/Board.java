@@ -159,6 +159,8 @@ public class Board {
     }
 
     public void drawBoard(Canvas canvas) {
+        maxXLocal = canvas.getWidth();
+        maxYLocal = canvas.getHeight();
         Paint p = new Paint();
         p.setStrokeWidth(10);
         p.setAntiAlias(true);
