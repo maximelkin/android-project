@@ -3,6 +3,8 @@ package ru.ifmo.droid2016.lineball.Board;
 public class Point {
     double x, y;
 
+    Point(){}
+
     Point(double x, double y) {
         this.x = x;
         this.y = y;
@@ -43,5 +45,9 @@ public class Point {
 
     Point getPerpendicularVector(){
         return new Point(-y, x);
+    }
+
+    public double getAngle() {
+        return Math.atan2(y, x);
     }
 }

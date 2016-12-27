@@ -13,7 +13,7 @@ public class Board {
     //maxX/maxY = 9/16
     public static double dv = 0.5, maxX = 576, maxY = 1024, maxXLocal, maxYLocal, eps = 1e-9;
     private ArrayList<Wall> walls1 = new ArrayList<>(), walls2 = new ArrayList<>();
-    private Ball b1 = new Ball(new Point(30, 30), new Point(1 / Math.sqrt(2), 1 / Math.sqrt(2))),
+    private Ball b1 = new Ball(new Point(30, 30), new Point(0.5 / Math.sqrt(9.25), 3 / Math.sqrt(9.25))),
             b2 = new Ball(new Point(maxX - 30, maxY - 30), new Point(-1 / Math.sqrt(2), -1 / Math.sqrt(2)));
 
     public Board(int maxX, int maxY) {
@@ -117,8 +117,9 @@ public class Board {
                 return Who.RIVAL;
             } else if (Math.abs(b1.v - b2.v) < eps) {
                 Log.e("CHECK:", "need to reverse");
-                b1.dir = b1.dir.mul(-1);
-                b2.dir = b2.dir.mul(-1);
+                Point t = b1.dir;
+                b1.dir = b2.dir;
+                b2.dir = t;
                 b1.move();
                 b2.move();
                 return null;
