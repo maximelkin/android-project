@@ -128,8 +128,10 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                     //magic end
                 } else {
                     socket.verify(password);
-                    socket.search();
                 }
+                break;
+            case MSG_VERIFIED:
+                socket.search();
                 break;
         }
         return false;

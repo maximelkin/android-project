@@ -24,6 +24,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     private final static int MSG_GET = 207;
     public final static int MSG_START = 208;
     public final static int MSG_READY = 209;
+    public final static int MSG_VERIFIED = 503;
     public final static int MSG_REG_ERR = 502;
     private String androidId;
 
@@ -58,9 +59,10 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
         boolean result = true;
         switch (message.what) {
             case MSG_VERIFY:
-                if (!socket.verify((String) message.obj)) {
+                if (!socket.verify((String) message.obj))
                     uiHandler.sendEmptyMessage(MSG_REG_ERR);
-                }
+                else
+                    uiHandler.sendEmptyMessage(MSG_VERIFIED);
                 break;
             case MSG_REGISTRATION:
                 result = socket.registration((String) message.obj);
