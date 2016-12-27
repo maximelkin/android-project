@@ -113,7 +113,6 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                                             .apply();
                                     dialogInterface.dismiss();
                                     socket.registration(String.format("%s %s", password, usernameText));
-                                    socket.search();
                                 }
                             })
                             .create();

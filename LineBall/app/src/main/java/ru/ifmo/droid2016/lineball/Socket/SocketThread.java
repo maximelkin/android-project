@@ -66,6 +66,8 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                 break;
             case MSG_REGISTRATION:
                 result = socket.registration((String) message.obj);
+                if (result)
+                    uiHandler.sendEmptyMessage(MSG_USER_VERIFIED);
                 break;
 
             //WARNING! IT FREEZE THIS THREAD
