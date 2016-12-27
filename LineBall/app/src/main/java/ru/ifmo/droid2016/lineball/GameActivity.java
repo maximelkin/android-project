@@ -53,6 +53,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     }
 
     private void fail() {
+        alertDialog.dismiss();
         Toast.makeText(GameActivity.this, "Connection error", Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -66,7 +67,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     public boolean handleMessage(Message message) {
         switch (message.what) {
             case MSG_ERROR:
-                alertDialog.dismiss();
+                //alertDialog.dismiss();
                 fail();
                 break;
             case MSG_START:
@@ -107,7 +108,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                                     //TODO check in logs
                                     Log.e("username", usernameText);
                                     if (usernameText.length() < 3) {
-                                        usernameText += " 2007";
+                                        usernameText += "2007";
                                     }
                                     if (usernameText.length() > 10) {
                                         usernameText = (String) usernameText.subSequence(0, 10);

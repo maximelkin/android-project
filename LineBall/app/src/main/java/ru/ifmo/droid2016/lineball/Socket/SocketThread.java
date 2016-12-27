@@ -69,7 +69,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
             //WARNING! IT FREEZE THIS THREAD
             case MSG_SEARCH:
                 String name = socket.search();
-                result = (name != null);
+                result = name != null;
                 if (result) {
                     uiHandler.sendEmptyMessage(MSG_START);
                     uiHandler.sendMessage(Message.obtain(uiHandler, MSG_START, name));
@@ -79,7 +79,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                 socket.gameOver((String) message.obj);
                 break;
             case MSG_SET:
-                result = (!socket.setWall((String) message.obj));
+                result = (socket.setWall((String) message.obj));
                 break;
             case MSG_GET:
                 try {
