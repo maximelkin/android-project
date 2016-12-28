@@ -32,6 +32,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
         super(name, Process.THREAD_PRIORITY_MORE_FAVORABLE);
         this.uiHandler = uiHandler;
         this.androidId = androidId;
+        Log.e("socket thread", "new socket thread");
     }
 
     @Override
@@ -89,7 +90,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                     String coordinates = socket.getWall();
                     if (coordinates != null)
                         uiHandler.sendMessage(Message.obtain(uiHandler, MSG_SET_WALL_FROM_RIVAL, coordinates));
-                    mReceiver.sendEmptyMessageDelayed(MSG_GET_WALL_FROM_RIVAL, REDRAW_DELAY);
+                    mReceiver.sendEmptyMessageDelayed(MSG_GET_WALL_FROM_RIVAL, REDRAW_DELAY / 4);
                 } catch (IOException e) {
                     result = false;
                     e.printStackTrace();

@@ -119,13 +119,13 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
                 .show();
         socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
         board.quit();
+        if (socketThread != null) {
+            socketThread.quit();
+            socketThread = null;
+        }
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (socketThread != null) {
-                    socketThread.quit();
-                    socketThread = null;
-                }
                 finish();
             }
         }, 5000);
