@@ -13,6 +13,11 @@ net.createServer(function (socket) {
         socket.id = null;
     });
 
+    socket.on('error', function (err) {
+        console.log(err);
+        socket.destroy();
+    });
+
     socket.on('data', function (message_peace) {
         accumulator += message_peace;
         while (accumulator.indexOf('#') != -1) {
@@ -118,8 +123,9 @@ net.createServer(function (socket) {
                     break;
             }
         }
-    })
-        ;
+    });
+}).on('error', function (err) {
+    console.log(err);
 }).listen(8080, function () {
     console.log("listening");
 
