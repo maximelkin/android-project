@@ -39,26 +39,7 @@ net.createServer(function (socket) {
                     break;
 
                 case "ver":
-                    if (message.length < 2) {
-                        socket.write('1');
-                        break;
-                    }
-                    db.checkPass(socket.id, message[1], function (err) {
-                        if (err) {
-                            socket.write('1');
-                            return;
-                        }
-                        db.getUsername(socket.id, function (err, user) {
-                            if (err) {
-                                socket.write('1');
-                                return;
-                            }
-                            console.log(JSON.stringify(user));
-                            socket.username = user.username;
-                            socket.verified = true;
-                            socket.write('0');
-                        });
-                    });
+                    socket.write('1');
                     break;
 
                 case "reg":
@@ -66,26 +47,9 @@ net.createServer(function (socket) {
                         socket.write('1');
                         break;
                     }
-                    db.createUser(socket.id, message[1], message[2], function (err) {
-                        if (err)
-                            socket.write('1');
-                        else socket.write('0');
-                        socket.verified = true;
-                        socket.username = message[2];
-                    });
-                    break;
-
-                case "reset":
-                    if (!socket.verified) {
-                        socket.write('1');
-                        break;
-                    }
-                    db.deleteUser(socket.id, function (err) {
-                        if (err)
-                            socket.write('1');
-                        else
-                            socket.write('0');
-                    });
+                    socket.verified = true;
+                    socket.username = message[2];
+                    socket.write('0');
                     break;
 
                 case "search":
