@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 
@@ -14,14 +15,14 @@ public class ServerConnection {
     private static final String host = "arcueid.ru";
     private static final int port = 8080;
     private final Socket socket;
-    private static InputStream inputStream;
-    private static DataOutputStream dataOutputStream;
+    private final InputStream inputStream;
+    private final OutputStream outputStream;
 
     ServerConnection(String androidId) throws IOException {
         socket = new Socket(host, port);
         socket.setTcpNoDelay(true);
         inputStream = socket.getInputStream();
-        dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        outputStream = socket.getOutputStream();
         if (!send("con " + androidId)) {
             throw new ConnectException();
         }
@@ -38,8 +39,8 @@ public class ServerConnection {
 
     private boolean writeStr(String message) {
         try {
-            dataOutputStream.writeBytes(message + "#");
-            dataOutputStream.flush();
+            outputStream.write((message + "#").getBytes("UTF8"));
+            outputStream.flush();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
