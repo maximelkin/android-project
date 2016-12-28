@@ -90,7 +90,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                     String coordinates = socket.getWall();
                     if (coordinates != null)
                         uiHandler.sendMessage(Message.obtain(uiHandler, MSG_SET_WALL_FROM_RIVAL, coordinates));
-                    mReceiver.sendEmptyMessageDelayed(MSG_GET_WALL_FROM_RIVAL, REDRAW_DELAY / 4);
+                    mReceiver.sendEmptyMessageDelayed(MSG_GET_WALL_FROM_RIVAL, REDRAW_DELAY / 2);
                 } catch (IOException e) {
                     result = false;
                     e.printStackTrace();

@@ -33,7 +33,7 @@ import static ru.ifmo.droid2016.lineball.Socket.SocketThread.getThreadByName;
 
 public class Game extends AppCompatActivity implements View.OnTouchListener, SurfaceHolder.Callback, Handler.Callback {
     public static final long REDRAW_DELAY = 50;
-    private static final long BEFORE_DRAW_DELAY = 50;
+    private static final long BEFORE_DRAW_DELAY = 10;
     public static final int MSG_GAME_END = 302;
     private static final String TAG = "GAME";
     public static final int MSG_SET_WALL_FROM_RIVAL = 300;
@@ -117,9 +117,9 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         int toastTextId = (winner == THIS_USER) ? R.string.this_user_win : R.string.this_user_loose;
         Toast.makeText(Game.this, getString(toastTextId), Toast.LENGTH_SHORT)
                 .show();
-        socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
         board.quit();
         if (socketThread != null) {
+            socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
             socketThread.quit();
             socketThread = null;
         }
