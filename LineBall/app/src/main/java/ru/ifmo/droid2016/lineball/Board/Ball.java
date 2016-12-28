@@ -59,7 +59,7 @@ public class Ball {
             return true;
         }
 
-        if (w1.l.contain(pos) && w1.l.contain(nextPos)) {
+        if (w1.l.contain(pos) || w1.l.contain(nextPos)) {
             dir.mul(-1);
             return false;
         }
