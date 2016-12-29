@@ -14,7 +14,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.Game.Game;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
@@ -50,6 +49,13 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
             fail();
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (socket != null)
+            socket.quit();
     }
 
     private void fail() {

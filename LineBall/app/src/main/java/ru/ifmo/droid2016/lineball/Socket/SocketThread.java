@@ -52,6 +52,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     @Override
     public boolean quit() {
         // Clear all messages before dying
+        Log.e("socket thread", "Quit");
         mReceiver.removeCallbacksAndMessages(null);
         return super.quit();
     }
@@ -121,7 +122,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     }
 
     public void gameOver(String result) {
-        mReceiver.sendMessage(Message.obtain(mReceiver, MSG_GAME_END, result));
+        mReceiver.sendMessageAtFrontOfQueue(Message.obtain(mReceiver, MSG_GAME_END, result));
     }
 
     public void setWall(String coordinates) {

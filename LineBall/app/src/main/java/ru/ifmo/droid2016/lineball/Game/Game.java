@@ -1,6 +1,5 @@
 package ru.ifmo.droid2016.lineball.Game;
 
-import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,6 +20,7 @@ import ru.ifmo.droid2016.lineball.Board.Who;
 import ru.ifmo.droid2016.lineball.R;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
 
+import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 import static ru.ifmo.droid2016.lineball.Board.Board.*;
 import static ru.ifmo.droid2016.lineball.Board.Who.RIVAL;
 import static ru.ifmo.droid2016.lineball.Board.Who.THIS_USER;
@@ -61,7 +61,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         leftTextField.setTextColor((color == 0) ? Color.BLUE : Color.RED);
         rightTextField.setTextColor((color == 0) ? Color.RED : Color.BLUE);
         //prohibit rotate
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setRequestedOrientation(SCREEN_ORIENTATION_PORTRAIT);
 
         if (getSupportActionBar() != null)
             getSupportActionBar().hide();
@@ -78,6 +78,13 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         //start getting walls
         socketThread.getWall();
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (socketThread != null)
+            socketThread.quit();
     }
 
     public boolean onTouch(View view, MotionEvent event) {
@@ -109,6 +116,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     }
 
     private void gameFinish(Who winner) {
+        Log.e("game finish", "start");
         if (socketThread != null) {
             socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
         }
@@ -119,6 +127,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         coord = null;
         uiHandler.removeCallbacksAndMessages(null);
         board.quit();
+        Log.e("game finish", "end");
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -145,11 +154,12 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         board.quit();
         uiHandler.removeCallbacksAndMessages(null);
         surfaceView.setOnTouchListener(null);
-        board = null;
     }
 
     @Override
     public boolean handleMessage(Message message) {
+        if (board == null)
+            return true;
         switch (message.what) {
             //message from board
             case MSG_GAME_END:
