@@ -134,8 +134,11 @@ public class Board {
 
     public void setWall(String coord, @NonNull Who from) {
         String[] s = coord.split(" ");
+        Log.e("TEST", coord);
+        Log.e("FROM", from.name());
         double[] a = new double[s.length];
         for (int i = 0; i < s.length; ++i) {
+            Log.e("TEST", s[i]);
             a[i] = Double.parseDouble(s[i]);
         }
 

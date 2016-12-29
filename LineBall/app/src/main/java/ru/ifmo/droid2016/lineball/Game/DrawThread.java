@@ -11,6 +11,9 @@ import android.view.SurfaceHolder;
 import ru.ifmo.droid2016.lineball.Board.Board;
 import ru.ifmo.droid2016.lineball.Board.Who;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import static ru.ifmo.droid2016.lineball.Game.Game.MSG_GAME_END;
 
 class DrawThread extends HandlerThread implements Handler.Callback {
@@ -22,6 +25,9 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     private Handler mReceiver;
     private Handler uiHandler;
 
+    private Timer timer;
+    private static final long REDRAW_DELAY = 50;
+    private static final long BEFORE_DRAW_DELAY = 10;
 
     DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int maxX, int maxY, int color) {
         super("DrawThread", Process.THREAD_PRIORITY_URGENT_DISPLAY);
@@ -33,11 +39,20 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     @Override
     protected void onLooperPrepared() {
         mReceiver = new Handler(getLooper(), this);
-        mReceiver.sendEmptyMessage(MSG_REDRAW_BOARD);
+
+        //start redrawing
+        timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mReceiver.sendEmptyMessage(MSG_REDRAW_BOARD);
+            }
+        }, BEFORE_DRAW_DELAY, REDRAW_DELAY);
     }
 
     @Override
     public boolean quit() {
+        timer.cancel();
         // Clear all messages before dying
         mReceiver.removeCallbacksAndMessages(null);
         return super.quit();
@@ -73,9 +88,5 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     void setWall(String coord, @NonNull Who who) {
         Message msg = Message.obtain(mReceiver, MSG_SET_NEW_WALL, who.ordinal(), 0, coord);
         mReceiver.sendMessageAtFrontOfQueue(msg);
-    }
-
-    void redraw() {
-        mReceiver.sendEmptyMessage(MSG_REDRAW_BOARD);
     }
 }

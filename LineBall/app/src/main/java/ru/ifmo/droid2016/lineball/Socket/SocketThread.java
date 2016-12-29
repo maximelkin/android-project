@@ -9,7 +9,6 @@ import java.io.IOException;
 
 import static ru.ifmo.droid2016.lineball.Game.Game.MSG_GAME_END;
 import static ru.ifmo.droid2016.lineball.Game.Game.MSG_SET_WALL_FROM_RIVAL;
-import static ru.ifmo.droid2016.lineball.Game.Game.REDRAW_DELAY;
 
 public class SocketThread extends HandlerThread implements Handler.Callback {
 
@@ -26,6 +25,8 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     public final static int MSG_SOCKET_READY = 209;
     public final static int MSG_USER_VERIFIED = 503;
     public final static int MSG_VERIFYING_ERROR = 502;
+
+    private final static int CHECK_DELAY = 40;
     private String androidId;
 
     public SocketThread(String name, Handler uiHandler, String androidId) throws IOException {
@@ -81,6 +82,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                 break;
             case MSG_GAME_END:
                 socket.gameOver((String) message.obj);
+                quit();
                 break;
             case MSG_SEND_WALL_TO_RIVAL:
                 result = (socket.setWall((String) message.obj));
@@ -90,7 +92,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                     String coordinates = socket.getWall();
                     if (coordinates != null)
                         uiHandler.sendMessage(Message.obtain(uiHandler, MSG_SET_WALL_FROM_RIVAL, coordinates));
-                    mReceiver.sendEmptyMessageDelayed(MSG_GET_WALL_FROM_RIVAL, REDRAW_DELAY / 2);
+                    mReceiver.sendEmptyMessageDelayed(MSG_GET_WALL_FROM_RIVAL, CHECK_DELAY);
                 } catch (IOException e) {
                     result = false;
                     e.printStackTrace();

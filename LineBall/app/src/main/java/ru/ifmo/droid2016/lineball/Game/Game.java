@@ -21,9 +21,6 @@ import ru.ifmo.droid2016.lineball.Board.Who;
 import ru.ifmo.droid2016.lineball.R;
 import ru.ifmo.droid2016.lineball.Socket.SocketThread;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import static ru.ifmo.droid2016.lineball.Board.Board.*;
 import static ru.ifmo.droid2016.lineball.Board.Who.RIVAL;
 import static ru.ifmo.droid2016.lineball.Board.Who.THIS_USER;
@@ -32,8 +29,7 @@ import static ru.ifmo.droid2016.lineball.Socket.SocketThread.getThreadByName;
 
 
 public class Game extends AppCompatActivity implements View.OnTouchListener, SurfaceHolder.Callback, Handler.Callback {
-    public static final long REDRAW_DELAY = 50;
-    private static final long BEFORE_DRAW_DELAY = 10;
+
     public static final int MSG_GAME_END = 302;
     private static final String TAG = "GAME";
     public static final int MSG_SET_WALL_FROM_RIVAL = 300;
@@ -41,7 +37,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     private DrawThread board;
     private Handler uiHandler = new Handler(Looper.getMainLooper(), this);
     private SocketThread socketThread;
-    private Timer timer;
+    private SurfaceView surfaceView;
     private int color;
 
     @Override
@@ -51,7 +47,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
         color = PreferenceManager.getDefaultSharedPreferences(this).getInt("color", 0);
 
-        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
+        surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceView.setOnTouchListener(this);
         surfaceView.getHolder().addCallback(this);
         String rivalName = getIntent().getStringExtra("rival name");
@@ -73,7 +69,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         //socket should be created before!!!
         socketThread = ((SocketThread) getThreadByName("socket"));
 
-        if (socketThread == null){
+        if (socketThread == null) {
             gameFinish(RIVAL);
         }
 
@@ -113,22 +109,22 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     }
 
     private void gameFinish(Who winner) {
-        timer.cancel();
+        if (socketThread != null) {
+            socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
+        }
         int toastTextId = (winner == THIS_USER) ? R.string.this_user_win : R.string.this_user_loose;
         Toast.makeText(Game.this, getString(toastTextId), Toast.LENGTH_SHORT)
                 .show();
+        surfaceView.setOnTouchListener(null);
+        coord = null;
+        uiHandler.removeCallbacksAndMessages(null);
         board.quit();
-        if (socketThread != null) {
-            socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
-            socketThread.quit();
-            socketThread = null;
-        }
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 finish();
             }
-        }, 5000);
+        }, 3000);
     }
 
     @Override
@@ -137,14 +133,6 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         board = new DrawThread(surfaceHolder, uiHandler, canvas.getWidth(), canvas.getHeight(), color);
         surfaceHolder.unlockCanvasAndPost(canvas);
         board.start();
-        //start redrawing
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (board != null) board.redraw();
-            }
-        }, BEFORE_DRAW_DELAY, REDRAW_DELAY);
     }
 
     @Override
@@ -156,6 +144,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         board.quit();
         uiHandler.removeCallbacksAndMessages(null);
+        surfaceView.setOnTouchListener(null);
         board = null;
     }
 
