@@ -23,7 +23,7 @@ net.createServer(function (socket) {
         if (accumulator[accumulator.length - 1] != "#") {
             return;
         }
-        var message = accumulator.split(' ');
+        var message = accumulator.slice(0, accumulator.length - 2).split(' ');
         accumulator = "";
         if (socket.id == null && message[0] != "con") {
             return;
