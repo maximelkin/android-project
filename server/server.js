@@ -1,5 +1,5 @@
 var net = require('net');
-var db = require('./db/db');
+//var db = require('./db/db');
 var queue = [];
 
 net.createServer(function (socket) {
@@ -68,11 +68,12 @@ net.createServer(function (socket) {
                     socket.write('1');
                     break;
                 }
-                db.updateRate(socket.id, message[1] == 'win', function (err) {
+                socket.write('0');
+              /*  db.updateRate(socket.id, message[1] == 'win', function (err) {
                     if (err)
                         socket.write('1');
                     else socket.write('0'); //ok
-                });
+                });*/
                 break;
             case "wall":
                 if (socket.rival == null) {
