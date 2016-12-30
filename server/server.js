@@ -23,6 +23,8 @@ net.createServer(function (socket) {
         if (accumulator[accumulator.length - 1] != "#") {
             return;
         }
+        var message = accumulator.split(' ');
+        accumulator = "";
         if (socket.id == null && message[0] != "con") {
             return;
         }
@@ -92,13 +94,9 @@ net.createServer(function (socket) {
     console.log("listening");
 
     function flushQueue() {
-        //console.log(queue);
         var s = [queue, queue = []][0];
-        console.log(s.length);
         //now s = queue
         //queue = []
-        for (var i = 0; i < s.length; i++)
-            console.log(s[i].destroyed);
         while (s.length > 1) {
             //trying get alive user
             var x1 = s.pop();
@@ -135,5 +133,4 @@ net.createServer(function (socket) {
     }
     setInterval(flushQueue, 3000);
 });
-console.log("WTF");
 
