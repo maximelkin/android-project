@@ -2,6 +2,7 @@ package ru.ifmo.droid2016.lineball.Socket;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -68,7 +69,7 @@ public class ServerConnection {
         try {
             writeStr("search");
             String read = readStr();
-            return (read.equals("1")? null: read);
+            return (read.equals("1") ? null : read);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -84,10 +85,13 @@ public class ServerConnection {
     }
 
     @Nullable
-    String getWall() throws IOException {
-        if (inputStream.available() != 0)
-            return readStr();
-        else
-            return null;
+    String getWall() {
+        try {
+            if (inputStream.available() != 0)
+                return readStr();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

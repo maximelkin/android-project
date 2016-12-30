@@ -89,15 +89,17 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                 result = (socket.setWall((String) message.obj));
                 break;
             case MSG_GET_WALL_FROM_RIVAL:
-                try {
-                    String coordinates = socket.getWall();
-                    if (coordinates != null)
-                        uiHandler.sendMessage(Message.obtain(uiHandler, MSG_SET_WALL_FROM_RIVAL, coordinates));
-                    mReceiver.sendEmptyMessageDelayed(MSG_GET_WALL_FROM_RIVAL, CHECK_DELAY);
-                } catch (IOException e) {
+                String coordinates = socket.getWall();
+                if (coordinates == null || coordinates.equals("1")) {
                     result = false;
-                    e.printStackTrace();
+                    break;
                 }
+                if (coordinates.equals("2")) {
+                    uiHandler.sendEmptyMessage(MSG_GAME_END);
+                    break;
+                }
+                uiHandler.sendMessage(Message.obtain(uiHandler, MSG_SET_WALL_FROM_RIVAL, coordinates));
+                mReceiver.sendEmptyMessageDelayed(MSG_GET_WALL_FROM_RIVAL, CHECK_DELAY);
                 break;
         }
         if (!result)
