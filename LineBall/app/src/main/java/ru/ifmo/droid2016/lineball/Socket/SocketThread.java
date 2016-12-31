@@ -1,7 +1,9 @@
 package ru.ifmo.droid2016.lineball.Socket;
 
-import android.os.*;
-import android.os.Process;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -30,7 +32,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     private String androidId;
 
     public SocketThread(String name, Handler uiHandler, String androidId) throws IOException {
-        super(name, Process.THREAD_PRIORITY_MORE_FAVORABLE);
+        super(name, 7);
         this.uiHandler = uiHandler;
         this.androidId = androidId;
         Log.e("socket thread", "new socket thread");
@@ -89,15 +91,21 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                 result = (socket.setWall((String) message.obj));
                 break;
             case MSG_GET_WALL_FROM_RIVAL:
-                try {
-                    String coordinates = socket.getWall();
-                    if (coordinates != null)
-                        uiHandler.sendMessage(Message.obtain(uiHandler, MSG_SET_WALL_FROM_RIVAL, coordinates));
-                    mReceiver.sendEmptyMessageDelayed(MSG_GET_WALL_FROM_RIVAL, CHECK_DELAY);
-                } catch (IOException e) {
+                String coordinates = socket.getWall();
+                if (coordinates.equals("1")) {
                     result = false;
-                    e.printStackTrace();
+                    break;
                 }
+                if (coordinates.equals("2")) {
+                    uiHandler.sendEmptyMessage(MSG_GAME_END);
+                    break;
+                }
+                mReceiver.sendEmptyMessageDelayed(MSG_GET_WALL_FROM_RIVAL, CHECK_DELAY);
+                if (coordinates.equals("3")) {
+                    break;
+                }
+                Log.e("from rival in Socket", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
+                uiHandler.sendMessage(Message.obtain(uiHandler, MSG_SET_WALL_FROM_RIVAL, coordinates));
                 break;
         }
         if (!result)

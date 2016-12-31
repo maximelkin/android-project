@@ -111,8 +111,9 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
 
     private void setWall(String coordinates) {
-        board.setWall(coordinates, THIS_USER);
+        Log.e("wall draw by user", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
         socketThread.setWall(coordinates);
+        board.setWall(coordinates, THIS_USER);
     }
 
     private void gameFinish(Who winner) {
@@ -172,6 +173,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
                 gameFinish(RIVAL);
                 return true;
             case MSG_SET_WALL_FROM_RIVAL:
+                Log.e("wall from rival in Game", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
                 board.setWall((String) message.obj, RIVAL);
                 return true;
         }

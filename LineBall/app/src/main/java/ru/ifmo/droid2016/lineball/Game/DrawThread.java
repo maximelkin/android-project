@@ -7,6 +7,7 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.os.Process;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import ru.ifmo.droid2016.lineball.Board.Board;
 import ru.ifmo.droid2016.lineball.Board.Who;
@@ -26,11 +27,11 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     private Handler uiHandler;
 
     private Timer timer;
-    private static final long REDRAW_DELAY = 50;
+    private static final long REDRAW_DELAY = 70;
     private static final long BEFORE_DRAW_DELAY = 10;
 
     DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int maxX, int maxY, int color) {
-        super("DrawThread", Process.THREAD_PRIORITY_URGENT_DISPLAY);
+        super("DrawThread", Process.THREAD_PRIORITY_DISPLAY);
         this.surfaceHolder = surfaceHolder;
         this.board = new Board(maxX, maxY, color);
         this.uiHandler = uiHandler;
@@ -63,7 +64,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
         switch (msg.what) {
             //add wall
             case MSG_SET_NEW_WALL:
-
+                Log.e("wall in DrawThread", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
                 board.setWall((String) msg.obj, Who.values()[msg.arg1]);
                 break;
             //next tick

@@ -1,7 +1,6 @@
 package ru.ifmo.droid2016.lineball.Socket;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -28,12 +27,17 @@ public class ServerConnection {
     }
 
     @NonNull
-    private String readStr() throws IOException {
+    private String readStr() {
         byte[] b = new byte[100];
-        int len = inputStream.read(b);
-        if (len == -1)
-            throw new IOException("no input");
-        return new String(b, "UTF8").substring(0, len);
+        try {
+            int len = inputStream.read(b);
+            if (len == -1)
+                return "1";
+            return new String(b, "UTF8").substring(0, len);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "1";
+        }
     }
 
     private boolean writeStr(String message) {
@@ -48,12 +52,7 @@ public class ServerConnection {
     }
 
     private boolean send(String action) {
-        try {
-            return writeStr(action) && readStr().equals("0");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return writeStr(action) && readStr().equals("0");
     }
 
     boolean verify(String password) {
@@ -65,14 +64,9 @@ public class ServerConnection {
     }
 
     String search() {
-        try {
-            writeStr("search");
-            String read = readStr();
-            return (read.equals("1")? null: read);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
+        writeStr("search");
+        String read = readStr();
+        return read.equals("1") ? null : read;
     }
 
     boolean gameOver(String result) {
@@ -83,11 +77,15 @@ public class ServerConnection {
         return writeStr("wall " + coordinates);
     }
 
-    @Nullable
-    String getWall() throws IOException {
-        if (inputStream.available() != 0)
-            return readStr();
-        else
-            return null;
+    @NonNull
+    String getWall() {
+        try {
+            if (inputStream.available() != 0)
+                return readStr();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "1";
+        }
+        return "3";
     }
 }
