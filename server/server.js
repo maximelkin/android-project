@@ -56,9 +56,8 @@ net.createServer(function (socket) {
 
             case "search":
                 if (socket.verified) {
-                    //   queue.push(socket);
-                    // console.log("NEW MAN IN QUEUE");
-                    socket.write(socket.username);
+                    queue.push(socket);
+                    console.log("NEW MAN IN QUEUE");
                 }
                 else
                     socket.write('1');
@@ -70,24 +69,22 @@ net.createServer(function (socket) {
                     break;
                 }
                 socket.write('0');
-                /*  db.updateRate(socket.id, message[1] == 'win', function (err) {
-                      if (err)
-                          socket.write('1');
-                      else socket.write('0'); //ok
-                  });*/
+              /*  db.updateRate(socket.id, message[1] == 'win', function (err) {
+                    if (err)
+                        socket.write('1');
+                    else socket.write('0'); //ok
+                });*/
                 break;
             case "wall":
-                /*
-                    if (socket.rival == null) {
-                        console.log("NO RIVAL");
-                        //game not started
-                        socket.write('1');
-                    } else if (socket.destroyed) {
-                        socket.write('2');
-                    } else {
-    */
-                socket.write(message[1] + ' ' + message[2] + ' ' + message[3] + ' ' + message[4]);
-                //              }
+                if (socket.rival == null) {
+                    console.log("NO RIVAL");
+                    //game not started
+                    socket.write('1');
+                } else if (socket.destroyed) {
+                    socket.write('2');
+                } else {
+                    socket.rival.write(message[1] + ' ' + message[2] + ' ' + message[3] + ' ' + message[4]);
+                }
                 break;
         }
     });
