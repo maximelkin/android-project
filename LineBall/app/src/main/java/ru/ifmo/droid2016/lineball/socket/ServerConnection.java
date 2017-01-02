@@ -10,7 +10,7 @@ import java.net.Socket;
 //return true - all good
 
 public class ServerConnection {
-    private static final String host = "10.0.2.2";
+    private static final String host = "arcueid.ru";
     private static final int port = 8080;
     private final Socket socket;
     private final InputStream inputStream;
