@@ -1,4 +1,4 @@
-package ru.ifmo.droid2016.lineball.Socket;
+package ru.ifmo.droid2016.lineball.socket;
 
 import android.support.annotation.NonNull;
 import java.io.IOException;

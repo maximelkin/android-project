@@ -15,13 +15,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import ru.ifmo.droid2016.lineball.Game.Game;
-import ru.ifmo.droid2016.lineball.Socket.SocketThread;
+import ru.ifmo.droid2016.lineball.game.Game;
+import ru.ifmo.droid2016.lineball.socket.SocketThread;
 
 import java.io.IOException;
 import java.security.SecureRandom;
 
-import static ru.ifmo.droid2016.lineball.Socket.SocketThread.*;
+import static ru.ifmo.droid2016.lineball.socket.SocketThread.*;
 
 public class GameActivity extends AppCompatActivity implements Handler.Callback {
     private SocketThread socket;

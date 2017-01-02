@@ -1,37 +1,35 @@
-package ru.ifmo.droid2016.lineball.Game;
+package ru.ifmo.droid2016.lineball.game;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.os.Process;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import ru.ifmo.droid2016.lineball.Board.Board;
-import ru.ifmo.droid2016.lineball.Board.Who;
+import ru.ifmo.droid2016.lineball.board.Board;
+import ru.ifmo.droid2016.lineball.board.Who;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static ru.ifmo.droid2016.lineball.Game.Game.MSG_GAME_END;
+import static ru.ifmo.droid2016.lineball.game.Game.MSG_GAME_END;
 
 class DrawThread extends HandlerThread implements Handler.Callback {
 
-    private Board board;
-    private SurfaceHolder surfaceHolder;
+    private final Board board;
+    private final SurfaceHolder surfaceHolder;
     private static final int MSG_SET_NEW_WALL = 100;
-    private static final int MSG_REDRAW_BOARD = 101;
     private Handler mReceiver;
-    private Handler uiHandler;
+    private final Handler uiHandler;
 
     private Timer timer;
     private static final long REDRAW_DELAY = 70;
     private static final long BEFORE_DRAW_DELAY = 10;
 
     DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int maxX, int maxY, int color) {
-        super("DrawThread", Process.THREAD_PRIORITY_DISPLAY);
+        super("DrawThread", 10);
         this.surfaceHolder = surfaceHolder;
         this.board = new Board(maxX, maxY, color);
         this.uiHandler = uiHandler;
@@ -40,13 +38,28 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     @Override
     protected void onLooperPrepared() {
         mReceiver = new Handler(getLooper(), this);
-
         //start redrawing
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                mReceiver.sendEmptyMessage(MSG_REDRAW_BOARD);
+                Log.e("redraw1", System.currentTimeMillis() + "");
+                final Who checked = board.check();
+                if (checked != null) {
+                    Message message = Message.obtain(uiHandler, MSG_GAME_END, checked.ordinal(), 0);
+                    uiHandler.sendMessage(message);
+                    cancel();
+                }
+                final Canvas c = surfaceHolder.lockCanvas();
+                if (c == null)
+                    return;
+                c.drawColor(Color.WHITE);
+                synchronized (board) {
+                    board.drawBoard(c);
+                }
+                //   Log.e("redraw3", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
+                surfaceHolder.unlockCanvasAndPost(c);
+                //  Log.e("redraw4", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
             }
         }, BEFORE_DRAW_DELAY, REDRAW_DELAY);
     }
@@ -61,27 +74,8 @@ class DrawThread extends HandlerThread implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message msg) {
-        switch (msg.what) {
-            //add wall
-            case MSG_SET_NEW_WALL:
-                Log.e("wall in DrawThread", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
-                board.setWall((String) msg.obj, Who.values()[msg.arg1]);
-                break;
-            //next tick
-            case MSG_REDRAW_BOARD:
-                Who checked = board.check();
-                Canvas c = surfaceHolder.lockCanvas();
-                if (c == null)
-                    break;
-                c.drawColor(Color.WHITE);
-                board.drawBoard(c);
-                surfaceHolder.unlockCanvasAndPost(c);
-                if (checked != null) {
-                    Message message = Message.obtain(uiHandler, MSG_GAME_END, checked.ordinal(), 0);
-                    uiHandler.sendMessage(message);
-                }
-                break;
-        }
+        Log.e("wall in DrawThread", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
+        board.setWall((String) msg.obj, Who.values()[msg.arg1]);
         return true;
     }
 

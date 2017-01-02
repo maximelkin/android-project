@@ -1,4 +1,4 @@
-package ru.ifmo.droid2016.lineball.Socket;
+package ru.ifmo.droid2016.lineball.socket;
 
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -9,8 +9,8 @@ import android.util.Log;
 
 import java.io.IOException;
 
-import static ru.ifmo.droid2016.lineball.Game.Game.MSG_GAME_END;
-import static ru.ifmo.droid2016.lineball.Game.Game.MSG_SET_WALL_FROM_RIVAL;
+import static ru.ifmo.droid2016.lineball.game.Game.MSG_GAME_END;
+import static ru.ifmo.droid2016.lineball.game.Game.MSG_SET_WALL_FROM_RIVAL;
 
 public class SocketThread extends HandlerThread implements Handler.Callback {
 

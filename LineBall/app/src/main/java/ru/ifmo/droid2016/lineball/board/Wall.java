@@ -1,4 +1,4 @@
-package ru.ifmo.droid2016.lineball.Board;
+package ru.ifmo.droid2016.lineball.board;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
