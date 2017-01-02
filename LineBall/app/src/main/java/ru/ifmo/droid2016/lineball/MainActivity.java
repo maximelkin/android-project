@@ -4,10 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-
-import ru.ifmo.droid2016.lineball.Socket.ServerConnection;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {

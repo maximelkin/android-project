@@ -1,7 +1,8 @@
-package ru.ifmo.droid2016.lineball.Game;
+package ru.ifmo.droid2016.lineball.game;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,16 +17,16 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import ru.ifmo.droid2016.lineball.Board.Who;
+import ru.ifmo.droid2016.lineball.board.Who;
 import ru.ifmo.droid2016.lineball.R;
-import ru.ifmo.droid2016.lineball.Socket.SocketThread;
+import ru.ifmo.droid2016.lineball.socket.SocketThread;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-import static ru.ifmo.droid2016.lineball.Board.Board.*;
-import static ru.ifmo.droid2016.lineball.Board.Who.RIVAL;
-import static ru.ifmo.droid2016.lineball.Board.Who.THIS_USER;
-import static ru.ifmo.droid2016.lineball.Socket.SocketThread.MSG_ERROR;
-import static ru.ifmo.droid2016.lineball.Socket.SocketThread.getThreadByName;
+import static ru.ifmo.droid2016.lineball.board.Board.*;
+import static ru.ifmo.droid2016.lineball.board.Who.RIVAL;
+import static ru.ifmo.droid2016.lineball.board.Who.THIS_USER;
+import static ru.ifmo.droid2016.lineball.socket.SocketThread.MSG_ERROR;
+import static ru.ifmo.droid2016.lineball.socket.SocketThread.getThreadByName;
 
 
 public class Game extends AppCompatActivity implements View.OnTouchListener, SurfaceHolder.Callback, Handler.Callback {
@@ -139,6 +140,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        surfaceHolder.setFormat(PixelFormat.RGB_565);
         Canvas canvas = surfaceHolder.lockCanvas();
         board = new DrawThread(surfaceHolder, uiHandler, canvas.getWidth(), canvas.getHeight(), color);
         surfaceHolder.unlockCanvasAndPost(canvas);

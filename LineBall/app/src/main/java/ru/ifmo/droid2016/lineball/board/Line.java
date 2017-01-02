@@ -1,4 +1,4 @@
-package ru.ifmo.droid2016.lineball.Board;
+package ru.ifmo.droid2016.lineball.board;
 
 class Line {
     double A, B, C;
