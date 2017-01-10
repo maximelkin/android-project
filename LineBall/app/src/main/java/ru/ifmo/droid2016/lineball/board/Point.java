@@ -1,6 +1,8 @@
 package ru.ifmo.droid2016.lineball.board;
 
-public class Point {
+import android.support.annotation.NonNull;
+
+class Point {
     double x, y;
 
     Point(double x, double y) {
@@ -17,6 +19,7 @@ public class Point {
         y += p.y;
     }
 
+    @NonNull
     static Point sum(Point point1, Point point2){
         return new Point(point1.x + point2.x, point1.y + point2.y);
     }
@@ -27,16 +30,18 @@ public class Point {
         return this;
     }
 
+    @NonNull
     static Point sub(Point point1, Point point2) {
         return new Point(point1.x - point2.x, point1.y - point2.y);
     }
 
-    Point mul(double k) {
-        x *= k;
-        y *= k;
+    Point mul(double coefficient) {
+        x *= coefficient;
+        y *= coefficient;
         return this;
     }
 
+    @NonNull
     static Point multiply(Point point, double k) {
         return new Point(k * point.x, k * point.y);
     }

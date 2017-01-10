@@ -1,6 +1,8 @@
 package ru.ifmo.droid2016.lineball.socket;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,14 +11,14 @@ import java.net.Socket;
 
 //return true - all good
 
-public class ServerConnection {
+class ServerConnection {
     private static final String host = "arcueid.ru";
     private static final int port = 8080;
     private final Socket socket;
     private final InputStream inputStream;
     private final OutputStream outputStream;
 
-    ServerConnection(String androidId) throws IOException {
+    ServerConnection(@NonNull String androidId) throws IOException {
         socket = new Socket(host, port);
         socket.setTcpNoDelay(true);
         inputStream = socket.getInputStream();
@@ -40,7 +42,7 @@ public class ServerConnection {
         }
     }
 
-    private boolean writeStr(String message) {
+    private boolean writeStr(@NonNull String message) {
         try {
             outputStream.write((message + "#").getBytes("UTF8"));
             outputStream.flush();
@@ -51,29 +53,30 @@ public class ServerConnection {
         }
     }
 
-    private boolean send(String action) {
+    private boolean send(@NonNull String action) {
         return writeStr(action) && readStr().equals("0");
     }
 
-    boolean verify(String password) {
+    boolean verify(@NonNull String password) {
         return send("ver " + password);
     }
 
-    boolean registration(String password_username) {
+    boolean registration(@NonNull String password_username) {
         return send("reg " + password_username);
     }
 
+    @Nullable
     String search() {
         writeStr("search");
         String read = readStr();
         return read.equals("1") ? null : read;
     }
 
-    boolean gameOver(String result) {
+    boolean gameOver(@NonNull String result) {
         return send("gameov " + result);
     }
 
-    boolean setWall(String coordinates) {
+    boolean setWall(@NonNull String coordinates) {
         return writeStr("wall " + coordinates);
     }
 

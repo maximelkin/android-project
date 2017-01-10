@@ -68,12 +68,11 @@ net.createServer(function (socket) {
                     socket.write('1');
                     break;
                 }
-                socket.write('0');
-              /*  db.updateRate(socket.id, message[1] == 'win', function (err) {
+                db.updateRate(socket.id, message[1] == 'win', function (err) {
                     if (err)
                         socket.write('1');
                     else socket.write('0'); //ok
-                });*/
+                });
                 break;
             case "wall":
                 if (socket.rival == null) {
