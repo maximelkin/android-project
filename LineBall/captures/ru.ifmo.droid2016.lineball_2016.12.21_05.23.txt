@@ -1,0 +1,30 @@
+TASK ru.ifmo.droid2016.lineball id=77
+  ACTIVITY ru.ifmo.droid2016.lineball/.MainActivity fdffe8 pid=3321
+    Local FragmentActivity 650078b State:
+      mCreated=truemResumed=true mStopped=false mReallyStopped=false
+      mLoadersStarted=true
+    FragmentManager misc state:
+      mHost=android.support.v4.app.FragmentActivity$HostCallbacks@1f75bd4
+      mContainer=android.support.v4.app.FragmentActivity$HostCallbacks@1f75bd4
+      mCurState=5 mStateSaved=false mDestroyed=false
+    View Hierarchy:
+      com.android.internal.policy.DecorView{e44e17d V.E..... ... 0,0-1080,1920}
+        android.widget.LinearLayout{3b64872 V.E..... ... 0,0-1080,1800}
+          android.view.ViewStub{8dbc4c3 G.E..... ... 0,0-0,0 #10203e8 android:id/action_mode_bar_stub}
+          android.widget.FrameLayout{d586140 V.E..... ... 0,60-1080,1800}
+            android.support.v7.widget.ActionBarOverlayLayout{3c31879 V.E..... ... 0,0-1080,1740 #7f0b0043 app:id/decor_content_parent}
+              android.support.v7.widget.ContentFrameLayout{21c79be V.E..... ... 0,0-1080,1740 #1020002 android:id/content}
+                android.widget.LinearLayout{a2bea1f V.E..... ... 0,0-1080,1740}
+                  android.support.v7.widget.AppCompatImageView{902516c V.ED.... ... 80,80-1000,150}
+                  android.widget.LinearLayout{53c335 V.E..... ... 40,190-1040,1700}
+                    android.support.v7.widget.AppCompatButton{92273ca VFED..C. ... 40,80-960,417 #7f0b0060 app:id/btn_menu_play}
+                    android.support.v7.widget.AppCompatButton{b2f093b VFED..C. ... 40,417-960,754 #7f0b0061 app:id/btn_menu_help}
+                    android.support.v7.widget.AppCompatButton{6791858 VFED..C. ... 40,754-960,1092 #7f0b0062 app:id/btn_menu_settings}
+                    android.support.v7.widget.AppCompatButton{30a5db1 VFED..C. ... 40,1092-960,1430 #7f0b0063 app:id/btn_menu_about}
+              android.support.v7.widget.ActionBarContainer{bdc0296 G.ED.... ... 0,0-0,0 #7f0b0044 app:id/action_bar_container}
+                android.support.v7.widget.Toolbar{b7afe17 V.E..... ... 0,0-0,0 #7f0b0045 app:id/action_bar}
+                  android.support.v7.widget.AppCompatTextView{9936204 V.ED.... ... 0,0-0,0}
+                  android.support.v7.widget.ActionMenuView{eb623ed V.E..... ... 0,0-0,0}
+                android.support.v7.widget.ActionBarContextView{8cdb222 G.E..... ... 0,0-0,0 #7f0b0046 app:id/action_context_bar}
+        android.view.View{42764b3 V.ED.... ... 0,1800-1080,1920 #1020030 android:id/navigationBarBackground}
+        android.view.View{ae69a70 V.ED.... ... 0,0-1080,60 #102002f android:id/statusBarBackground}

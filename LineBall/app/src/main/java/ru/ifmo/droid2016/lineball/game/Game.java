@@ -1,12 +1,7 @@
 package ru.ifmo.droid2016.lineball.game;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+import android.os.*;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +12,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import ru.ifmo.droid2016.lineball.board.Who;
 import ru.ifmo.droid2016.lineball.R;
+import ru.ifmo.droid2016.lineball.board.Who;
 import ru.ifmo.droid2016.lineball.socket.SocketThread;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
@@ -51,6 +46,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceView.setOnTouchListener(this);
         surfaceView.getHolder().addCallback(this);
+        surfaceView.setDrawingCacheEnabled(false);
         String rivalName = getIntent().getStringExtra("rival name");
         String thisUserName = PreferenceManager.getDefaultSharedPreferences(this).getString("name", "anonymous");
 
@@ -140,10 +136,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        surfaceHolder.setFormat(PixelFormat.RGB_565);
-        Canvas canvas = surfaceHolder.lockCanvas();
-        board = new DrawThread(surfaceHolder, uiHandler, canvas.getWidth(), canvas.getHeight(), color);
-        surfaceHolder.unlockCanvasAndPost(canvas);
+        board = new DrawThread(surfaceHolder, uiHandler, color);
         board.start();
     }
 

@@ -1,8 +1,9 @@
 package ru.ifmo.droid2016.lineball.board;
 
+import static ru.ifmo.droid2016.lineball.board.Board.eps;
+
 class Line {
     double A, B, C;
-    private static final double eps = 1e-9;
 
     Line(Point p1, Point p2) {
         this.A = p2.y - p1.y;
@@ -14,7 +15,7 @@ class Line {
         return (Math.abs(A * p.x + B * p.y + C) < eps);
     }
 
-    double dist(Point p) {
+    double distance(Point p) {
         return (A * p.x + B * p.y + C) / Math.sqrt(A * A + B * B);
     }
 

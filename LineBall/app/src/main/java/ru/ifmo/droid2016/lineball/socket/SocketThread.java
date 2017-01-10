@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -117,7 +118,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
         uiHandler = handler;
     }
 
-    public void verify(String password) {
+    public void verify(@NonNull String password) {
         mReceiver.sendMessage(Message.obtain(mReceiver, MSG_VERIFY_USER, password));
     }
 
@@ -129,11 +130,11 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
         mReceiver.sendEmptyMessage(MSG_SEARCH);
     }
 
-    public void gameOver(String result) {
+    public void gameOver(@NonNull String result) {
         mReceiver.sendMessageAtFrontOfQueue(Message.obtain(mReceiver, MSG_GAME_END, result));
     }
 
-    public void setWall(String coordinates) {
+    public void setWall(@NonNull String coordinates) {
         mReceiver.sendMessage(Message.obtain(mReceiver, MSG_SEND_WALL_TO_RIVAL, coordinates));
     }
 
@@ -143,7 +144,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     }
 
     @Nullable
-    public static Thread getThreadByName(String threadName) {
+    public static Thread getThreadByName(@NonNull String threadName) {
         for (Thread t : Thread.getAllStackTraces().keySet()) {
             if (t.getName().equals(threadName)) return t;
         }

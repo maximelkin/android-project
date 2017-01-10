@@ -3,7 +3,7 @@
     package="ru.ifmo.droid2016.lineball">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-feature android:glEsVersion="0x00020000" android:required="true" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <supports-screens android:anyDensity="true"/>
     <application
         android:allowBackup="true"
