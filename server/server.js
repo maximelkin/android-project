@@ -1,5 +1,5 @@
 var net = require('net');
-//var db = require('./db/db');
+var db = require('./db/sql_db.js');
 var queue = [];
 
 net.createServer(function (socket) {
@@ -18,18 +18,15 @@ net.createServer(function (socket) {
         socket.destroy();
     });
 
-    socket.on('data', function (message_peace) {
-        accumulator += message_peace;
-        if (accumulator[accumulator.length - 1] != "#") {
-            return;
-        }
-        var message = accumulator.slice(0, accumulator.length - 1).split(' ');
-        accumulator = "";
+    socket.on('data', function (message) {
+        message += "";
         if (socket.id == null && message[0] != "con") {
             return;
         }
         console.log(message);
         switch (message[0]) {
+
+            //first message
             case "con":
                 if (socket.id || message.length < 2) {
                     socket.write('1');
@@ -40,20 +37,39 @@ net.createServer(function (socket) {
                 socket.write('0');
                 break;
 
+            //verification of user
             case "ver":
-                socket.write('1');
+                if (message.length == 1) {
+                    socket.write('1');
+                    break;
+                }
+                db.checkPass(socket.id, message[1], function (err) {
+                    if (err) {
+                        socket.write('1');
+                    } else {
+                        socket.write('0');
+                    }
+                });
                 break;
 
+            //registration of new user
             case "reg":
                 if (message.length < 3) {
                     socket.write('1');
                     break;
                 }
-                socket.verified = true;
-                socket.username = message[2];
-                socket.write('0');
+                db.createUser(socket.id, message[1], message[2], function (err) {
+                    if (err) {
+                        socket.write('1');
+                        return;
+                    }
+                    socket.verified = true;
+                    socket.username = message[2];
+                    socket.write('0');
+                });
                 break;
 
+            //user go in queue
             case "search":
                 if (socket.verified) {
                     queue.push(socket);
@@ -63,17 +79,23 @@ net.createServer(function (socket) {
                     socket.write('1');
                 break;
 
+            //game over
             case "gameov":
                 if (!socket.verified || socket.rival == null || message.length < 2) {
                     socket.write('1');
                     break;
                 }
+
                 db.updateRate(socket.id, message[1] == 'win', function (err) {
-                    if (err)
+                    if (err) {
                         socket.write('1');
-                    else socket.write('0'); //ok
+                    } else {
+                        socket.write('0'); //ok
+                    }
                 });
                 break;
+
+            //set new wall
             case "wall":
                 if (socket.rival == null) {
                     console.log("NO RIVAL");
@@ -122,9 +144,8 @@ net.createServer(function (socket) {
             console.log("STARTED");
             console.log(x1.username);
             console.log(x2.username);
-            console.log(x1);
-            x1.write(x2.username + "");//send start message
-            x2.write(x1.username + "");//send start message
+            x1.write(x2.username);//send start message
+            x2.write(x1.username);//send start message
         }
         if (s.length == 1) {
             queue.push(s[0]);
