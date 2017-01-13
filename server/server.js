@@ -85,7 +85,7 @@ net.createServer(function (socket) {
                     socket.write('1');
                     break;
                 }
-
+                
                 db.updateRate(socket.id, message[1] == 'win', function (err) {
                     if (err) {
                         socket.write('1');
@@ -144,8 +144,8 @@ net.createServer(function (socket) {
             console.log("STARTED");
             console.log(x1.username);
             console.log(x2.username);
-            x1.write(x2.username);//send start message
-            x2.write(x1.username);//send start message
+            x1.write(x2.username + " 1");//send start message
+            x2.write(x1.username + " 0");//send start message
         }
         if (s.length == 1) {
             queue.push(s[0]);

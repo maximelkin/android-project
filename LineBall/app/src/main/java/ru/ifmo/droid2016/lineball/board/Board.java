@@ -18,8 +18,9 @@ public class Board {
     private List<Wall> walls1 = new LinkedList<>(), walls2 = new LinkedList<>();
     private Ball b1,
             b2;
+    private final boolean isGameMaster;
 
-    public Board(int maxX, int maxY, int color) {
+    public Board(int maxX, int maxY, int color, boolean isGameMaster) {
         maxXLocal = maxX;
         maxYLocal = maxY;
         thisUserPaint = new Paint();
@@ -36,6 +37,12 @@ public class Board {
                 thisUserPaint);
         b2 = new Ball(new Point(Board.maxX - 30, Board.maxY - 30), new Point(-1 / Math.sqrt(2), -1 / Math.sqrt(2)),
                 rivalPaint);
+        if (isGameMaster) {
+            Ball temp = b1;
+            b1 = b2;
+            b2 = temp;
+        }
+        this.isGameMaster = isGameMaster;
     }
 
 
@@ -153,21 +160,21 @@ public class Board {
                 walls1.add(w);
                 break;
             case RIVAL:
-                w.reverse();
+                //w.reverse();
                 walls2.add(w);
                 break;
         }
     }
 
     public void drawBoard(Canvas canvas) {
-        b1.onDraw(canvas);
+        b1.onDraw(canvas, isGameMaster);
         for (Wall wall : walls1) {
-            wall.onDraw(canvas, thisUserPaint);
+            wall.onDraw(canvas, thisUserPaint, isGameMaster);
         }
 
-        b2.onDraw(canvas);
+        b2.onDraw(canvas, isGameMaster);
         for (Wall wall : walls2) {
-            wall.onDraw(canvas, rivalPaint);
+            wall.onDraw(canvas, rivalPaint, isGameMaster);
         }
     }
 }
