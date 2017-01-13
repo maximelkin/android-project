@@ -35,6 +35,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     private SocketThread socketThread;
     private SurfaceView surfaceView;
     private int color;
+    private boolean isGameMaster;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,12 +43,14 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         setContentView(R.layout.game_layout);
 
         color = PreferenceManager.getDefaultSharedPreferences(this).getInt("color", 0);
+        String[] extras = getIntent().getStringExtra("rival name").split(" ");
+        String rivalName = extras[0];
+        isGameMaster = extras[1].equals("1");
 
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         surfaceView.setOnTouchListener(this);
         surfaceView.getHolder().addCallback(this);
         surfaceView.setDrawingCacheEnabled(false);
-        String rivalName = getIntent().getStringExtra("rival name");
         String thisUserName = PreferenceManager.getDefaultSharedPreferences(this).getString("name", "anonymous");
 
         TextView leftTextField = (TextView) findViewById(R.id.left_field);
@@ -136,7 +139,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        board = new DrawThread(surfaceHolder, uiHandler, color);
+        board = new DrawThread(surfaceHolder, uiHandler, color, isGameMaster);
         board.start();
     }
 

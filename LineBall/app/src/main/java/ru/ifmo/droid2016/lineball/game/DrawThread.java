@@ -20,20 +20,22 @@ import static ru.ifmo.droid2016.lineball.game.Game.MSG_GAME_END;
 class DrawThread extends HandlerThread implements Handler.Callback {
 
     private final int color;
+    private final boolean isGameMaster;
     private Board board;
     private final SurfaceHolder surfaceHolder;
     private Handler mReceiver;
     private final Handler uiHandler;
 
     private Timer timer;
-    private static final long REDRAW_DELAY = 60;
+    private static final long REDRAW_DELAY = 50;
     private static final long BEFORE_DRAW_DELAY = 100;
 
-    DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int color) {
+    DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int color, boolean isGameMaster) {
         super("DrawThread", 10);
         this.surfaceHolder = surfaceHolder;
         this.uiHandler = uiHandler;
         this.color = color;
+        this.isGameMaster = isGameMaster;
     }
 
     @Override
@@ -41,7 +43,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
         mReceiver = new Handler(getLooper(), this);
         //start redrawing
         Rect rect = surfaceHolder.getSurfaceFrame();
-        board = new Board(rect.width(), rect.height(), color);
+        board = new Board(rect.width(), rect.height(), color, isGameMaster);
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override

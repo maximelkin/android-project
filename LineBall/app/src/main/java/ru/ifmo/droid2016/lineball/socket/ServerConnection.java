@@ -44,7 +44,7 @@ class ServerConnection {
 
     private boolean writeStr(@NonNull String message) {
         try {
-            outputStream.write((message + "#").getBytes("UTF8"));
+            outputStream.write(message.getBytes("UTF8"));
             outputStream.flush();
             return true;
         } catch (IOException e) {

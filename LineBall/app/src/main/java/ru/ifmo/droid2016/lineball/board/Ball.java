@@ -81,9 +81,20 @@ class Ball {
         return (pos.x < -radius || pos.x > maxX + radius || pos.y < -radius || pos.y > maxY + radius);
     }
 
-    void onDraw(Canvas canvas) {
-        canvas.drawCircle((float) (pos.x * maxXLocal / maxX), (float) (pos.y * maxYLocal / maxY),
-                (float) (radius * maxYLocal / maxY), paint);
+    void onDraw(Canvas canvas, boolean isGameMaster) {
+        if (isGameMaster) {
+            canvas.drawCircle(
+                    (float) (pos.x * maxXLocal / maxX),
+                    (float) (pos.y * maxYLocal / maxY),
+                    (float) (radius * maxYLocal / maxY),
+                    paint);
+        } else {
+            canvas.drawCircle(
+                    (float) (maxXLocal - pos.x * maxXLocal / maxX),
+                    (float) (maxYLocal - pos.y * maxYLocal / maxY),
+                    (float) (radius * maxYLocal / maxY),
+                    paint);
+        }
     }
 
     void move() {
