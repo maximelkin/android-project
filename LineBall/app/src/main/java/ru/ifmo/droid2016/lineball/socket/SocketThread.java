@@ -7,33 +7,25 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import ru.ifmo.droid2016.lineball.MessageCodes;
 
 import java.io.IOException;
 
-import static ru.ifmo.droid2016.lineball.game.Game.MSG_GAME_END;
-import static ru.ifmo.droid2016.lineball.game.Game.MSG_SET_WALL_FROM_RIVAL;
+import static ru.ifmo.droid2016.lineball.MessageCodes.*;
 
 public class SocketThread extends HandlerThread implements Handler.Callback {
 
     private Handler uiHandler;
     private ServerConnection socket;
     private Handler mReceiver;
-    private final static int MSG_VERIFY_USER = 201;
-    private final static int MSG_REGISTRATION = 202;
-    private final static int MSG_SEARCH = 204;
-    public final static int MSG_ERROR = 205;
-    private final static int MSG_SEND_WALL_TO_RIVAL = 206;
-    private final static int MSG_GET_WALL_FROM_RIVAL = 207;
-    public final static int MSG_START_GAME = 208;
-    public final static int MSG_SOCKET_READY = 209;
-    public final static int MSG_USER_VERIFIED = 503;
-    public final static int MSG_VERIFYING_ERROR = 502;
 
-    private final static int CHECK_DELAY = 40;
+
+    private final static int CHECK_DELAY = 20;
+    private final static int socketPriority = 7;
     private String androidId;
 
     public SocketThread(String name, Handler uiHandler, String androidId) throws IOException {
-        super(name, 7);
+        super(name, socketPriority);
         this.uiHandler = uiHandler;
         this.androidId = androidId;
         Log.e("socket thread", "new socket thread");
@@ -91,7 +83,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
             case MSG_SEND_WALL_TO_RIVAL:
                 result = (socket.setWall((String) message.obj));
                 break;
-            case MSG_GET_WALL_FROM_RIVAL:
+            case MessageCodes.MSG_GET_WALL_FROM_RIVAL:
                 String coordinates = socket.getWall();
                 if (coordinates.equals("1")) {
                     result = false;
@@ -101,7 +93,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
                     uiHandler.sendEmptyMessage(MSG_GAME_END);
                     break;
                 }
-                mReceiver.sendEmptyMessageDelayed(MSG_GET_WALL_FROM_RIVAL, CHECK_DELAY);
+                mReceiver.sendEmptyMessageDelayed(MessageCodes.MSG_GET_WALL_FROM_RIVAL, CHECK_DELAY);
                 if (coordinates.equals("3")) {
                     break;
                 }
@@ -140,7 +132,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
 
     //only one run!
     public void getWall() {
-        mReceiver.sendEmptyMessage(MSG_GET_WALL_FROM_RIVAL);
+        mReceiver.sendEmptyMessage(MessageCodes.MSG_GET_WALL_FROM_RIVAL);
     }
 
     @Nullable

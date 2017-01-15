@@ -17,18 +17,18 @@ import ru.ifmo.droid2016.lineball.board.Who;
 import ru.ifmo.droid2016.lineball.socket.SocketThread;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+import static ru.ifmo.droid2016.lineball.MessageCodes.MSG_ERROR;
+import static ru.ifmo.droid2016.lineball.MessageCodes.MSG_GAME_END;
+import static ru.ifmo.droid2016.lineball.MessageCodes.MSG_SET_WALL_FROM_RIVAL;
 import static ru.ifmo.droid2016.lineball.board.Board.*;
 import static ru.ifmo.droid2016.lineball.board.Who.RIVAL;
 import static ru.ifmo.droid2016.lineball.board.Who.THIS_USER;
-import static ru.ifmo.droid2016.lineball.socket.SocketThread.MSG_ERROR;
 import static ru.ifmo.droid2016.lineball.socket.SocketThread.getThreadByName;
 
 
 public class Game extends AppCompatActivity implements View.OnTouchListener, SurfaceHolder.Callback, Handler.Callback {
 
-    public static final int MSG_GAME_END = 302;
     private static final String TAG = "GAME";
-    public static final int MSG_SET_WALL_FROM_RIVAL = 300;
     private String coord = "";
     private DrawThread board;
     private Handler uiHandler = new Handler(Looper.getMainLooper(), this);

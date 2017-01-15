@@ -21,7 +21,8 @@ import ru.ifmo.droid2016.lineball.socket.SocketThread;
 import java.io.IOException;
 import java.security.SecureRandom;
 
-import static ru.ifmo.droid2016.lineball.socket.SocketThread.*;
+import static ru.ifmo.droid2016.lineball.MessageCodes.*;
+
 
 public class GameActivity extends AppCompatActivity implements Handler.Callback {
     private SocketThread socket;
@@ -36,7 +37,6 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         // getSupportActionBar().hide();
-        //PreferenceManager.getDefaultSharedPreferences(this).edit().putString("password", null).apply();
         password = PreferenceManager.getDefaultSharedPreferences(this).getString("password", null);
         try {
 
