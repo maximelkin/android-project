@@ -15,7 +15,7 @@ import ru.ifmo.droid2016.lineball.board.Who;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static ru.ifmo.droid2016.lineball.game.Game.MSG_GAME_END;
+import static ru.ifmo.droid2016.lineball.MessageCodes.MSG_GAME_END;
 
 class DrawThread extends HandlerThread implements Handler.Callback {
 
@@ -29,9 +29,10 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     private Timer timer;
     private static final long REDRAW_DELAY = 50;
     private static final long BEFORE_DRAW_DELAY = 100;
+    private static final int drawThreadPriority = 10;
 
     DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int color, boolean isGameMaster) {
-        super("DrawThread", 10);
+        super("DrawThread", drawThreadPriority);
         this.surfaceHolder = surfaceHolder;
         this.uiHandler = uiHandler;
         this.color = color;
