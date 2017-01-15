@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import ru.ifmo.droid2016.lineball.extras.SettingsActivity;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {

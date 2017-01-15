@@ -21,7 +21,7 @@
         <activity
             android:name=".game.Game"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".SettingsActivity" />
+        <activity android:name=".extras.SettingsActivity" />
         <activity android:name=".HelpActivity" />
         <activity android:name=".GameActivity" />
         <activity android:name=".AboutActivity"/>

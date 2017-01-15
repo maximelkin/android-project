@@ -16,6 +16,9 @@ public class MessageCodes {
     public final static int MSG_USER_VERIFIED = 401;
     public final static int MSG_VERIFYING_ERROR = 402;
     public final static int MSG_START_GAME = 403;
+    //extra codes
+    public final static int MSG_GET_TOP = 500;
+    public final static int MSG_DELETE_USER = 501;
     //common
-    public final static int MSG_ERROR = 500;
+    public final static int MSG_ERROR = 600;
 }
