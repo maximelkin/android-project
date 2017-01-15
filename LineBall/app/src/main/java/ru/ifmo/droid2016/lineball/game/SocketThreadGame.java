@@ -1,4 +1,4 @@
-package ru.ifmo.droid2016.lineball.socket;
+package ru.ifmo.droid2016.lineball.game;
 
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -8,15 +8,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import ru.ifmo.droid2016.lineball.MessageCodes;
+import ru.ifmo.droid2016.lineball.sockets.GameSocket;
 
 import java.io.IOException;
 
 import static ru.ifmo.droid2016.lineball.MessageCodes.*;
 
-public class SocketThread extends HandlerThread implements Handler.Callback {
+public class SocketThreadGame extends HandlerThread implements Handler.Callback {
 
     private Handler uiHandler;
-    private ServerConnection socket;
+    private GameSocket socket;
     private Handler mReceiver;
 
 
@@ -24,7 +25,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
     private final static int socketPriority = 7;
     private String androidId;
 
-    public SocketThread(String name, Handler uiHandler, String androidId) throws IOException {
+    public SocketThreadGame(String name, Handler uiHandler, String androidId) throws IOException {
         super(name, socketPriority);
         this.uiHandler = uiHandler;
         this.androidId = androidId;
@@ -36,7 +37,7 @@ public class SocketThread extends HandlerThread implements Handler.Callback {
         super.onLooperPrepared();
         mReceiver = new Handler(Looper.myLooper(), this);
         try {
-            socket = new ServerConnection(androidId);
+            socket = new GameSocket(androidId);
             uiHandler.sendEmptyMessage(MSG_SOCKET_READY);
         } catch (IOException e) {
             e.printStackTrace();

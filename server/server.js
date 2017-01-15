@@ -20,12 +20,32 @@ net.createServer(function (socket) {
 
     socket.on('data', function (message) {
         message += "";
-        if (socket.id == null && message[0] != "con") {
+        if (socket.verified == null && !(message[0] == "con" || message[0] == "top")) {
             return;
         }
         console.log(message);
         switch (message[0]) {
 
+            //get top
+            case "top":
+                db.getTop(message[1], message[2], function (err, top) {
+                    if (err) {
+                        socket.write('1');
+                        break;
+                    }
+                    socket.write(top);
+                });
+                break;
+
+            case "del":
+                db.deleteUser(socket.id, function (err) {
+                    if (err) {
+                        socket.write('1');
+                        return;
+                    }
+                    socket.write('0');
+                });
+                break;
             //first message
             case "con":
                 if (socket.id || message.length < 2) {
@@ -85,7 +105,7 @@ net.createServer(function (socket) {
                     socket.write('1');
                     break;
                 }
-                
+
                 db.updateRate(socket.id, message[1] == 'win', function (err) {
                     if (err) {
                         socket.write('1');

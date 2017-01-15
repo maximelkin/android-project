@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.R;
 import ru.ifmo.droid2016.lineball.board.Who;
-import ru.ifmo.droid2016.lineball.socket.SocketThread;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
 import static ru.ifmo.droid2016.lineball.MessageCodes.MSG_ERROR;
@@ -23,7 +22,7 @@ import static ru.ifmo.droid2016.lineball.MessageCodes.MSG_SET_WALL_FROM_RIVAL;
 import static ru.ifmo.droid2016.lineball.board.Board.*;
 import static ru.ifmo.droid2016.lineball.board.Who.RIVAL;
 import static ru.ifmo.droid2016.lineball.board.Who.THIS_USER;
-import static ru.ifmo.droid2016.lineball.socket.SocketThread.getThreadByName;
+import static ru.ifmo.droid2016.lineball.game.SocketThreadGame.getThreadByName;
 
 
 public class Game extends AppCompatActivity implements View.OnTouchListener, SurfaceHolder.Callback, Handler.Callback {
@@ -32,7 +31,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     private String coord = "";
     private DrawThread board;
     private Handler uiHandler = new Handler(Looper.getMainLooper(), this);
-    private SocketThread socketThread;
+    private SocketThreadGame socketThread;
     private SurfaceView surfaceView;
     private int color;
     private boolean isGameMaster;
@@ -67,7 +66,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
             getSupportActionBar().hide();
 
         //socket should be created before!!!
-        socketThread = ((SocketThread) getThreadByName("socket"));
+        socketThread = ((SocketThreadGame) getThreadByName("socket"));
 
         if (socketThread == null) {
             gameFinish(RIVAL);

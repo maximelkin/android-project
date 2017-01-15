@@ -16,7 +16,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import ru.ifmo.droid2016.lineball.game.Game;
-import ru.ifmo.droid2016.lineball.socket.SocketThread;
+import ru.ifmo.droid2016.lineball.game.SocketThreadGame;
 
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -25,7 +25,7 @@ import static ru.ifmo.droid2016.lineball.MessageCodes.*;
 
 
 public class GameActivity extends AppCompatActivity implements Handler.Callback {
-    private SocketThread socket;
+    private SocketThreadGame socket;
     private String password;
     private static final String ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static SecureRandom random = new SecureRandom();
@@ -43,7 +43,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
             String android_id = Settings.Secure.getString(getBaseContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID);
 
-            socket = new SocketThread("socket", new Handler(Looper.getMainLooper(), this), android_id);
+            socket = new SocketThreadGame("socket", new Handler(Looper.getMainLooper(), this), android_id);
             socket.start();
         } catch (IOException e) {
             fail();

@@ -62,9 +62,14 @@ function updateRate(androidId, isWon, callback) {
     db.run("UPDATE users SET rate = (rate + ?) WHERE id = ?", change, androidId, callback);
 }
 
+function getTop(skip, limit, callback) {
+    db.get("SELECT username, rate FROM users ORDER BY rate DESC LIMIT ? OFFSET ?", limit, skip, callback);
+}
+
 module.exports.createUser = createUser;
 module.exports.deleteUser = deleteUser;
 module.exports.checkPass = checkPass;
 module.exports.clearUsers = clearUsers;
 module.exports.updateRate = updateRate;
 module.exports.getUsername = getUsername;
+module.exports.getTop = getTop;
