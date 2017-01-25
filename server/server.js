@@ -20,10 +20,11 @@ net.createServer(function (socket) {
 
     socket.on('data', function (message) {
         message += "";
+        message = message.split(' ');
+        console.log(message);
         if (socket.verified == null && !(message[0] == "con" || message[0] == "top")) {
             return;
         }
-        console.log(message);
         switch (message[0]) {
 
             //get top
@@ -31,7 +32,7 @@ net.createServer(function (socket) {
                 db.getTop(message[1], message[2], function (err, top) {
                     if (err) {
                         socket.write('1');
-                        break;
+                        return;
                     }
                     socket.write(top);
                 });
@@ -78,25 +79,32 @@ net.createServer(function (socket) {
                     socket.write('1');
                     break;
                 }
+                db.deleteUser(socket.id, function (err) {
+                    console.log(err);
+                });
                 db.createUser(socket.id, message[1], message[2], function (err) {
                     if (err) {
                         socket.write('1');
+                        console.log(err);
                         return;
                     }
                     socket.verified = true;
                     socket.username = message[2];
                     socket.write('0');
+                    console.log("reg ok");
                 });
                 break;
 
             //user go in queue
             case "search":
-                if (socket.verified) {
-                    queue.push(socket);
-                    console.log("NEW MAN IN QUEUE");
-                }
-                else
-                    socket.write('1');
+                /* if (socket.verified) {
+                     queue.push(socket);
+                     console.log("NEW MAN IN QUEUE");
+                 }
+                 else
+                     socket.write('1');*/
+                socket.rival = socket;
+                socket.write(socket.username + " 0");
                 break;
 
             //game over

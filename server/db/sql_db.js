@@ -6,8 +6,10 @@ var config = require("./config.json");
 
 var scheme = "($id, $pass, $rate, $username)";
 
+db.run("DROP TABLE IF EXISTS users");
+
 db.run("CREATE TABLE if not exists users "
-    + "(id INTEGER NOT NULL PRIMARY KEY, "
+    + "(id TEXT NOT NULL PRIMARY KEY, "
     + "pass TEXT NOT NULL, "
     + "rate INTEGER NOT NULL, "
     + "username TEXT NOT NULL)", function (err) {

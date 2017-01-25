@@ -23,6 +23,7 @@ abstract public class ClientSocket {
         outputStream = socket.getOutputStream();
     }
 
+    //return "1" if fail
     @NonNull
     protected String readStr() {
         byte[] b = new byte[200];
