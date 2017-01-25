@@ -88,16 +88,19 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
     public boolean onTouch(View view, MotionEvent event) {
 
+        //converting from local to global coord
         double x = event.getX() * (maxX / maxXLocal);
         double y = event.getY() * (maxY / maxYLocal);
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                //position of touch
                 coord += x + " " + y + " ";
                 break;
             case MotionEvent.ACTION_MOVE:
                 break;
             case MotionEvent.ACTION_UP:
+                //position of stop touching
                 coord += x + " " + y;
                 setWall(coord);
                 coord = "";
@@ -120,14 +123,20 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         if (socketThread != null) {
             socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
         }
+        //show toast win win/loose message
         int toastTextId = (winner == THIS_USER) ? R.string.this_user_win : R.string.this_user_loose;
         Toast.makeText(Game.this, getString(toastTextId), Toast.LENGTH_SHORT)
                 .show();
+        //disable touch listener
         surfaceView.setOnTouchListener(null);
         coord = null;
+        //flush message queue
         uiHandler.removeCallbacksAndMessages(null);
-        board.quit();
+        if (board != null) {
+            board.quit();
+        }
         Log.e("game finish", "end");
+        //stop after 3 seconds
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -157,7 +166,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     @Override
     public boolean handleMessage(Message message) {
         if (board == null)
-            return true;
+            return false;
         switch (message.what) {
             //message from board
             case MSG_GAME_END:
@@ -166,7 +175,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
             //messages from socket
             case MSG_ERROR:
                 //cant send
-                Log.e("GAME/GAME", "SEND ERROR");
+                Log.e("game/Game", "SEND ERROR");
                 gameFinish(RIVAL);
                 return true;
             case MSG_SET_WALL_FROM_RIVAL:

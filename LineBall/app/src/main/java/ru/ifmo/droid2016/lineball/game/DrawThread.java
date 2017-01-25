@@ -52,6 +52,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
                 //Log.e("redraw1", System.currentTimeMillis() + "");
                 final Who checked = board.check();
                 if (checked != null) {
+                    //someone won
                     Message message = Message.obtain(uiHandler, MSG_GAME_END, checked.ordinal(), 0);
                     uiHandler.sendMessage(message);
                     cancel();
@@ -61,6 +62,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
                     return;
                 c.drawColor(Color.WHITE);
                 synchronized (board) {
+                    //draw
                     board.drawBoard(c);
                 }
                 surfaceHolder.unlockCanvasAndPost(c);
@@ -78,6 +80,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message msg) {
+        //get wallx
         Log.e("wall in DrawThread", System.currentTimeMillis() + "");
         board.setWall((String) msg.obj, Who.values()[msg.arg1]);
         return true;

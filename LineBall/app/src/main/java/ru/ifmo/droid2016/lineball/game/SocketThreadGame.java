@@ -35,6 +35,7 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
     @Override
     protected void onLooperPrepared() {
         super.onLooperPrepared();
+        //init
         mReceiver = new Handler(Looper.myLooper(), this);
         try {
             socket = new GameSocket(androidId);
@@ -62,6 +63,7 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
                     uiHandler.sendEmptyMessage(MSG_VERIFYING_ERROR);
                 else
                     uiHandler.sendEmptyMessage(MSG_USER_VERIFIED);
+
                 break;
             case MSG_REGISTRATION:
                 result = socket.registration((String) message.obj);
@@ -72,7 +74,7 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
             //WARNING! IT FREEZE THIS THREAD
             case MSG_SEARCH:
                 String name = socket.search();
-                result = name != null;
+                result = (name != null);
                 if (result) {
                     uiHandler.sendMessage(Message.obtain(uiHandler, MSG_START_GAME, name));
                 }
@@ -86,16 +88,20 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
                 break;
             case MessageCodes.MSG_GET_WALL_FROM_RIVAL:
                 String coordinates = socket.getWall();
+
                 if (coordinates.equals("1")) {
+                    //internet troubles
                     result = false;
                     break;
                 }
                 if (coordinates.equals("2")) {
+                    //rival leave
                     uiHandler.sendEmptyMessage(MSG_GAME_END);
                     break;
                 }
                 mReceiver.sendEmptyMessageDelayed(MessageCodes.MSG_GET_WALL_FROM_RIVAL, CHECK_DELAY);
                 if (coordinates.equals("3")) {
+                    //no walls
                     break;
                 }
                 Log.e("from rival in Socket", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
@@ -138,8 +144,8 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
 
     @Nullable
     public static Thread getThreadByName(@NonNull String threadName) {
-        for (Thread t : Thread.getAllStackTraces().keySet()) {
-            if (t.getName().equals(threadName)) return t;
+        for (Thread thread : Thread.getAllStackTraces().keySet()) {
+            if (thread.getName().equals(threadName)) return thread;
         }
         Log.e("GAME", "getting thread return null");
         return null;

@@ -12,6 +12,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -39,7 +40,6 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
         // getSupportActionBar().hide();
         password = PreferenceManager.getDefaultSharedPreferences(this).getString("password", null);
         try {
-
             String android_id = Settings.Secure.getString(getBaseContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID);
 
@@ -73,6 +73,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
     public boolean handleMessage(Message message) {
         switch (message.what) {
             case MSG_ERROR:
+                Log.e("game activity", message.toString());
                 //alertDialog.dismiss();
                 fail();
                 break;
@@ -89,6 +90,7 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
                 //for creating new account because error
             case MSG_SOCKET_READY:
                 if (password == null) {
+                    //first connect or user deleted
                     password = randomString(10);
                     PreferenceManager.getDefaultSharedPreferences(this)
                             .edit()
