@@ -60,6 +60,8 @@ public class GameActivity extends AppCompatActivity implements Handler.Callback 
 
     private void fail() {
         if (alertDialog != null) alertDialog.dismiss();
+        if (socket != null)
+            socket.quit();
         Toast.makeText(GameActivity.this, R.string.connection_error, Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(new Runnable() {
             @Override

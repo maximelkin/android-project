@@ -27,7 +27,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     private final Handler uiHandler;
 
     private Timer timer;
-    private static final long REDRAW_DELAY = 50;
+    private static final long REDRAW_DELAY = 20;
     private static final long BEFORE_DRAW_DELAY = 100;
     private static final int drawThreadPriority = 10;
 
@@ -65,7 +65,9 @@ class DrawThread extends HandlerThread implements Handler.Callback {
                     //draw
                     board.drawBoard(c);
                 }
+                //Log.e("redraw2", System.currentTimeMillis() + "");
                 surfaceHolder.unlockCanvasAndPost(c);
+                //Log.e("redraw3", System.currentTimeMillis() + "");
             }
         }, BEFORE_DRAW_DELAY, REDRAW_DELAY);
     }
@@ -80,7 +82,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
 
     @Override
     public boolean handleMessage(Message msg) {
-        //get wallx
+        //get wall
         Log.e("wall in DrawThread", System.currentTimeMillis() + "");
         board.setWall((String) msg.obj, Who.values()[msg.arg1]);
         return true;
