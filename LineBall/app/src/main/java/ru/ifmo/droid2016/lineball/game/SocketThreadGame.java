@@ -51,6 +51,7 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
         // Clear all messages before dying
         Log.e("socket thread", "Quit");
         mReceiver.removeCallbacksAndMessages(null);
+        new Exception("thread dead").printStackTrace();
         return super.quit();
     }
 
@@ -145,6 +146,7 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
     @Nullable
     public static Thread getThreadByName(@NonNull String threadName) {
         for (Thread thread : Thread.getAllStackTraces().keySet()) {
+            Log.e("thread search", thread.getName());
             if (thread.getName().equals(threadName)) return thread;
         }
         Log.e("GAME", "getting thread return null");

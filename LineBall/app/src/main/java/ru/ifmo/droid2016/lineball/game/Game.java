@@ -82,8 +82,6 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     @Override
     protected void onPause() {
         super.onPause();
-        if (socketThread != null)
-            socketThread.quit();
     }
 
     public boolean onTouch(View view, MotionEvent event) {
