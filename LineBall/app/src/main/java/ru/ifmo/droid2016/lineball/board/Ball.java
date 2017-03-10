@@ -2,6 +2,8 @@ package ru.ifmo.droid2016.lineball.board;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.shapes.RectShape;
 
 import static ru.ifmo.droid2016.lineball.board.Board.*;
 import static ru.ifmo.droid2016.lineball.board.Point.*;
@@ -12,36 +14,36 @@ class Ball {
     private Point pos;
     Point direction;
     private static final double radius = 30;
+    private static final double defaultSpeed = 8;
     double speed;
 
     Ball(Point pos, Point direction, Paint paint) {
         this.pos = pos;
         this.direction = direction;
-        this.speed = 8;
+        this.speed = defaultSpeed;
         this.paint = paint;
     }
 
-    boolean collision(Ball ball) {
-        return sub(ball.pos, pos).length() < 2 * radius;
+    boolean collisionWithBall(Ball ball) {
+        return sub(ball.pos, pos).length() <= 2 * radius;
     }
 
-    boolean collision(Wall wall, boolean settingWall) {
+    boolean collisionWithWall(Wall wall, boolean settingWall) {
 
         Point m = sub(pos, wall.p2);
         Point p = sub(pos, wall.p1);
         Point q = sub(wall.p2, wall.p1);
-        //d_ball = distance between wall-line and ball
-        double d_ball = wall.line.distance(pos);
-        boolean intersect;
+        double distanceToWall = wall.line.distance(pos);
+        boolean isIntersect;
 
         if (m.scalarProduct(q) * p.scalarProduct(q) <= 0) {
             //simple case
-            intersect = (Math.abs(d_ball) <= radius);
+            isIntersect = (Math.abs(distanceToWall) <= radius);
         } else {
-            //ball impact with end of wall
-            intersect = (m.length() <= radius || p.length() <= radius);
+            //ball impact with one of the end of wall
+            isIntersect = (m.length() <= radius || p.length() <= radius);
         }
-        if (!intersect)
+        if (!isIntersect)
             return false;
 
         if (settingWall) {
@@ -56,25 +58,25 @@ class Ball {
 
         double d_nextPos = wall.line.distance(nextPos);
 
-        return (Math.abs(d_nextPos) < Math.abs(d_ball));
+        return d_nextPos < distanceToWall;
     }
 
-    void rotate(Wall w) {
+    //wtf some kind of magic
+    void rotate(Wall wall) {
 
-        Point p = sum(w.p1, direction);
+        Point p = sum(wall.p1, direction);
         //n - normal vector for wall line
-        Point n = new Point(w.line.A, w.line.B);
-        //d - distance between line and (p1 + direction)
-        double d = w.line.distance(p);
-        n.mul(2 * d / n.length());
+        Point wallNormalVector = wall.line.getNormalVector();
+        //d - distance between line and (wall.p1 + direction)
+        double d = wall.line.distance(p);
+        wallNormalVector.normalize().mul(2 * d);
 
-        if (w.line.contain(p)) {
-            p.add(n);
+        if (wall.line.contain(p)) {
+            p.add(wallNormalVector);
         } else {
-            p.sub(n);
+            p.sub(wallNormalVector);
         }
-        direction = sub(p, w.p1);
-        direction.mul(1 / direction.length());
+        direction = sub(p, wall.p1).normalize();
     }
 
     boolean outOfBoard() {

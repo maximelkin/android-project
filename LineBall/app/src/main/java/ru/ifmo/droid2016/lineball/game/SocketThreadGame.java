@@ -16,18 +16,17 @@ import static ru.ifmo.droid2016.lineball.MessageCodes.*;
 
 public class SocketThreadGame extends HandlerThread implements Handler.Callback {
 
-    private Handler uiHandler;
+    private Handler uiThreadReceiver, mainThreadReceiver;
     private GameSocket socket;
-    private Handler mReceiver;
 
 
     private final static int CHECK_DELAY = 20;
     private final static int socketPriority = 7;
     private String androidId;
 
-    public SocketThreadGame(String name, Handler uiHandler, String androidId) throws IOException {
+    public SocketThreadGame(String name, Handler uiThreadReceiver, String androidId) throws IOException {
         super(name, socketPriority);
-        this.uiHandler = uiHandler;
+        this.uiThreadReceiver = uiThreadReceiver;
         this.androidId = androidId;
         Log.e("socket thread", "new socket thread");
     }
@@ -36,13 +35,13 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
     protected void onLooperPrepared() {
         super.onLooperPrepared();
         //init
-        mReceiver = new Handler(Looper.myLooper(), this);
+        mainThreadReceiver = new Handler(Looper.myLooper(), this);
         try {
             socket = new GameSocket(androidId);
-            uiHandler.sendEmptyMessage(MSG_SOCKET_READY);
+            uiThreadReceiver.sendEmptyMessage(MSG_SOCKET_READY);
         } catch (IOException e) {
             e.printStackTrace();
-            uiHandler.sendEmptyMessage(MSG_ERROR);
+            uiThreadReceiver.sendEmptyMessage(MSG_ERROR);
         }
     }
 
@@ -50,7 +49,7 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
     public boolean quit() {
         // Clear all messages before dying
         Log.e("socket thread", "Quit");
-        mReceiver.removeCallbacksAndMessages(null);
+        mainThreadReceiver.removeCallbacksAndMessages(null);
         new Exception("thread dead").printStackTrace();
         return super.quit();
     }
@@ -61,15 +60,15 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
         switch (message.what) {
             case MSG_VERIFY_USER:
                 if (!socket.verify((String) message.obj))
-                    uiHandler.sendEmptyMessage(MSG_VERIFYING_ERROR);
+                    uiThreadReceiver.sendEmptyMessage(MSG_VERIFYING_ERROR);
                 else
-                    uiHandler.sendEmptyMessage(MSG_USER_VERIFIED);
+                    uiThreadReceiver.sendEmptyMessage(MSG_USER_VERIFIED);
 
                 break;
             case MSG_REGISTRATION:
                 result = socket.registration((String) message.obj);
                 if (result)
-                    uiHandler.sendEmptyMessage(MSG_USER_VERIFIED);
+                    uiThreadReceiver.sendEmptyMessage(MSG_USER_VERIFIED);
                 break;
 
             //WARNING! IT FREEZE THIS THREAD
@@ -77,7 +76,7 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
                 String name = socket.search();
                 result = (name != null);
                 if (result) {
-                    uiHandler.sendMessage(Message.obtain(uiHandler, MSG_START_GAME, name));
+                    uiThreadReceiver.sendMessage(Message.obtain(uiThreadReceiver, MSG_START_GAME, name));
                 }
                 break;
             case MSG_GAME_END:
@@ -97,54 +96,54 @@ public class SocketThreadGame extends HandlerThread implements Handler.Callback 
                 }
                 if (coordinates.equals("2")) {
                     //rival leave
-                    uiHandler.sendEmptyMessage(MSG_GAME_END);
+                    uiThreadReceiver.sendEmptyMessage(MSG_GAME_END);
                     break;
                 }
-                mReceiver.sendEmptyMessageDelayed(MessageCodes.MSG_GET_WALL_FROM_RIVAL, CHECK_DELAY);
+                mainThreadReceiver.sendEmptyMessageDelayed(MessageCodes.MSG_GET_WALL_FROM_RIVAL, CHECK_DELAY);
                 if (coordinates.equals("3")) {
                     //no walls
                     break;
                 }
                 Log.e("from rival in Socket", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
-                uiHandler.sendMessage(Message.obtain(uiHandler, MSG_SET_WALL_FROM_RIVAL, coordinates));
+                uiThreadReceiver.sendMessage(Message.obtain(uiThreadReceiver, MSG_SET_WALL_FROM_RIVAL, coordinates));
                 break;
         }
         if (!result)
-            uiHandler.sendEmptyMessage(MSG_ERROR);
+            uiThreadReceiver.sendEmptyMessage(MSG_ERROR);
         return true;
     }
 
-    public void setUiHandler(Handler handler) {
-        uiHandler = handler;
+    void setUiThreadReceiver(Handler handler) {
+        uiThreadReceiver = handler;
     }
 
     public void verify(@NonNull String password) {
-        mReceiver.sendMessage(Message.obtain(mReceiver, MSG_VERIFY_USER, password));
+        mainThreadReceiver.sendMessage(Message.obtain(mainThreadReceiver, MSG_VERIFY_USER, password));
     }
 
     public void registration(String password) {
-        mReceiver.sendMessage(Message.obtain(mReceiver, MSG_REGISTRATION, password));
+        mainThreadReceiver.sendMessage(Message.obtain(mainThreadReceiver, MSG_REGISTRATION, password));
     }
 
     public void search() {
-        mReceiver.sendEmptyMessage(MSG_SEARCH);
+        mainThreadReceiver.sendEmptyMessage(MSG_SEARCH);
     }
 
-    public void gameOver(@NonNull String result) {
-        mReceiver.sendMessageAtFrontOfQueue(Message.obtain(mReceiver, MSG_GAME_END, result));
+    void gameOver(@NonNull String result) {
+        mainThreadReceiver.sendMessageAtFrontOfQueue(Message.obtain(mainThreadReceiver, MSG_GAME_END, result));
     }
 
-    public void setWall(@NonNull String coordinates) {
-        mReceiver.sendMessage(Message.obtain(mReceiver, MSG_SEND_WALL_TO_RIVAL, coordinates));
+    void setWall(@NonNull String coordinates) {
+        mainThreadReceiver.sendMessage(Message.obtain(mainThreadReceiver, MSG_SEND_WALL_TO_RIVAL, coordinates));
     }
 
     //only one run!
-    public void getWall() {
-        mReceiver.sendEmptyMessage(MessageCodes.MSG_GET_WALL_FROM_RIVAL);
+    void getWall() {
+        mainThreadReceiver.sendEmptyMessage(MessageCodes.MSG_GET_WALL_FROM_RIVAL);
     }
 
     @Nullable
-    public static Thread getThreadByName(@NonNull String threadName) {
+    static Thread getThreadByName(@NonNull String threadName) {
         for (Thread thread : Thread.getAllStackTraces().keySet()) {
             Log.e("thread search", thread.getName());
             if (thread.getName().equals(threadName)) return thread;

@@ -1,7 +1,10 @@
 package ru.ifmo.droid2016.lineball.game;
 
 import android.graphics.Color;
-import android.os.*;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,9 +19,7 @@ import ru.ifmo.droid2016.lineball.R;
 import ru.ifmo.droid2016.lineball.board.Who;
 
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-import static ru.ifmo.droid2016.lineball.MessageCodes.MSG_ERROR;
-import static ru.ifmo.droid2016.lineball.MessageCodes.MSG_GAME_END;
-import static ru.ifmo.droid2016.lineball.MessageCodes.MSG_SET_WALL_FROM_RIVAL;
+import static ru.ifmo.droid2016.lineball.MessageCodes.*;
 import static ru.ifmo.droid2016.lineball.board.Board.*;
 import static ru.ifmo.droid2016.lineball.board.Who.RIVAL;
 import static ru.ifmo.droid2016.lineball.board.Who.THIS_USER;
@@ -30,7 +31,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     private static final String TAG = "GAME";
     private String coord = "";
     private DrawThread board;
-    private Handler uiHandler = new Handler(Looper.getMainLooper(), this);
+    private Handler uiThreadReceiver = new Handler(Looper.getMainLooper(), this);
     private SocketThreadGame socketThread;
     private SurfaceView surfaceView;
     private int color;
@@ -72,7 +73,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
             gameFinish(RIVAL);
         }
 
-        socketThread.setUiHandler(uiHandler);
+        socketThread.setUiThreadReceiver(uiThreadReceiver);
 
         //start getting walls
         socketThread.getWall();
@@ -111,13 +112,11 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
 
 
     private void setWall(String coordinates) {
-        Log.e("wall draw by user", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
         socketThread.setWall(coordinates);
         board.setWall(coordinates, THIS_USER);
     }
 
     private void gameFinish(Who winner) {
-        Log.e("game finish", "start");
         if (socketThread != null) {
             socketThread.gameOver((winner == THIS_USER) ? "win" : "loose");
         }
@@ -129,11 +128,10 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
         surfaceView.setOnTouchListener(null);
         coord = null;
         //flush message queue
-        uiHandler.removeCallbacksAndMessages(null);
+        uiThreadReceiver.removeCallbacksAndMessages(null);
         if (board != null) {
             board.quit();
         }
-        Log.e("game finish", "end");
         //stop after 3 seconds
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -141,11 +139,12 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
                 finish();
             }
         }, 3000);
+        System.gc();
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        board = new DrawThread(surfaceHolder, uiHandler, color, isGameMaster);
+        board = new DrawThread(surfaceHolder, uiThreadReceiver, color, isGameMaster);
         board.start();
     }
 
@@ -157,7 +156,7 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     @Override
     public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         board.quit();
-        uiHandler.removeCallbacksAndMessages(null);
+        uiThreadReceiver.removeCallbacksAndMessages(null);
         surfaceView.setOnTouchListener(null);
     }
 
@@ -173,11 +172,10 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
             //messages from socket
             case MSG_ERROR:
                 //cant send
-                Log.e("game/Game", "SEND ERROR");
+                Log.e(TAG, "SEND ERROR");
                 gameFinish(RIVAL);
                 return true;
             case MSG_SET_WALL_FROM_RIVAL:
-                Log.e("wall from rival in Game", String.format("%.3f", (double) System.currentTimeMillis() / 1000));
                 board.setWall((String) message.obj, RIVAL);
                 return true;
         }

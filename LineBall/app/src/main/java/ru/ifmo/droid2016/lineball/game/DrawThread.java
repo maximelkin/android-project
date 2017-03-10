@@ -23,25 +23,25 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     private final boolean isGameMaster;
     private Board board;
     private final SurfaceHolder surfaceHolder;
-    private Handler mReceiver;
-    private final Handler uiHandler;
+    private Handler mainThreadReceiver;
+    private final Handler uiThreadReceiver;
 
     private Timer timer;
     private static final long REDRAW_DELAY = 20;
     private static final long BEFORE_DRAW_DELAY = 100;
     private static final int drawThreadPriority = 10;
 
-    DrawThread(SurfaceHolder surfaceHolder, Handler uiHandler, int color, boolean isGameMaster) {
+    DrawThread(SurfaceHolder surfaceHolder, Handler uiThreadReceiver, int color, boolean isGameMaster) {
         super("DrawThread", drawThreadPriority);
         this.surfaceHolder = surfaceHolder;
-        this.uiHandler = uiHandler;
+        this.uiThreadReceiver = uiThreadReceiver;
         this.color = color;
         this.isGameMaster = isGameMaster;
     }
 
     @Override
     protected void onLooperPrepared() {
-        mReceiver = new Handler(getLooper(), this);
+        mainThreadReceiver = new Handler(getLooper(), this);
         //start redrawing
         Rect rect = surfaceHolder.getSurfaceFrame();
         board = new Board(rect.width(), rect.height(), color, isGameMaster);
@@ -53,20 +53,17 @@ class DrawThread extends HandlerThread implements Handler.Callback {
                 final Who checked = board.check();
                 if (checked != null) {
                     //someone won
-                    Message message = Message.obtain(uiHandler, MSG_GAME_END, checked.ordinal(), 0);
-                    uiHandler.sendMessage(message);
+                    Message message = Message.obtain(uiThreadReceiver, MSG_GAME_END, checked.ordinal(), 0);
+                    uiThreadReceiver.sendMessage(message);
                     cancel();
                 }
-                final Canvas c = surfaceHolder.lockCanvas();
-                if (c == null)
+                final Canvas canvas = surfaceHolder.lockCanvas();
+                if (canvas == null)
                     return;
-                c.drawColor(Color.WHITE);
-                synchronized (board) {
-                    //draw
-                    board.drawBoard(c);
-                }
+                canvas.drawColor(Color.WHITE);
+                board.drawBoard(canvas);
                 //Log.e("redraw2", System.currentTimeMillis() + "");
-                surfaceHolder.unlockCanvasAndPost(c);
+                surfaceHolder.unlockCanvasAndPost(canvas);
                 //Log.e("redraw3", System.currentTimeMillis() + "");
             }
         }, BEFORE_DRAW_DELAY, REDRAW_DELAY);
@@ -76,7 +73,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
     public boolean quit() {
         timer.cancel();
         // Clear all messages before dying
-        mReceiver.removeCallbacksAndMessages(null);
+        mainThreadReceiver.removeCallbacksAndMessages(null);
         return super.quit();
     }
 
@@ -90,7 +87,7 @@ class DrawThread extends HandlerThread implements Handler.Callback {
 
 
     void setWall(@NonNull String coord, @NonNull Who who) {
-        Message msg = Message.obtain(mReceiver, 0, who.ordinal(), 0, coord);
-        mReceiver.sendMessageAtFrontOfQueue(msg);
+        Message msg = Message.obtain(mainThreadReceiver, 0, who.ordinal(), 0, coord);
+        mainThreadReceiver.sendMessageAtFrontOfQueue(msg);
     }
 }

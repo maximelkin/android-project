@@ -20,7 +20,7 @@ class Point {
     }
 
     @NonNull
-    static Point sum(Point point1, Point point2){
+    static Point sum(Point point1, Point point2) {
         return new Point(point1.x + point2.x, point1.y + point2.y);
     }
 
@@ -50,4 +50,8 @@ class Point {
         return x * p.x + y * p.y;
     }
 
+    Point normalize() {
+        mul(1 / length());
+        return this;
+    }
 }

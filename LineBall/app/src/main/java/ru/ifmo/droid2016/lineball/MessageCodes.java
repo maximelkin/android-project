@@ -1,6 +1,5 @@
 package ru.ifmo.droid2016.lineball;
 
-//whats codes gets each class
 public class MessageCodes {
     //socket codes
     public final static int MSG_VERIFY_USER = 200;
