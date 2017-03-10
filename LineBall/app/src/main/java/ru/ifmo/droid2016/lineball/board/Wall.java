@@ -20,13 +20,13 @@ class Wall {
     void onDraw(Canvas canvas, Paint paint, boolean isGameMaster) {
         if (isGameMaster) {
             canvas.drawLine(
-                    (float) (p1.x * maxXLocal / maxX), (float) (p1.y * maxYLocal / maxY),
-                    (float) (p2.x * maxXLocal / maxX), (float) (p2.y * maxYLocal / maxY),
+                    p1.x * maxXLocal / maxX, p1.y * maxYLocal / maxY,
+                    p2.x * maxXLocal / maxX, p2.y * maxYLocal / maxY,
                     paint);
         } else {
             canvas.drawLine(
-                    (float) (maxXLocal - p1.x * maxXLocal / maxX), (float) (maxYLocal - p1.y * maxYLocal / maxY),
-                    (float) (maxXLocal - p2.x * maxXLocal / maxX), (float) (maxYLocal - p2.y * maxYLocal / maxY),
+                    maxXLocal - p1.x * maxXLocal / maxX, maxYLocal - p1.y * maxYLocal / maxY,
+                    maxXLocal - p2.x * maxXLocal / maxX, maxYLocal - p2.y * maxYLocal / maxY,
                     paint);
         }
 

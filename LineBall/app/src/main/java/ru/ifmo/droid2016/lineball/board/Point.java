@@ -1,17 +1,14 @@
 package ru.ifmo.droid2016.lineball.board;
 
+import android.graphics.PointF;
 import android.support.annotation.NonNull;
 
-class Point {
-    double x, y;
+class Point extends PointF {
 
-    Point(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
+    static Creator<Point> CREATOR;
 
-    double length() {
-        return Math.sqrt(x * x + y * y);
+    Point(float x, float y){
+        super(x, y);
     }
 
     void add(Point p) {
@@ -35,18 +32,18 @@ class Point {
         return new Point(point1.x - point2.x, point1.y - point2.y);
     }
 
-    Point mul(double coefficient) {
+    Point mul(float coefficient) {
         x *= coefficient;
         y *= coefficient;
         return this;
     }
 
     @NonNull
-    static Point multiply(Point point, double k) {
+    static Point multiply(Point point, float k) {
         return new Point(k * point.x, k * point.y);
     }
 
-    double scalarProduct(Point p) {
+    float scalarProduct(Point p) {
         return x * p.x + y * p.y;
     }
 

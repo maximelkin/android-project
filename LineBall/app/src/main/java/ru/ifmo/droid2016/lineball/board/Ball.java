@@ -13,9 +13,9 @@ class Ball {
     private final Paint paint;
     private Point pos;
     Point direction;
-    private static final double radius = 30;
-    private static final double defaultSpeed = 8;
-    double speed;
+    private static final float radius = 30;
+    private static final float defaultSpeed = 8;
+    float speed;
 
     Ball(Point pos, Point direction, Paint paint) {
         this.pos = pos;
@@ -33,7 +33,7 @@ class Ball {
         Point m = sub(pos, wall.p2);
         Point p = sub(pos, wall.p1);
         Point q = sub(wall.p2, wall.p1);
-        double distanceToWall = wall.line.distance(pos);
+        float distanceToWall = wall.line.distance(pos);
         boolean isIntersect;
 
         if (m.scalarProduct(q) * p.scalarProduct(q) <= 0) {
@@ -56,7 +56,7 @@ class Ball {
             return false;
         }
 
-        double d_nextPos = wall.line.distance(nextPos);
+        float d_nextPos = wall.line.distance(nextPos);
 
         return d_nextPos < distanceToWall;
     }
@@ -68,7 +68,7 @@ class Ball {
         //n - normal vector for wall line
         Point wallNormalVector = wall.line.getNormalVector();
         //d - distance between line and (wall.p1 + direction)
-        double d = wall.line.distance(p);
+        float d = wall.line.distance(p);
         wallNormalVector.normalize().mul(2 * d);
 
         if (wall.line.contain(p)) {
@@ -80,21 +80,21 @@ class Ball {
     }
 
     boolean outOfBoard() {
-        return (pos.x < -radius || pos.x > maxX + radius || pos.y < -radius || pos.y > maxY + radius);
+        return !borders.contains(pos.x, pos.y);
     }
 
     void onDraw(Canvas canvas, boolean isGameMaster) {
         if (isGameMaster) {
             canvas.drawCircle(
-                    (float) (pos.x * maxXLocal / maxX),
-                    (float) (pos.y * maxYLocal / maxY),
-                    (float) (radius * maxYLocal / maxY),
+                    pos.x * maxXLocal / maxX,
+                    pos.y * maxYLocal / maxY,
+                    radius * maxYLocal / maxY,
                     paint);
         } else {
             canvas.drawCircle(
-                    (float) (maxXLocal - pos.x * maxXLocal / maxX),
-                    (float) (maxYLocal - pos.y * maxYLocal / maxY),
-                    (float) (radius * maxYLocal / maxY),
+                    maxXLocal - pos.x * maxXLocal / maxX,
+                    maxYLocal - pos.y * maxYLocal / maxY,
+                    radius * maxYLocal / maxY,
                     paint);
         }
     }

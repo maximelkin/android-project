@@ -88,8 +88,8 @@ public class Game extends AppCompatActivity implements View.OnTouchListener, Sur
     public boolean onTouch(View view, MotionEvent event) {
 
         //converting from local to global coord
-        double x = event.getX() * (maxX / maxXLocal);
-        double y = event.getY() * (maxY / maxYLocal);
+        float x = event.getX() * (maxX / maxXLocal);
+        float y = event.getY() * (maxY / maxYLocal);
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:

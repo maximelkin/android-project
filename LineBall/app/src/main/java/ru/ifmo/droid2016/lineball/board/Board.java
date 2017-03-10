@@ -8,17 +8,28 @@ import android.util.Log;
 import java.util.LinkedList;
 import java.util.List;
 
+import static ru.ifmo.droid2016.lineball.board.Who.THIS_USER;
+
 public class Board {
     //maxX/maxY = 9/16
-    public static double dv = 0.5,
+    public static float
             maxX = 576,
             maxY = 1024,
             maxXLocal,
-            maxYLocal,
-            eps = 1e-2,
+            maxYLocal;
+
+    static float eps = (float) 1e-2;
+
+    private static final float
+            dv = (float) 0.5,
+            sqrt2 = (float) Math.sqrt(2),
             minSpeed = 4;
+
+    static final RectF borders = new RectF(0, 0, 576, 1024);
+
     private final Paint thisUserPaint;
     private final Paint rivalPaint;
+
     private List<Wall> walls1 = new LinkedList<>(), walls2 = new LinkedList<>();
     private Ball ball1, ball2;
     private final boolean isGameMaster;
@@ -36,10 +47,10 @@ public class Board {
 
         thisUserPaint.setColor((color == 0) ? Color.BLUE : Color.RED);
         rivalPaint.setColor((color == 0) ? Color.RED : Color.BLUE);
-        ball1 = new Ball(new Point(30, 30), new Point(1 / Math.sqrt(2), 1 / Math.sqrt(2)),
-                thisUserPaint);
-        ball2 = new Ball(new Point(Board.maxX - 30, Board.maxY - 30), new Point(-1 / Math.sqrt(2), -1 / Math.sqrt(2)),
-                rivalPaint);
+
+        ball1 = new Ball(new Point(30, 30), new Point(sqrt2, sqrt2), thisUserPaint);
+        ball2 = new Ball(new Point(Board.maxX - 30, Board.maxY - 30), new Point(-sqrt2, -sqrt2), rivalPaint);
+
         if (isGameMaster) {
             Ball temp = ball1;
             ball1 = ball2;
@@ -59,7 +70,7 @@ public class Board {
 
         if (ball2.outOfBoard()) {
             Log.e("CHECK:", "rival out of board");
-            return Who.THIS_USER;
+            return THIS_USER;
         }
 
         for (Wall wall : walls1) {
@@ -85,23 +96,21 @@ public class Board {
         }
 
         for (Wall wall : walls2) {
-            boolean rotate1 = ball1.collisionWithWall(wall, false);
-            boolean rotate2 = ball2.collisionWithWall(wall, false);
+            boolean collisionWithWall1 = ball1.collisionWithWall(wall, false);
+            boolean collisionWithWall2 = ball2.collisionWithWall(wall, false);
 
-            if (rotate1) {
+            if (collisionWithWall1) {
                 Log.e("CHECK:", "blue hits red wall");
                 ball1.rotate(wall);
                 ball1.speed += dv;
                 wall.hitPoints -= 2;
-                break;
             }
 
-            if (rotate2) {
+            if (collisionWithWall2) {
                 Log.e("CHECK:", "red hits red wall");
                 ball2.rotate(wall);
                 ball2.speed -= dv;
                 wall.hitPoints--;
-                break;
             }
             if (wall.hitPoints <= 0)
                 walls2.remove(wall);
@@ -112,12 +121,12 @@ public class Board {
             return Who.RIVAL;
 
         if (ball2.speed < minSpeed)
-            return Who.THIS_USER;
+            return THIS_USER;
 
         if (ball1.collisionWithBall(ball2)) {
             if (ball1.speed > ball2.speed + eps) {
                 Log.e("CHECK:", "we are faster");
-                return Who.THIS_USER;
+                return THIS_USER;
 
             } else if (ball2.speed > ball1.speed + eps) {
                 Log.e("CHECK:", "we are slower");
@@ -142,9 +151,13 @@ public class Board {
 
     public void setWall(String coord, @NonNull Who from) {
         String[] s = coord.split(" ");
-        double[] a = new double[s.length];
+        if (s.length != 4) {
+            Log.e("board", "invalid wall coord");
+            return;
+        }
+        float[] a = new float[s.length];
         for (int i = 0; i < s.length; i++) {
-            a[i] = Double.parseDouble(s[i]);
+            a[i] = Float.parseFloat(s[i]);
         }
 
         Point p1 = new Point(a[0], a[1]),
@@ -156,14 +169,10 @@ public class Board {
 
         Log.e("Board:", "wall added");
 
-        switch (from) {
-            case THIS_USER:
-                walls1.add(w);
-                break;
-            case RIVAL:
-                //w.reverse();
-                walls2.add(w);
-                break;
+        if (from == THIS_USER) {
+            walls1.add(w);
+        } else {
+            walls2.add(w);
         }
     }
 
